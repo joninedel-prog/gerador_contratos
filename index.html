@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerador PSCM - Nedel Telecom</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #e0e0e0;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
+        .form-group { flex: 1; min-width: 180px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 12px; }
+        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+        .btn-gerar { background: #004080; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; width: 100%; }
+        .btn-gerar:hover { background: #002050; }
+        
+        .tabela-adicionais { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .tabela-adicionais th, .tabela-adicionais td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+        .tabela-adicionais th { background: #f0f0f0; }
+        .tabela-adicionais input { width: 60px; padding: 4px; text-align: center; }
+        
+        .info-plano { background: #e8f0fe; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+        .info-multa { background: #fff3e0; padding: 8px; border-radius: 5px; margin: 10px 0; font-size: 12px; }
+        
+        /* ESTILO DO PDF - CONTRATO COMPLETO */
+        .contrato-pdf {
+            width: 100%;
+            background: white;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 10pt;
+            line-height: 1.3;
+            padding: 15px;
+        }
+        .titulo-principal { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 5px; text-transform: uppercase; }
+        .subtitulo { text-align: center; font-size: 11pt; margin-bottom: 15px; font-weight: bold; }
+        .dados-contratada, .dados-cliente { border: 1px solid #000; padding: 8px; margin-bottom: 10px; }
+        .dados-contratada p, .dados-cliente p { margin: 2px 0; }
+        .tabela-equipamentos, .tabela-servicos, .tabela-multa { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        .tabela-equipamentos th, .tabela-equipamentos td,
+        .tabela-servicos th, .tabela-servicos td,
+        .tabela-multa th, .tabela-multa td { border: 1px solid #000; padding: 4px; text-align: center; font-size: 9pt; }
+        .tabela-equipamentos th, .tabela-servicos th, .tabela-multa th { background: #f0f0f0; font-weight: bold; }
+        .clausula-titulo { font-weight: bold; margin-top: 12px; margin-bottom: 5px; font-size: 11pt; background: #ddd; padding: 3px 8px; }
+        .assinatura-area { margin-top: 25px; display: flex; justify-content: space-between; }
+        .assinatura { text-align: center; width: 45%; }
+        .linha-assinatura { border-top: 1px solid #000; margin-top: 35px; padding-top: 5px; }
+        .testemunhas-area { margin-top: 20px; display: flex; justify-content: space-between; gap: 20px; }
+        .testemunha { flex: 1; text-align: center; border-top: 1px solid #000; padding-top: 15px; }
+        .texto-pequeno { font-size: 8pt; }
+        p { margin: 4px 0; }
+        .page-break { page-break-before: avoid; page-break-inside: avoid; }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2>📄 Gerador de Contrato PSCM - Nedel Telecom</h2>
+    
+    <div class="form-row">
+        <div class="form-group"><label>Nº do PSCM:</label><input type="text" id="numPSCM" placeholder="Ex: 2025/0001"></div>
+        <div class="form-group"><label>Razão Social / Nome:</label><input type="text" id="clienteNome"></div>
+    </div>
+    <div class="form-row">
+        <div class="form-group"><label>CNPJ / CPF:</label><input type="text" id="clienteDoc"></div>
+        <div class="form-group"><label>IE / RG:</label><input type="text" id="clienteRg"></div>
+    </div>
+    <div class="form-row">
+        <div class="form-group"><label>Endereço:</label><input type="text" id="endereco"></div>
+        <div class="form-group"><label>Número:</label><input type="text" id="numero"></div>
+        <div class="form-group"><label>Bairro:</label><input type="text" id="bairro"></div>
+    </div>
+    <div class="form-row">
+        <div class="form-group"><label>Cidade:</label><input type="text" id="cidade" value="ITAPIRANGA"></div>
+        <div class="form-group"><label>UF:</label><input type="text" id="uf" value="SC"></div>
+        <div class="form-group"><label>Telefone:</label><input type="text" id="telefone"></div>
+        <div class="form-group"><label>E-mail:</label><input type="email" id="email"></div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-group"><label>Plano:</label>
+            <select id="planoSelect" onchange="carregarPlano()">
+                <option value="">-- Selecione --</option>
+            </select>
+        </div>
+        <div class="form-group"><label>Prazo Ativação (dias):</label><input type="number" id="prazoAtivacao" value="10"></div>
+        <div class="form-group"><label>Taxa Visita (R$):</label><input type="number" id="taxaVisita" value="50"></div>
+        <div class="form-group"><label>Valor Pago (R$):</label><input type="number" id="valorPago" value="0" step="10"></div>
+    </div>
+    
+    <div id="infoPlano" class="info-plano" style="display: none;"></div>
+    
+    <h3>📺 Adicionais</h3>
+    <table class="tabela-adicionais">
+        <thead><tr><th>Adicional</th><th>Valor</th><th>Qtd</th><th>Subtotal</th></tr></thead>
+        <tbody>
+            <tr><td id="nomePremium">PREMIUM</td><td id="valorPremium">R$ 29,90</td><td><input type="number" class="qtd-adicional" data-valor="29.90" data-nome="PREMIUM" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
+            <tr><td>STANDARD</td><td>R$ 9,90</td><td><input type="number" class="qtd-adicional" data-valor="9.90" data-nome="STANDARD" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
+            <tr><td>ADVANCED</td><td>R$ 19,90</td><td><input type="number" class="qtd-adicional" data-valor="19.90" data-nome="ADVANCED" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
+            <tr><td>DISNEY+ PREMIUM</td><td>R$ 69,90</td><td><input type="number" class="qtd-adicional" data-valor="69.90" data-nome="DISNEY+ PREMIUM" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
+            <tr><td>COMBATE</td><td>R$ 29,90</td><td><input type="number" class="qtd-adicional" data-valor="29.90" data-nome="COMBATE" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
+            <tr><td>TELECINE</td><td>R$ 19,90</td><td><input type="number" class="qtd-adicional" data-valor="19.90" data-nome="TELECINE" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="3"><strong>TOTAL ADICIONAIS</strong></td><td id="totalAdicionaisValor">R$ 0,00</td></tr></tfoot>
+    </table>
+    
+    <h3>👥 Testemunhas</h3>
+    <div class="form-row">
+        <div class="form-group"><label>Testemunha 1:</label><select id="testemunha1"><option value="">-- Selecione --</option></select></div>
+        <div class="form-group"><label>Testemunha 2:</label><select id="testemunha2"><option value="">-- Selecione --</option></select></div>
+    </div>
+    
+    <button class="btn-gerar" onclick="gerarPDF()">📄 GERAR CONTRATO COMPLETO PDF</button>
+</div>
+
+<div id="contratoContainer" style="display: none;"><div class="contrato-pdf" id="contratoPDF"></div></div>
+
+<script>
+// TESTEMUNHAS
+const testemunhasLista = [
+    { nome: "Anderson Nedel", cpf: "083.833.299-46", endereco: "Mondaí - SC" },
+    { nome: "Anderson Luis Giehl", cpf: "107.159.949-64", endereco: "Itapiranga - SC" },
+    { nome: "Carlos Eduardo Kerner", cpf: "035.871.980-12", endereco: "Itapiranga - SC" },
+    { nome: "Djonatha Airton Wesoloski", cpf: "123.955.569-55", endereco: "Itapiranga - SC" },
+    { nome: "Eliane Maldaner Teloeken", cpf: "037.739.179-45", endereco: "Itapiranga - SC" },
+    { nome: "Guilherme Bourscheidt", cpf: "099.267.959-19", endereco: "Itapiranga - SC" },
+    { nome: "Joni Cesar Eidt", cpf: "077.978.719-65", endereco: "Itapiranga - SC" },
+    { nome: "Leandro Kappes", cpf: "089.326.269-28", endereco: "Mondaí - SC" },
+    { nome: "Leonir Fritzen", cpf: "069.846.419-26", endereco: "São João Do Oeste - SC" },
+    { nome: "Marciel Bracht", cpf: "039.895.409-71", endereco: "Iporã do Oeste - SC" },
+    { nome: "Marines Rohr", cpf: "029.445.219-26", endereco: "Iporã do Oeste - SC" },
+    { nome: "Juliane Rech", cpf: "048.836.349-73", endereco: "Itapiranga - SC" },
+    { nome: "Vanessa Girardi", cpf: "026.163.390-21", endereco: "Barra do Guarita - RS" },
+    { nome: "Raquel Bruxel Kaiser", cpf: "053.591.249-89", endereco: "Itapiranga - SC" },
+    { nome: "Roberto Wailand", cpf: "710.745.899-04", endereco: "Itapiranga - SC" },
+    { nome: "Roseli Christ", cpf: "046.463.429-60", endereco: "Itapiranga - SC" },
+    { nome: "Vanessa Helena Weiss", cpf: "091.312.159-20", endereco: "Mondaí - SC" }
+];
+
+// PLANOS
+const planosDB = [
+    { nome: "BASICO FIBRA 500 MB", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 16.00, totalBase: 99.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
+    { nome: "BASICO 500 MB IP FIXO MESH", velDown: "550000", velUp: "256000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 36.00, totalBase: 134.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, beneficio: 1000 },
+    { nome: "BASICO 500 MB IP FIXO", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 16.00, totalBase: 114.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
+    { nome: "BASICO 500 MB DECO MESH", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 56.00, totalBase: 139.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "DECO M4", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, beneficio: 1250 },
+    { nome: "BASICO 500 MB DECO MESH 3", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 76.00, totalBase: 159.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "DECO M4", locado3: "DECO M4", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 450, beneficio: 1700 },
+    { nome: "CORPORATIVO FIBRA 500 MB", velDown: "550000", velUp: "256000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 0, locacao: 67.90, totalBase: 149.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "MIKROTIK RB750G3 HEX", valorComodato: 350, valorLocado1: 450, valorLocado2: 800, beneficio: 1600 },
+    { nome: "BASICO 500 MB MESH", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 36.00, totalBase: 119.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, beneficio: 1000 },
+    { nome: "BASICO 500 MB DECO", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 36.00, totalBase: 119.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", valorComodato: 350, valorLocado1: 450, beneficio: 800 },
+    { nome: "COMBO 600 MB", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 16.00, totalBase: 100.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
+    { nome: "COMBO 600 MB MESH IP FIXO", velDown: "615000", velUp: "256000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 36.00, totalBase: 135.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050 },
+    { nome: "COMBO 600 MB IP FIXO", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 16.00, totalBase: 115.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
+    { nome: "COMBO 600 MB DECO MESH", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 56.00, totalBase: 140.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, beneficio: 1250 },
+    { nome: "COMBO 600 MB DECO MESH TRIPLO", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 76.00, totalBase: 160.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", locado3: "DECO X10", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 450, beneficio: 1700 },
+    { nome: "COMBO 600 MB MESH", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 36.00, totalBase: 120.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, beneficio: 1000 },
+    { nome: "COMBO 600 MB DECO", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 36.00, totalBase: 120.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", valorComodato: 350, valorLocado1: 450, beneficio: 800 },
+    { nome: "COMBO 800 MB", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 110.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
+    { nome: "COMBO 800 MB MESH IP FIXO", velDown: "820000", velUp: "256000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 145.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050 },
+    { nome: "COMBO 800 MB IP FIXO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 125.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
+    { nome: "COMBO 800 MB DECO MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 56.00, totalBase: 150.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, beneficio: 1250 },
+    { nome: "COMBO 800 MB DECO MESH TRIPLO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 76.00, totalBase: 170.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", locado3: "DECO X10", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 450, beneficio: 1700 },
+    { nome: "COMBO 800 MB MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050 },
+    { nome: "COMBO 800 MB DECO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", valorComodato: 350, valorLocado1: 450, beneficio: 800 },
+    { nome: "COMBO 800 MB TOTAL", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 110.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
+    { nome: "COMBO 800 MB TOTAL DECO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", valorComodato: 350, valorLocado1: 450, beneficio: 800, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
+    { nome: "COMBO 800 MB EXITLAG", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 26.00, totalBase: 120.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "15 METROS DE CABO", valorComodato: 350, valorLocado1: 350, valorLocado2: 100, beneficio: 800, adicionaisPadrao: { "STANDARD": 1 } },
+    { nome: "COMBO 800 MB TOTAL MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
+    { nome: "NITRO 30 MB", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300 M5-300 5GHZ", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950 },
+    { nome: "NITRO 30 MB TOTAL", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300 M5-300 5GHZ", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
+    { nome: "NITRO 10 MB", velDown: "10240", velUp: "2457", garantiaDown: "10240", garantiaUp: "1966", scm: 89.00, ebook: 0, locacao: 0, totalBase: 89.00, comodato: "POWERBEAM 300 M5-300 5GHZ", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950 }
+];
+
+let planoAtual = null;
+
+function popularPlanos() {
+    const select = document.getElementById('planoSelect');
+    select.innerHTML = '<option value="">-- Selecione o plano --</option>';
+    planosDB.forEach((p, idx) => {
+        let opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = p.nome;
+        select.appendChild(opt);
+    });
+}
+
+function popularTestemunhas() {
+    testemunhasLista.forEach(t => {
+        let opt1 = document.createElement('option');
+        opt1.value = JSON.stringify(t);
+        opt1.textContent = `${t.nome} - ${t.cpf}`;
+        document.getElementById('testemunha1').appendChild(opt1.cloneNode(true));
+        document.getElementById('testemunha2').appendChild(opt1);
+    });
+}
+
+function carregarPlano() {
+    let idx = document.getElementById('planoSelect').value;
+    if (idx === "") { planoAtual = null; return; }
+    planoAtual = JSON.parse(JSON.stringify(planosDB[parseInt(idx)]));
+    
+    document.querySelectorAll('.qtd-adicional').forEach(i => i.value = 0);
+    
+    if (planoAtual.premiumEspecial) {
+        document.getElementById('valorPremium').innerText = "R$ 26,63";
+        document.querySelector('.qtd-adicional[data-nome="PREMIUM"]').dataset.valor = "26.63";
+    } else {
+        document.getElementById('valorPremium').innerText = "R$ 29,90";
+        document.querySelector('.qtd-adicional[data-nome="PREMIUM"]').dataset.valor = "29.90";
+    }
+    
+    if (planoAtual.adicionaisPadrao) {
+        for (let [nome, qtd] of Object.entries(planoAtual.adicionaisPadrao)) {
+            let inp = document.querySelector(`.qtd-adicional[data-nome="${nome}"]`);
+            if (inp) inp.value = qtd;
+        }
+    }
+    
+    document.getElementById('infoPlano').innerHTML = `<strong>📡 ${planoAtual.nome}</strong><br>💰 Mensal: R$ ${planoAtual.totalBase} | 🎁 Benefício: R$ ${planoAtual.beneficio}`;
+    calcularTotalAdicionais();
+}
+
+function calcularTotalAdicionais() {
+    let total = 0;
+    document.querySelectorAll('.qtd-adicional').forEach(inp => {
+        let qtd = parseInt(inp.value) || 0;
+        let val = parseFloat(inp.dataset.valor);
+        let sub = qtd * val;
+        total += sub;
+        let td = inp.closest('tr').querySelector('.subtotal-adicional');
+        if (td) td.innerText = `R$ ${sub.toFixed(2)}`;
+    });
+    document.getElementById('totalAdicionaisValor').innerHTML = `R$ ${total.toFixed(2)}`;
+    return total;
+}
+
+function getAdicionaisLista() {
+    let lista = [];
+    document.querySelectorAll('.qtd-adicional').forEach(inp => {
+        let qtd = parseInt(inp.value) || 0;
+        if (qtd > 0) {
+            lista.push({ 
+                nome: inp.dataset.nome, 
+                qtd: qtd, 
+                valorUnit: parseFloat(inp.dataset.valor),
+                subtotal: qtd * parseFloat(inp.dataset.valor) 
+            });
+        }
+    });
+    return lista;
+}
+
+function gerarPDF() {
+    if (!planoAtual) { alert("Selecione um plano!"); return; }
+    
+    let numPSCM = document.getElementById('numPSCM').value || "_______________";
+    let valorPago = parseFloat(document.getElementById('valorPago').value) || 0;
+    let prazoAtivacao = document.getElementById('prazoAtivacao').value || 10;
+    let taxaVisita = parseFloat(document.getElementById('taxaVisita').value) || 50;
+    let vigencia = 12;
+    
+    let test1 = JSON.parse(document.getElementById('testemunha1').value || '{}');
+    let test2 = JSON.parse(document.getElementById('testemunha2').value || '{}');
+    
+    let cliente = {
+        nome: document.getElementById('clienteNome').value || "_________________________",
+        doc: document.getElementById('clienteDoc').value || "_________________________",
+        rg: document.getElementById('clienteRg').value || "_________________________",
+        endereco: document.getElementById('endereco').value || "_________________________",
+        numero: document.getElementById('numero').value || "___",
+        bairro: document.getElementById('bairro').value || "_________",
+        cidade: document.getElementById('cidade').value || "ITAPIRANGA",
+        telefone: document.getElementById('telefone').value || "(00) 00000-0000",
+        email: document.getElementById('email').value || "_________________"
+    };
+    
+    let totalAdicionais = calcularTotalAdicionais();
+    let adicionaisLista = getAdicionaisLista();
+    let totalMensal = planoAtual.totalBase + totalAdicionais;
+    
+    // Calcular benefício real para multa
+    let beneficioReal = valorPago >= planoAtual.beneficio ? 0 : planoAtual.beneficio - valorPago;
+    let multaMensalBase = beneficioReal / vigencia;
+    
+    // Tabela de multa
+    let tabelaMultaHTML = '<table class="tabela-multa"><thead><tr><th>Mês</th><th>Fórmula</th><th>Valor</th></tr></thead><tbody>';
+    for (let i = 1; i <= vigencia; i++) {
+        let valorMulta = multaMensalBase * (vigencia - i + 1);
+        tabelaMultaHTML += `<tr><td>${i}° mês</td><td>MENSALIDADE=(VALOR REAL / ${vigencia}) * ${vigencia - i + 1}</td><td>R$ ${valorMulta.toFixed(2)}</td></tr>`;
+    }
+    tabelaMultaHTML += '</tbody></table>';
+    
+    // Equipamentos
+    let equipamentosRows = `
+        <tr><td>${planoAtual.comodato}</td><td>1</td><td>(X) COMODADO</td><td>${planoAtual.valorComodato}</td></tr>
+        ${planoAtual.locado1 ? `<tr><td>${planoAtual.locado1}</td><td>1</td><td>(X) LOCAÇÃO</td><td>${planoAtual.valorLocado1}</td></tr>` : ''}
+        ${planoAtual.locado2 ? `<tr><td>${planoAtual.locado2}</td><td>1</td><td>(X) LOCAÇÃO</td><td>${planoAtual.valorLocado2}</td></tr>` : ''}
+        ${planoAtual.locado3 ? `<tr><td>${planoAtual.locado3}</td><td>1</td><td>(X) LOCAÇÃO</td><td>${planoAtual.valorLocado3}</td></tr>` : ''}
+    `;
+    
+    // Serviços
+    let servicosRows = `
+        <tr><td>SCM</td><td>1</td><td>R$ ${planoAtual.scm.toFixed(2)}</td></tr>
+        <tr><td>EBOOK</td><td>1</td><td>R$ ${planoAtual.ebook.toFixed(2)}</td></tr>
+        <tr><td>LOCAÇÃO</td><td>1</td><td>R$ ${planoAtual.locacao.toFixed(2)}</td></tr>
+    `;
+    
+    adicionaisLista.forEach(ad => {
+        servicosRows += `<tr><td>${ad.nome}</td><td>${ad.qtd}</td><td>R$ ${ad.subtotal.toFixed(2)}</td></tr>`;
+    });
+    
+    servicosRows += `<tr style="font-weight:bold"><td colspan="2">TOTAL DO PLANO</td><td>R$ ${totalMensal.toFixed(2)}</td></tr>`;
+    
+    let data = new Date().toLocaleDateString();
+    
+    let html = `
+        <div class="titulo-principal">PSCM - PLANO DE SERVIÇO DE COMUNICAÇÃO MULTIMÍDIA - NEDEL TELECOM</div>
+        <div class="subtitulo">Número do PSCM: ${numPSCM}</div>
+        
+        <div class="dados-contratada">
+            <strong>DE UM LADO:</strong><br>
+            INFORMATICA ITAPIRANGA LTDA, nome fantasia NEDEL TELECOM, pessoa jurídica de direito privado, inscrita no CNPJ sob o nº 00.938.920/0001-55, com sede na Avenida Beira Rio, nº 349, térreo Centro, Itapiranga, Santa Catarina, CEP 89.896-000, neste ato representada por seu Representante Legal in fine assinado, doravante denominada simplesmente como CONTRATADA;<br><br>
+            Endereço: Av. Beira Rio, 349 &nbsp;&nbsp; Bairro: Centro<br>
+            Complemento: Sala A &nbsp;&nbsp; Cidade: Itapiranga &nbsp;&nbsp; UF: Santa Catarina<br>
+            E-mails: financeiro@nedel.inf.br; contato@nedel.com.br, net@nedel.inf.br<br>
+            Site: www.nedel.com.br &nbsp;&nbsp; Fone: (49) 3677-0521; (49) 3678-8200; 0800.643.0582<br>
+            Autorização na ANATEL (SCM): ATO n° 1.543/2009 de 06/09/2009; Termo de Autorização nº 173/2009; Processo nº 53500.027006/2008
+        </div>
+        
+        <div class="dados-cliente">
+            <strong>E DO OUTRO LADO QUALIFICADO COMO CLIENTE:</strong><br>
+            Razão Social: ${cliente.nome}<br>
+            CNPJ: ${cliente.doc} &nbsp;&nbsp; IE: ${cliente.rg}<br>
+            Endereço da Instalação: ${cliente.endereco}, ${cliente.numero} - ${cliente.bairro}<br>
+            Cidade: ${cliente.cidade} - SC &nbsp;&nbsp; BRASIL<br>
+            E-mail: ${cliente.email} &nbsp;&nbsp; Tel: ${cliente.telefone}
+        </div>
+        
+        <div class="clausula-titulo">CLÁUSULA PRIMEIRA – DAS CONSIDERAÇÕES PRELIMINARES</div>
+        <p>1.1. Constitui-se objeto do presente instrumento a prestação, pela CONTRATADA em favor do CLIENTE, dos Serviços de Comunicação Multimidia e de outros Serviços, conforme opção da contratação da cláusula abaixo, a serem disponibilizados ao CLIENTE, de acordo com os termos e condições previstas no presente instrumento, no Contrato de Prestação de Serviços de Telecomunicações e/ou nos demais contratos, conforme opção selecionada pelo CLIENTE, que são parte integrante e essencial à celebração deste instrumento.</p>
+        <p>1.2. Para a disponibilização dos Serviços de Comunicação Multimidia ao CLIENTE, a CONTRATADA obriga-se, ainda, à prestação dos Serviços de Valor Adicionado e/ou Locação de equipamentos, conforme Oferta escolhida pelo cliente, conforme Etiqueta Padrão correspondente, também objeto deste Contrato, de acordo com os termos e condições previstas no presente instrumento, partes integrantes e essenciais à celebração deste instrumento.</p>
+        <p>1.3. O CLIENTE declara neste ato deter plena capacidade para celebrar o presente, haver recebido, lido, compreendido e concordado com os termos e condições do Contrato de Prestação de Serviços de Telecomunicações, do Contrato de Prestação de Serviços de Valor Adicionado e Contrato de Locação de Equipamentos, de acordo com a sua opção de contratação, todos disponíveis no endereço eletrônico: www.nedel.com.br/contratos</p>
+        <p>1.4. Para tornar viável a prestação do Serviço de Comunicação Multimidia - SCM, a CONTRATADA poderá, de acordo com a necessidade do CLIENTE, ceder a título de COMODATO os equipamentos descritos abaixo, outorgando direito de uso e gozo devendo estes serem utilizados única e exclusivamente para a execução dos serviços ora contratados no Contrato de Prestação de Serviços de Comunicação Multimidia - SCM e, serão instalados no endereço acima informado pelo CLIENTE.</p>
+        <p>1.5. A CONTRATADA poderá ceder a título de LOCAÇÃO os equipamentos adicionais a fim de aprimorar a prestação do Serviço de Comunicação Multimídia – SCM.</p>
+        <p>1.6. O ASSINANTE declara ter ciência de que todos os equipamentos disponibilizados pela CONTRATADA para a fruição dos serviços, quando cedidos a título de comodato ou de locação, permanecem de propriedade exclusiva da CONTRATADA. Em caso de perda, roubo, furto, extravio, avarias, danos, bem como na hipótese de não devolução dos equipamentos ao final do contrato ou quando solicitado pela CONTRATADA, o ASSINANTE obriga-se a indenizar a CONTRATADA, pagando a esta o valor de mercado do equipamento, atualizado e apurado no momento da constatação do evento danoso, tomando-se como referência o valor base mínimo informado na Oferta, na data da contratação.</p>
+        
+        <div class="clausula-titulo">CLÁUSULA SEGUNDA – DOS EQUIPAMENTOS</div>
+        <table class="tabela-equipamentos">
+            <thead><tr><th>Tipo</th><th>Quantidade</th><th>Modalidade</th><th>Beneficios(R$)</th></tr></thead>
+            <tbody>${equipamentosRows}</tbody>
+        </table>
+        <p>TAXA DE ADESÃO PLANO: R$ ${valorPago.toFixed(2)} &nbsp;&nbsp; TOTAL VALORES DE INSTALAÇÃO: R$ ${valorPago.toFixed(2)}</p>
+        <p><strong>TOTAL DE BENEFICIOS: R$ ${planoAtual.beneficio.toFixed(2)}</strong></p>
+        
+        <div class="clausula-titulo">CLÁUSULA TERCEIRA – DAS CONDIÇÕES TÉCNICAS DOS(S) PLANOS(S) DE SERVIÇO(S) ESCOLHIDO(S) E VALORES MENSAIS</div>
+        <p><strong>Plano Contratado:</strong> ${planoAtual.nome}<br>
+        Velocidade de Download: ${planoAtual.velDown} Kbits &nbsp;&nbsp; Velocidade de Upload: ${planoAtual.velUp} Kbits<br>
+        Prazo de Ativação: ${prazoAtivacao} Dias &nbsp;&nbsp; Garantia de banda (download): ${planoAtual.garantiaDown} Kbits &nbsp;&nbsp; Garantia de banda (upload): ${planoAtual.garantiaUp} Kbits<br>
+        Vigência Contratual: ${vigencia} Meses com renovação automática &nbsp;&nbsp; Equipamentos: (X) COMODADO &nbsp;&nbsp; (X) LOCAÇÃO</p>
+        <p>TAXA MINIMA DE VISITA TÉCNICA: R$ ${taxaVisita.toFixed(2)}</p>
+        
+        <table class="tabela-servicos">
+            <thead><tr><th>SERVIÇOS</th><th>QUANTIDADE</th><th>VALOR MENSAL</th></tr></thead>
+            <tbody>${servicosRows}</tbody>
+        </table>
+        
+        <p class="texto-pequeno">Definição dos Serviços Digitais Adicionais: Streaming de música, Leitura de E-book, Streaming de Vídeo e TV, Telemedicina.</p>
+        <p>Ocorreu a contratação de outros serviços de telecomunicações de forma conjunta aos serviços previsto neste instrumento: (   )SIM &nbsp;&nbsp; ( X ) NÃO</p>
+        <p>3.1 O CLIENTE poderá ter acesso aos boletos mensais para impressão e pagamento através da Central do Cliente, devendo acessar o website e informar CPF/CNPJ e senha, através do site: assinante.nedel.com.br.</p>
+        
+        <div class="clausula-titulo">CLAUSULA QUARTA - TAXA DE INSTALAÇÃO</div>
+        <p>4.1 Para ativação da prestação dos Serviços de Comunicação Multimidia – SCM, e Serviços de Valor Adicionado – SVA contratados, o CLIENTE deverá pagar à CONTRATADA o(s) valor(es) descrito a seguir:</p>
+        <p>Valor da taxa de instalação: R$ ${valorPago.toFixed(2)}<br>
+        Desconto concedido ao cliente: R$ ${planoAtual.beneficio.toFixed(2)}<br>
+        <strong>VALOR TOTAL DOS BENEFICIOS: R$ ${planoAtual.beneficio.toFixed(2)}</strong></p>
+        
+        <div class="clausula-titulo">CLÁUSULA QUINTA – DOS PRAZOS E FIDELIDADE CONTRATUAL</div>
+        <p>5.1. A CONTRATADA poderá bloquear os serviços contratados em caso de inadimplência ou descumprimento contratual, mediante notificação prévia de 15 (quinze) dias, contendo os motivos, valores devidos e consequências da suspensão. Persistindo a inadimplência por mais de 60 (sessenta) dias, poderá ocorrer a rescisão contratual, com possibilidade de adoção de medidas legais e inclusão do débito em órgãos de proteção ao crédito.</p>
+        <p>5.2. O restabelecimento dos serviços ocorrerá em até 48 (quarenta e oito) horas após a regularização integral dos débitos e obrigações contratuais. Durante o período de suspensão, o CLIENTE não fará jus a qualquer compensação, reparação ou indenização.</p>
+        <p>5.3. O CLIENTE optou livremente pela percepção dos benefícios e, por conseguinte, pela contratação sob a condição de fidelidade contratual, tendo total e amplo conhecimento das consequências decorrentes da fidelização contratual, bem como das penalidades decorrentes da rescisão contratual antecipada.</p>
+        <p>5.4. A CONTRATADA concedeu ao CLIENTE os seguintes benefícios, válidos exclusivamente durante o prazo de fidelidade contratual: R$ ${planoAtual.beneficio.toFixed(2)} de desconto na taxa de instalação.</p>
+        <p>5.5. Caso ocorra a rescisão contratual, a pedido do CLIENTE, antes de completado o período de fidelização descrito acima, o CLIENTE se compromete a pagar em favor da CONTRATADA uma multa penal, a ser apurada de acordo com a fórmula abaixo:</p>
+        ${tabelaMultaHTML}
+        <p>5.6. Nos casos em que o CLIENTE já possuir um plano ativo junto à CONTRATADA e solicitar alteração ou migração de plano, será concedido o prazo de 30 (trinta) dias, contados da data da alteração, para avaliação do novo plano contratado. Durante este período, caso o CLIENTE não se adapte ao novo plano, poderá solicitar o retorno ao plano anteriormente contratado, sem aplicação de multa por fidelidade.</p>
+        <p>Após o ${vigencia+1}º mês, o contrato será renovado automaticamente, sem incidência de multa.</p>
+        <p>Obs: A solicitação de mudança de endereço pelo CLIENTE será considerada como alteração contratual unilateral. Caso não haja viabilidade técnica ou comercial para a continuidade da prestação dos serviços no novo endereço, a mudança será considerada hipótese de rescisão contratual por iniciativa do CLIENTE, sujeitando-o ao pagamento da multa de fidelidade prevista neste contrato, conforme regulamentação da Anatel.</p>
+        
+        <div class="clausula-titulo">CLÁUSULA SEXTA – DAS DISPOSIÇÕES FINAIS</div>
+        <p>6.1. O CLIENTE declara para todos os fins de direito, que a aceitação aos termos do Contrato de Prestação dos Serviços de Comunicação Multimidia - SCM, do Contrato de Prestação de Serviços de Valor Adicionado, Contrato de Comodato de Equipamentos, Contrato de Locação de Equipamentos, formalizados por este Termo de Contratação, é a expressão de sua vontade. Em face do expresso reconhecimento da legitimidade da presente contratação é que o CLIENTE não poderá escusar-se de cumprir as condições ora pactuadas.</p>
+        <p>6.2. O CLIENTE poderá, a qualquer tempo, manifestar sua opção pelo não recebimento de chamadas publicitárias ou com o objetivo de ofertar serviços ou produtos da CONTRATADA. Caso o CLIENTE opte por receber tais chamadas, a CONTRATADA compromete-se a respeitar exclusivamente o horário comercial, evitar excessiva repetição de ligações e dar tratamento imediato e adequado a eventuais reclamações sobre chamadas indesejadas.</p>
+        
+        <div class="clausula-titulo">CLÁUSULA SÉTIMA – DA SUCESSÃO E DO FORO</div>
+        <p>7.1. O presente instrumento obriga herdeiros e/ou sucessores, a qualquer tempo, sendo neste ato eleito pelas PARTES o foro da Comarca de Itapiranga/SC, competente para dirimir quaisquer questões referentes ao presente, com renúncia expressa de qualquer outro, por mais privilegiado que seja.</p>
+        <p><em>Nos termos do art. 10, § 2º, da Medida Provisória nº 2.200-2, as Partes expressamente concordam em utilizar e reconhecem como válida qualquer forma de comprovação de anuência aos termos ora acordados em formato eletrônico, se comprometendo pela veracidade das informações referentes aos seus representantes legais, sob pena de responsabilização nas formas da lei. E, por estar de acordo, o CLIENTE adere ao presente documento assinado em 02 (duas) vias de igual teor, ou via assinatura digital, por sua livre vontade, declarando ainda, não estar assinando e/ou aceitando o presente sob premente coação, estado de necessidade ou outra forma de vício de consentimento, tendo conhecimento de todo direito e obrigação que assume nesta data.</em></p>
+        
+        <div class="assinatura-area">
+            <div class="assinatura">
+                Itapiranga/SC, ${data}<br><br>
+                <div class="linha-assinatura"></div>
+                <strong>CONTRATADA - NEDEL TELECOM</strong><br>
+                HENRIQUE NEDEL - ADMINISTRADOR
+            </div>
+            <div class="assinatura">
+                <div class="linha-assinatura"></div>
+                <strong>CLIENTE</strong><br>
+                ${cliente.nome}
+            </div>
+        </div>
+        
+        <div class="testemunhas-area">
+            <div class="testemunha">
+                Testemunha:<br>
+                Nome: ${test1.nome || "_________________________"}<br>
+                CPF/CI: ${test1.cpf || "_________________________"}<br>
+                Endereço: ${test1.endereco || "_________________________"}
+            </div>
+            <div class="testemunha">
+                Testemunha:<br>
+                Nome: ${test2.nome || "_________________________"}<br>
+                CPF/CI: ${test2.cpf || "_________________________"}<br>
+                Endereço: ${test2.endereco || "_________________________"}
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('contratoPDF').innerHTML = html;
+    
+    setTimeout(() => {
+        html2pdf().set({ 
+            margin: 0.3, 
+            filename: `PSCM_${numPSCM}.pdf`, 
+            image: { type: 'jpeg', quality: 0.95 }, 
+            html2canvas: { scale: 1.8, letterRendering: true },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
+        }).from(document.getElementById('contratoPDF')).save();
+    }, 200);
+}
+
+popularPlanos();
+popularTestemunhas();
+</script>
+</body>
+</html>
