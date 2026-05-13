@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br"> 
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>Gerador PSCM - Nedel Telecom</title>
@@ -32,16 +32,17 @@
         .tabela-adicionais input { width: 60px; padding: 4px; text-align: center; }
         
         .info-plano { background: #e8f0fe; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
-        .info-multa { background: #fff3e0; padding: 8px; border-radius: 5px; margin: 10px 0; font-size: 12px; }
         
-        /* ESTILO DO PDF - CONTRATO COMPLETO */
+        /* ESTILO DO PDF - MARGENS AJUSTADAS */
         .contrato-pdf {
             width: 100%;
             background: white;
             font-family: 'Times New Roman', Times, serif;
             font-size: 10pt;
             line-height: 1.3;
-            padding: 15px;
+            padding: 20px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         .titulo-principal { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 5px; text-transform: uppercase; }
         .subtitulo { text-align: center; font-size: 11pt; margin-bottom: 15px; font-weight: bold; }
@@ -60,7 +61,6 @@
         .testemunha { flex: 1; text-align: center; border-top: 1px solid #000; padding-top: 15px; }
         .texto-pequeno { font-size: 8pt; }
         p { margin: 4px 0; }
-        .page-break { page-break-before: avoid; page-break-inside: avoid; }
     </style>
 </head>
 <body>
@@ -111,7 +111,16 @@
             <tr><td>COMBATE</td><td>R$ 34,90</td><td><input type="number" class="qtd-adicional" data-valor="34.90" data-nome="COMBATE" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
             <tr><td>TELECINE</td><td>R$ 29,90</td><td><input type="number" class="qtd-adicional" data-valor="29.90" data-nome="TELECINE" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
         </tbody>
-        <tfoot><tr><td colspan="3"><strong>TOTAL ADICIONAIS</strong></td><td id="totalAdicionaisValor">R$ 0,00</td></tr></tfoot>
+        <tfoot>
+            <tr style="background-color: #e8f0fe;">
+                <td colspan="3"><strong>TOTAL ADICIONAIS</strong></td>
+                <td id="totalAdicionaisValor">R$ 0,00</td>
+            </tr>
+            <tr style="background-color: #d0e8ff; font-weight: bold;">
+                <td colspan="3"><strong>💰 TOTAL DO PLANO (BASE + ADICIONAIS)</strong></td>
+                <td id="totalPlanoPreview" style="font-size: 13px; color: #004080;">R$ 0,00</td>
+            </tr>
+        </tfoot>
     </table>
     
     <h3>👥 Testemunhas</h3>
@@ -152,28 +161,10 @@ const planosDB = [
     { nome: "BASICO FIBRA 500 MB", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 16.00, totalBase: 99.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
     { nome: "BASICO 500 MB IP FIXO MESH", velDown: "550000", velUp: "256000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 36.00, totalBase: 134.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, beneficio: 1000 },
     { nome: "BASICO 500 MB IP FIXO", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 16.00, totalBase: 114.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
-    { nome: "BASICO 500 MB DECO MESH", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 56.00, totalBase: 139.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "DECO M4", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, beneficio: 1250 },
-    { nome: "BASICO 500 MB DECO MESH 3", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 76.00, totalBase: 159.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "DECO M4", locado3: "DECO M4", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 450, beneficio: 1700 },
-    { nome: "CORPORATIVO FIBRA 500 MB", velDown: "550000", velUp: "256000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 0, locacao: 67.90, totalBase: 149.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "MIKROTIK RB750G3 HEX", valorComodato: 350, valorLocado1: 450, valorLocado2: 800, beneficio: 1600 },
-    { nome: "BASICO 500 MB MESH", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 36.00, totalBase: 119.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, beneficio: 1000 },
-    { nome: "BASICO 500 MB DECO", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 36.00, totalBase: 119.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", valorComodato: 350, valorLocado1: 450, beneficio: 800 },
-    { nome: "COMBO 600 MB", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 16.00, totalBase: 100.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
-    { nome: "COMBO 600 MB MESH IP FIXO", velDown: "615000", velUp: "256000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 36.00, totalBase: 135.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050 },
-    { nome: "COMBO 600 MB IP FIXO", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 16.00, totalBase: 115.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
-    { nome: "COMBO 600 MB DECO MESH", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 56.00, totalBase: 140.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, beneficio: 1250 },
-    { nome: "COMBO 600 MB DECO MESH TRIPLO", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 76.00, totalBase: 160.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", locado3: "DECO X10", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 450, beneficio: 1700 },
-    { nome: "COMBO 600 MB MESH", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 36.00, totalBase: 120.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, beneficio: 1000 },
-    { nome: "COMBO 600 MB DECO", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ebook: 16.90, locacao: 36.00, totalBase: 120.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", valorComodato: 350, valorLocado1: 450, beneficio: 800 },
     { nome: "COMBO 800 MB", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 110.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
-    { nome: "COMBO 800 MB MESH IP FIXO", velDown: "820000", velUp: "256000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 145.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050 },
     { nome: "COMBO 800 MB IP FIXO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 125.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
-    { nome: "COMBO 800 MB DECO MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 56.00, totalBase: 150.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, beneficio: 1250 },
-    { nome: "COMBO 800 MB DECO MESH TRIPLO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 76.00, totalBase: 170.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", locado3: "DECO X10", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 450, beneficio: 1700 },
     { nome: "COMBO 800 MB MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050 },
-    { nome: "COMBO 800 MB DECO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", valorComodato: 350, valorLocado1: 450, beneficio: 800 },
     { nome: "COMBO 800 MB TOTAL", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 110.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
-    { nome: "COMBO 800 MB TOTAL DECO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", valorComodato: 350, valorLocado1: 450, beneficio: 800, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
-    { nome: "COMBO 800 MB EXITLAG", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 26.00, totalBase: 120.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "15 METROS DE CABO", valorComodato: 350, valorLocado1: 350, valorLocado2: 100, beneficio: 800, adicionaisPadrao: { "STANDARD": 1 } },
     { nome: "COMBO 800 MB TOTAL MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
     { nome: "NITRO 30 MB", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300 M5-300 5GHZ", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950 },
     { nome: "NITRO 30 MB TOTAL", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300 M5-300 5GHZ", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
@@ -225,22 +216,29 @@ function carregarPlano() {
         }
     }
     
-    document.getElementById('infoPlano').innerHTML = `<strong>📡 ${planoAtual.nome}</strong><br>💰 Mensal: R$ ${planoAtual.totalBase} | 🎁 Benefício: R$ ${planoAtual.beneficio}`;
+    document.getElementById('infoPlano').innerHTML = `<strong>📡 ${planoAtual.nome}</strong><br>💰 Mensal base: R$ ${planoAtual.totalBase.toFixed(2)} | 🎁 Benefício: R$ ${planoAtual.beneficio.toFixed(2)}`;
     calcularTotalAdicionais();
 }
 
 function calcularTotalAdicionais() {
-    let total = 0;
+    let totalAdicionais = 0;
     document.querySelectorAll('.qtd-adicional').forEach(inp => {
         let qtd = parseInt(inp.value) || 0;
         let val = parseFloat(inp.dataset.valor);
         let sub = qtd * val;
-        total += sub;
+        totalAdicionais += sub;
         let td = inp.closest('tr').querySelector('.subtotal-adicional');
         if (td) td.innerText = `R$ ${sub.toFixed(2)}`;
     });
-    document.getElementById('totalAdicionaisValor').innerHTML = `R$ ${total.toFixed(2)}`;
-    return total;
+    document.getElementById('totalAdicionaisValor').innerHTML = `R$ ${totalAdicionais.toFixed(2)}`;
+    
+    // ATUALIZA O TOTAL DO PLANO EM TEMPO REAL
+    if (planoAtual) {
+        let totalPlano = planoAtual.totalBase + totalAdicionais;
+        document.getElementById('totalPlanoPreview').innerHTML = `<strong>R$ ${totalPlano.toFixed(2)}</strong>`;
+    }
+    
+    return totalAdicionais;
 }
 
 function getAdicionaisLista() {
@@ -295,7 +293,7 @@ function gerarPDF() {
     let tabelaMultaHTML = '<table class="tabela-multa"><thead><tr><th>Mês</th><th>Fórmula</th><th>Valor</th></tr></thead><tbody>';
     for (let i = 1; i <= vigencia; i++) {
         let valorMulta = multaMensalBase * (vigencia - i + 1);
-        tabelaMultaHTML += `<tr><td>${i}° mês</td><td>MENSALIDADE=(VALOR REAL / ${vigencia}) * ${vigencia - i + 1}</td><td>R$ ${valorMulta.toFixed(2)}</td></tr>`;
+        tabelaMultaHTML += `<tr><td>${i}° mês</td><td>MENSALIDADE=(BENEFÍCIO REAL / ${vigencia}) × ${vigencia - i + 1}</td><td>R$ ${valorMulta.toFixed(2)}</td></tr>`;
     }
     tabelaMultaHTML += '</tbody></table>';
     
@@ -381,13 +379,13 @@ function gerarPDF() {
         <p>4.1 Para ativação da prestação dos Serviços de Comunicação Multimidia – SCM, e Serviços de Valor Adicionado – SVA contratados, o CLIENTE deverá pagar à CONTRATADA o(s) valor(es) descrito a seguir:</p>
         <p>Valor da taxa de instalação: R$ ${valorPago.toFixed(2)}<br>
         Desconto concedido ao cliente: R$ ${planoAtual.beneficio.toFixed(2)}<br>
-        <strong>VALOR TOTAL DOS BENEFICIOS: R$ ${planoAtual.beneficio.toFixed(2)}</strong></p>
+        <strong>VALOR TOTAL DOS BENEFICIOS: R$ ${beneficioReal.toFixed(2)}</strong></p>
         
         <div class="clausula-titulo">CLÁUSULA QUINTA – DOS PRAZOS E FIDELIDADE CONTRATUAL</div>
         <p>5.1. A CONTRATADA poderá bloquear os serviços contratados em caso de inadimplência ou descumprimento contratual, mediante notificação prévia de 15 (quinze) dias, contendo os motivos, valores devidos e consequências da suspensão. Persistindo a inadimplência por mais de 60 (sessenta) dias, poderá ocorrer a rescisão contratual, com possibilidade de adoção de medidas legais e inclusão do débito em órgãos de proteção ao crédito.</p>
         <p>5.2. O restabelecimento dos serviços ocorrerá em até 48 (quarenta e oito) horas após a regularização integral dos débitos e obrigações contratuais. Durante o período de suspensão, o CLIENTE não fará jus a qualquer compensação, reparação ou indenização.</p>
         <p>5.3. O CLIENTE optou livremente pela percepção dos benefícios e, por conseguinte, pela contratação sob a condição de fidelidade contratual, tendo total e amplo conhecimento das consequências decorrentes da fidelização contratual, bem como das penalidades decorrentes da rescisão contratual antecipada.</p>
-        <p>5.4. A CONTRATADA concedeu ao CLIENTE os seguintes benefícios, válidos exclusivamente durante o prazo de fidelidade contratual: R$ ${planoAtual.beneficio.toFixed(2)} de desconto na taxa de instalação.</p>
+        <p>5.4. A CONTRATADA concedeu ao CLIENTE os seguintes benefícios, válidos exclusivamente durante o prazo de fidelidade contratual: R$ ${beneficioReal.toFixed(2)} de desconto real (benefício de R$ ${planoAtual.beneficio.toFixed(2)} menos o valor pago de R$ ${valorPago.toFixed(2)}).</p>
         <p>5.5. Caso ocorra a rescisão contratual, a pedido do CLIENTE, antes de completado o período de fidelização descrito acima, o CLIENTE se compromete a pagar em favor da CONTRATADA uma multa penal, a ser apurada de acordo com a fórmula abaixo:</p>
         ${tabelaMultaHTML}
         <p>5.6. Nos casos em que o CLIENTE já possuir um plano ativo junto à CONTRATADA e solicitar alteração ou migração de plano, será concedido o prazo de 30 (trinta) dias, contados da data da alteração, para avaliação do novo plano contratado. Durante este período, caso o CLIENTE não se adapte ao novo plano, poderá solicitar o retorno ao plano anteriormente contratado, sem aplicação de multa por fidelidade.</p>
@@ -436,13 +434,13 @@ function gerarPDF() {
     
     setTimeout(() => {
         html2pdf().set({ 
-            margin: 0.3, 
+            margin: { top: 0.5, bottom: 0.5, left: 0.4, right: 0.4 },
             filename: `PSCM_${numPSCM}.pdf`, 
-            image: { type: 'jpeg', quality: 0.95 }, 
-            html2canvas: { scale: 1.8, letterRendering: true },
+            image: { type: 'jpeg', quality: 0.98 }, 
+            html2canvas: { scale: 2, letterRendering: true, useCORS: true },
             jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
         }).from(document.getElementById('contratoPDF')).save();
-    }, 200);
+    }, 300);
 }
 
 popularPlanos();
