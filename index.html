@@ -33,34 +33,11 @@
         
         .info-plano { background: #e8f0fe; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
         
-        /* ESTILO DO PDF - MARGENS AJUSTADAS */
-        .contrato-pdf {
-            width: 100%;
-            background: white;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 10pt;
-            line-height: 1.3;
-            padding: 20px;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-        .titulo-principal { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 5px; text-transform: uppercase; }
-        .subtitulo { text-align: center; font-size: 11pt; margin-bottom: 15px; font-weight: bold; }
-        .dados-contratada, .dados-cliente { border: 1px solid #000; padding: 8px; margin-bottom: 10px; }
-        .dados-contratada p, .dados-cliente p { margin: 2px 0; }
-        .tabela-equipamentos, .tabela-servicos, .tabela-multa { width: 100%; border-collapse: collapse; margin: 8px 0; }
-        .tabela-equipamentos th, .tabela-equipamentos td,
-        .tabela-servicos th, .tabela-servicos td,
-        .tabela-multa th, .tabela-multa td { border: 1px solid #000; padding: 4px; text-align: center; font-size: 9pt; }
-        .tabela-equipamentos th, .tabela-servicos th, .tabela-multa th { background: #f0f0f0; font-weight: bold; }
-        .clausula-titulo { font-weight: bold; margin-top: 12px; margin-bottom: 5px; font-size: 11pt; background: #ddd; padding: 3px 8px; }
         .assinatura-area { margin-top: 25px; display: flex; justify-content: space-between; }
         .assinatura { text-align: center; width: 45%; }
         .linha-assinatura { border-top: 1px solid #000; margin-top: 35px; padding-top: 5px; }
         .testemunhas-area { margin-top: 20px; display: flex; justify-content: space-between; gap: 20px; }
         .testemunha { flex: 1; text-align: center; border-top: 1px solid #000; padding-top: 15px; }
-        .texto-pequeno { font-size: 8pt; }
-        p { margin: 4px 0; }
     </style>
 </head>
 <body>
@@ -132,8 +109,6 @@
     <button class="btn-gerar" onclick="gerarPDF()">📄 GERAR CONTRATO COMPLETO PDF</button>
 </div>
 
-<div id="contratoContainer" style="display: none;"><div class="contrato-pdf" id="contratoPDF"></div></div>
-
 <script>
 // TESTEMUNHAS
 const testemunhasLista = [
@@ -158,17 +133,17 @@ const testemunhasLista = [
 
 // PLANOS
 const planosDB = [
-    { nome: "BASICO FIBRA 500 MB", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 16.00, totalBase: 99.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
-    { nome: "BASICO 500 MB IP FIXO MESH", velDown: "550000", velUp: "256000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 36.00, totalBase: 134.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, beneficio: 1000 },
-    { nome: "BASICO 500 MB IP FIXO", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 16.00, totalBase: 114.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
+    { nome: "BASICO FIBRA 500 MB", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 16.00, totalBase: 99.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
+    { nome: "BASICO 500 MB IP FIXO MESH", velDown: "550000", velUp: "256000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 36.00, totalBase: 134.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40", locado2: "ROTEADOR HUAWEI WS7001-40", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, beneficio: 1000 },
+    { nome: "BASICO 500 MB IP FIXO", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 16.00, totalBase: 114.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
     { nome: "COMBO 800 MB", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 110.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
     { nome: "COMBO 800 MB IP FIXO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 125.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
     { nome: "COMBO 800 MB MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050 },
     { nome: "COMBO 800 MB TOTAL", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 110.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
     { nome: "COMBO 800 MB TOTAL MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
-    { nome: "NITRO 30 MB", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300 M5-300 5GHZ", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950 },
-    { nome: "NITRO 30 MB TOTAL", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300 M5-300 5GHZ", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
-    { nome: "NITRO 10 MB", velDown: "10240", velUp: "2457", garantiaDown: "10240", garantiaUp: "1966", scm: 89.00, ebook: 0, locacao: 0, totalBase: 89.00, comodato: "POWERBEAM 300 M5-300 5GHZ", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950 }
+    { nome: "NITRO 30 MB", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950 },
+    { nome: "NITRO 30 MB TOTAL", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
+    { nome: "NITRO 10 MB", velDown: "10240", velUp: "2457", garantiaDown: "10240", garantiaUp: "1966", scm: 89.00, ebook: 0, locacao: 0, totalBase: 89.00, comodato: "POWERBEAM 300", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950 }
 ];
 
 let planoAtual = null;
@@ -185,12 +160,14 @@ function popularPlanos() {
 }
 
 function popularTestemunhas() {
+    const select1 = document.getElementById('testemunha1');
+    const select2 = document.getElementById('testemunha2');
     testemunhasLista.forEach(t => {
         let opt1 = document.createElement('option');
         opt1.value = JSON.stringify(t);
         opt1.textContent = `${t.nome} - ${t.cpf}`;
-        document.getElementById('testemunha1').appendChild(opt1.cloneNode(true));
-        document.getElementById('testemunha2').appendChild(opt1);
+        select1.appendChild(opt1.cloneNode(true));
+        select2.appendChild(opt1);
     });
 }
 
@@ -232,7 +209,6 @@ function calcularTotalAdicionais() {
     });
     document.getElementById('totalAdicionaisValor').innerHTML = `R$ ${totalAdicionais.toFixed(2)}`;
     
-    // ATUALIZA O TOTAL DO PLANO EM TEMPO REAL
     if (planoAtual) {
         let totalPlano = planoAtual.totalBase + totalAdicionais;
         document.getElementById('totalPlanoPreview').innerHTML = `<strong>R$ ${totalPlano.toFixed(2)}</strong>`;
@@ -249,7 +225,6 @@ function getAdicionaisLista() {
             lista.push({ 
                 nome: inp.dataset.nome, 
                 qtd: qtd, 
-                valorUnit: parseFloat(inp.dataset.valor),
                 subtotal: qtd * parseFloat(inp.dataset.valor) 
             });
         }
@@ -260,187 +235,175 @@ function getAdicionaisLista() {
 function gerarPDF() {
     if (!planoAtual) { alert("Selecione um plano!"); return; }
     
-    let numPSCM = document.getElementById('numPSCM').value || "_______________";
-    let valorPago = parseFloat(document.getElementById('valorPago').value) || 0;
-    let prazoAtivacao = document.getElementById('prazoAtivacao').value || 10;
-    let taxaVisita = parseFloat(document.getElementById('taxaVisita').value) || 50;
-    let vigencia = 12;
-    
-    let test1 = JSON.parse(document.getElementById('testemunha1').value || '{}');
-    let test2 = JSON.parse(document.getElementById('testemunha2').value || '{}');
-    
-    let cliente = {
-        nome: document.getElementById('clienteNome').value || "_________________________",
-        doc: document.getElementById('clienteDoc').value || "_________________________",
-        rg: document.getElementById('clienteRg').value || "_________________________",
-        endereco: document.getElementById('endereco').value || "_________________________",
-        numero: document.getElementById('numero').value || "___",
-        bairro: document.getElementById('bairro').value || "_________",
-        cidade: document.getElementById('cidade').value || "ITAPIRANGA",
-        telefone: document.getElementById('telefone').value || "(00) 00000-0000",
-        email: document.getElementById('email').value || "_________________"
-    };
-    
-    let totalAdicionais = calcularTotalAdicionais();
-    let adicionaisLista = getAdicionaisLista();
-    let totalMensal = planoAtual.totalBase + totalAdicionais;
-    
-    // Calcular benefício real para multa
-    let beneficioReal = valorPago >= planoAtual.beneficio ? 0 : planoAtual.beneficio - valorPago;
-    let multaMensalBase = beneficioReal / vigencia;
-    
-    // Tabela de multa
-    let tabelaMultaHTML = '<table class="tabela-multa"><thead><tr><th>Mês</th><th>Fórmula</th><th>Valor</th></tr></thead><tbody>';
-    for (let i = 1; i <= vigencia; i++) {
-        let valorMulta = multaMensalBase * (vigencia - i + 1);
-        tabelaMultaHTML += `<tr><td>${i}° mês</td><td>MENSALIDADE=(BENEFÍCIO REAL / ${vigencia}) × ${vigencia - i + 1}</td><td>R$ ${valorMulta.toFixed(2)}</td></tr>`;
-    }
-    tabelaMultaHTML += '</tbody></table>';
-    
-    // Equipamentos
-    let equipamentosRows = `
-        <tr><td>${planoAtual.comodato}</td><td>1</td><td>(X) COMODADO</td><td>${planoAtual.valorComodato}</td></tr>
-        ${planoAtual.locado1 ? `<tr><td>${planoAtual.locado1}</td><td>1</td><td>(X) LOCAÇÃO</td><td>${planoAtual.valorLocado1}</td></tr>` : ''}
-        ${planoAtual.locado2 ? `<tr><td>${planoAtual.locado2}</td><td>1</td><td>(X) LOCAÇÃO</td><td>${planoAtual.valorLocado2}</td></tr>` : ''}
-        ${planoAtual.locado3 ? `<tr><td>${planoAtual.locado3}</td><td>1</td><td>(X) LOCAÇÃO</td><td>${planoAtual.valorLocado3}</td></tr>` : ''}
-    `;
-    
-    // Serviços
-    let servicosRows = `
-        <tr><td>SCM</td><td>1</td><td>R$ ${planoAtual.scm.toFixed(2)}</td></tr>
-        <tr><td>EBOOK</td><td>1</td><td>R$ ${planoAtual.ebook.toFixed(2)}</td></tr>
-        <tr><td>LOCAÇÃO</td><td>1</td><td>R$ ${planoAtual.locacao.toFixed(2)}</td></tr>
-    `;
-    
-    adicionaisLista.forEach(ad => {
-        servicosRows += `<tr><td>${ad.nome}</td><td>${ad.qtd}</td><td>R$ ${ad.subtotal.toFixed(2)}</td></tr>`;
-    });
-    
-    servicosRows += `<tr style="font-weight:bold"><td colspan="2">TOTAL DO PLANO</td><td>R$ ${totalMensal.toFixed(2)}</td></tr>`;
-    
-    let data = new Date().toLocaleDateString();
-    
-    let html = `
-        <div class="titulo-principal">PSCM - PLANO DE SERVIÇO DE COMUNICAÇÃO MULTIMÍDIA - NEDEL TELECOM</div>
-        <div class="subtitulo">Número do PSCM: ${numPSCM}</div>
-        
-        <div class="dados-contratada">
-            <strong>DE UM LADO:</strong><br>
-            INFORMATICA ITAPIRANGA LTDA, nome fantasia NEDEL TELECOM, pessoa jurídica de direito privado, inscrita no CNPJ sob o nº 00.938.920/0001-55, com sede na Avenida Beira Rio, nº 349, térreo Centro, Itapiranga, Santa Catarina, CEP 89.896-000, neste ato representada por seu Representante Legal in fine assinado, doravante denominada simplesmente como CONTRATADA;<br><br>
-            Endereço: Av. Beira Rio, 349 &nbsp;&nbsp; Bairro: Centro<br>
-            Complemento: Sala A &nbsp;&nbsp; Cidade: Itapiranga &nbsp;&nbsp; UF: Santa Catarina<br>
-            E-mails: financeiro@nedel.inf.br; contato@nedel.com.br, net@nedel.inf.br<br>
-            Site: www.nedel.com.br &nbsp;&nbsp; Fone: (49) 3677-0521; (49) 3678-8200; 0800.643.0582<br>
-            Autorização na ANATEL (SCM): ATO n° 1.543/2009 de 06/09/2009; Termo de Autorização nº 173/2009; Processo nº 53500.027006/2008
-        </div>
-        
-        <div class="dados-cliente">
-            <strong>E DO OUTRO LADO QUALIFICADO COMO CLIENTE:</strong><br>
-            Razão Social: ${cliente.nome}<br>
-            CNPJ: ${cliente.doc} &nbsp;&nbsp; IE: ${cliente.rg}<br>
-            Endereço da Instalação: ${cliente.endereco}, ${cliente.numero} - ${cliente.bairro}<br>
-            Cidade: ${cliente.cidade} - SC &nbsp;&nbsp; BRASIL<br>
-            E-mail: ${cliente.email} &nbsp;&nbsp; Tel: ${cliente.telefone}
-        </div>
-        
-        <div class="clausula-titulo">CLÁUSULA PRIMEIRA – DAS CONSIDERAÇÕES PRELIMINARES</div>
-        <p>1.1. Constitui-se objeto do presente instrumento a prestação, pela CONTRATADA em favor do CLIENTE, dos Serviços de Comunicação Multimidia e de outros Serviços, conforme opção da contratação da cláusula abaixo, a serem disponibilizados ao CLIENTE, de acordo com os termos e condições previstas no presente instrumento, no Contrato de Prestação de Serviços de Telecomunicações e/ou nos demais contratos, conforme opção selecionada pelo CLIENTE, que são parte integrante e essencial à celebração deste instrumento.</p>
-        <p>1.2. Para a disponibilização dos Serviços de Comunicação Multimidia ao CLIENTE, a CONTRATADA obriga-se, ainda, à prestação dos Serviços de Valor Adicionado e/ou Locação de equipamentos, conforme Oferta escolhida pelo cliente, conforme Etiqueta Padrão correspondente, também objeto deste Contrato, de acordo com os termos e condições previstas no presente instrumento, partes integrantes e essenciais à celebração deste instrumento.</p>
-        <p>1.3. O CLIENTE declara neste ato deter plena capacidade para celebrar o presente, haver recebido, lido, compreendido e concordado com os termos e condições do Contrato de Prestação de Serviços de Telecomunicações, do Contrato de Prestação de Serviços de Valor Adicionado e Contrato de Locação de Equipamentos, de acordo com a sua opção de contratação, todos disponíveis no endereço eletrônico: www.nedel.com.br/contratos</p>
-        <p>1.4. Para tornar viável a prestação do Serviço de Comunicação Multimidia - SCM, a CONTRATADA poderá, de acordo com a necessidade do CLIENTE, ceder a título de COMODATO os equipamentos descritos abaixo, outorgando direito de uso e gozo devendo estes serem utilizados única e exclusivamente para a execução dos serviços ora contratados no Contrato de Prestação de Serviços de Comunicação Multimidia - SCM e, serão instalados no endereço acima informado pelo CLIENTE.</p>
-        <p>1.5. A CONTRATADA poderá ceder a título de LOCAÇÃO os equipamentos adicionais a fim de aprimorar a prestação do Serviço de Comunicação Multimídia – SCM.</p>
-        <p>1.6. O ASSINANTE declara ter ciência de que todos os equipamentos disponibilizados pela CONTRATADA para a fruição dos serviços, quando cedidos a título de comodato ou de locação, permanecem de propriedade exclusiva da CONTRATADA. Em caso de perda, roubo, furto, extravio, avarias, danos, bem como na hipótese de não devolução dos equipamentos ao final do contrato ou quando solicitado pela CONTRATADA, o ASSINANTE obriga-se a indenizar a CONTRATADA, pagando a esta o valor de mercado do equipamento, atualizado e apurado no momento da constatação do evento danoso, tomando-se como referência o valor base mínimo informado na Oferta, na data da contratação.</p>
-        
-        <div class="clausula-titulo">CLÁUSULA SEGUNDA – DOS EQUIPAMENTOS</div>
-        <table class="tabela-equipamentos">
-            <thead><tr><th>Tipo</th><th>Quantidade</th><th>Modalidade</th><th>Beneficios(R$)</th></tr></thead>
-            <tbody>${equipamentosRows}</tbody>
-        </table>
-        <p>TAXA DE ADESÃO PLANO: R$ ${valorPago.toFixed(2)} &nbsp;&nbsp; TOTAL VALORES DE INSTALAÇÃO: R$ ${valorPago.toFixed(2)}</p>
-        <p><strong>TOTAL DE BENEFICIOS: R$ ${planoAtual.beneficio.toFixed(2)}</strong></p>
-        
-        <div class="clausula-titulo">CLÁUSULA TERCEIRA – DAS CONDIÇÕES TÉCNICAS DOS(S) PLANOS(S) DE SERVIÇO(S) ESCOLHIDO(S) E VALORES MENSAIS</div>
-        <p><strong>Plano Contratado:</strong> ${planoAtual.nome}<br>
-        Velocidade de Download: ${planoAtual.velDown} Kbits &nbsp;&nbsp; Velocidade de Upload: ${planoAtual.velUp} Kbits<br>
-        Prazo de Ativação: ${prazoAtivacao} Dias &nbsp;&nbsp; Garantia de banda (download): ${planoAtual.garantiaDown} Kbits &nbsp;&nbsp; Garantia de banda (upload): ${planoAtual.garantiaUp} Kbits<br>
-        Vigência Contratual: ${vigencia} Meses com renovação automática &nbsp;&nbsp; Equipamentos: (X) COMODADO &nbsp;&nbsp; (X) LOCAÇÃO</p>
-        <p>TAXA MINIMA DE VISITA TÉCNICA: R$ ${taxaVisita.toFixed(2)}</p>
-        
-        <table class="tabela-servicos">
-            <thead><tr><th>SERVIÇOS</th><th>QUANTIDADE</th><th>VALOR MENSAL</th></tr></thead>
-            <tbody>${servicosRows}</tbody>
-        </table>
-        
-        <p class="texto-pequeno">Definição dos Serviços Digitais Adicionais: Streaming de música, Leitura de E-book, Streaming de Vídeo e TV, Telemedicina.</p>
-        <p>Ocorreu a contratação de outros serviços de telecomunicações de forma conjunta aos serviços previsto neste instrumento: (   )SIM &nbsp;&nbsp; ( X ) NÃO</p>
-        <p>3.1 O CLIENTE poderá ter acesso aos boletos mensais para impressão e pagamento através da Central do Cliente, devendo acessar o website e informar CPF/CNPJ e senha, através do site: assinante.nedel.com.br.</p>
-        
-        <div class="clausula-titulo">CLAUSULA QUARTA - TAXA DE INSTALAÇÃO</div>
-        <p>4.1 Para ativação da prestação dos Serviços de Comunicação Multimidia – SCM, e Serviços de Valor Adicionado – SVA contratados, o CLIENTE deverá pagar à CONTRATADA o(s) valor(es) descrito a seguir:</p>
-        <p>Valor da taxa de instalação: R$ ${valorPago.toFixed(2)}<br>
-        Desconto concedido ao cliente: R$ ${planoAtual.beneficio.toFixed(2)}<br>
-        <strong>VALOR TOTAL DOS BENEFICIOS: R$ ${beneficioReal.toFixed(2)}</strong></p>
-        
-        <div class="clausula-titulo">CLÁUSULA QUINTA – DOS PRAZOS E FIDELIDADE CONTRATUAL</div>
-        <p>5.1. A CONTRATADA poderá bloquear os serviços contratados em caso de inadimplência ou descumprimento contratual, mediante notificação prévia de 15 (quinze) dias, contendo os motivos, valores devidos e consequências da suspensão. Persistindo a inadimplência por mais de 60 (sessenta) dias, poderá ocorrer a rescisão contratual, com possibilidade de adoção de medidas legais e inclusão do débito em órgãos de proteção ao crédito.</p>
-        <p>5.2. O restabelecimento dos serviços ocorrerá em até 48 (quarenta e oito) horas após a regularização integral dos débitos e obrigações contratuais. Durante o período de suspensão, o CLIENTE não fará jus a qualquer compensação, reparação ou indenização.</p>
-        <p>5.3. O CLIENTE optou livremente pela percepção dos benefícios e, por conseguinte, pela contratação sob a condição de fidelidade contratual, tendo total e amplo conhecimento das consequências decorrentes da fidelização contratual, bem como das penalidades decorrentes da rescisão contratual antecipada.</p>
-        <p>5.4. A CONTRATADA concedeu ao CLIENTE os seguintes benefícios, válidos exclusivamente durante o prazo de fidelidade contratual: R$ ${beneficioReal.toFixed(2)} de desconto real (benefício de R$ ${planoAtual.beneficio.toFixed(2)} menos o valor pago de R$ ${valorPago.toFixed(2)}).</p>
-        <p>5.5. Caso ocorra a rescisão contratual, a pedido do CLIENTE, antes de completado o período de fidelização descrito acima, o CLIENTE se compromete a pagar em favor da CONTRATADA uma multa penal, a ser apurada de acordo com a fórmula abaixo:</p>
-        ${tabelaMultaHTML}
-        <p>5.6. Nos casos em que o CLIENTE já possuir um plano ativo junto à CONTRATADA e solicitar alteração ou migração de plano, será concedido o prazo de 30 (trinta) dias, contados da data da alteração, para avaliação do novo plano contratado. Durante este período, caso o CLIENTE não se adapte ao novo plano, poderá solicitar o retorno ao plano anteriormente contratado, sem aplicação de multa por fidelidade.</p>
-        <p>Após o ${vigencia+1}º mês, o contrato será renovado automaticamente, sem incidência de multa.</p>
-        <p>Obs: A solicitação de mudança de endereço pelo CLIENTE será considerada como alteração contratual unilateral. Caso não haja viabilidade técnica ou comercial para a continuidade da prestação dos serviços no novo endereço, a mudança será considerada hipótese de rescisão contratual por iniciativa do CLIENTE, sujeitando-o ao pagamento da multa de fidelidade prevista neste contrato, conforme regulamentação da Anatel.</p>
-        
-        <div class="clausula-titulo">CLÁUSULA SEXTA – DAS DISPOSIÇÕES FINAIS</div>
-        <p>6.1. O CLIENTE declara para todos os fins de direito, que a aceitação aos termos do Contrato de Prestação dos Serviços de Comunicação Multimidia - SCM, do Contrato de Prestação de Serviços de Valor Adicionado, Contrato de Comodato de Equipamentos, Contrato de Locação de Equipamentos, formalizados por este Termo de Contratação, é a expressão de sua vontade. Em face do expresso reconhecimento da legitimidade da presente contratação é que o CLIENTE não poderá escusar-se de cumprir as condições ora pactuadas.</p>
-        <p>6.2. O CLIENTE poderá, a qualquer tempo, manifestar sua opção pelo não recebimento de chamadas publicitárias ou com o objetivo de ofertar serviços ou produtos da CONTRATADA. Caso o CLIENTE opte por receber tais chamadas, a CONTRATADA compromete-se a respeitar exclusivamente o horário comercial, evitar excessiva repetição de ligações e dar tratamento imediato e adequado a eventuais reclamações sobre chamadas indesejadas.</p>
-        
-        <div class="clausula-titulo">CLÁUSULA SÉTIMA – DA SUCESSÃO E DO FORO</div>
-        <p>7.1. O presente instrumento obriga herdeiros e/ou sucessores, a qualquer tempo, sendo neste ato eleito pelas PARTES o foro da Comarca de Itapiranga/SC, competente para dirimir quaisquer questões referentes ao presente, com renúncia expressa de qualquer outro, por mais privilegiado que seja.</p>
-        <p><em>Nos termos do art. 10, § 2º, da Medida Provisória nº 2.200-2, as Partes expressamente concordam em utilizar e reconhecem como válida qualquer forma de comprovação de anuência aos termos ora acordados em formato eletrônico, se comprometendo pela veracidade das informações referentes aos seus representantes legais, sob pena de responsabilização nas formas da lei. E, por estar de acordo, o CLIENTE adere ao presente documento assinado em 02 (duas) vias de igual teor, ou via assinatura digital, por sua livre vontade, declarando ainda, não estar assinando e/ou aceitando o presente sob premente coação, estado de necessidade ou outra forma de vício de consentimento, tendo conhecimento de todo direito e obrigação que assume nesta data.</em></p>
-        
-        <div class="assinatura-area">
-            <div class="assinatura">
-                Itapiranga/SC, ${data}<br><br>
-                <div class="linha-assinatura"></div>
-                <strong>CONTRATADA - NEDEL TELECOM</strong><br>
-                HENRIQUE NEDEL - ADMINISTRADOR
-            </div>
-            <div class="assinatura">
-                <div class="linha-assinatura"></div>
-                <strong>CLIENTE</strong><br>
-                ${cliente.nome}
-            </div>
-        </div>
-        
-        <div class="testemunhas-area">
-            <div class="testemunha">
-                Testemunha:<br>
-                Nome: ${test1.nome || "_________________________"}<br>
-                CPF/CI: ${test1.cpf || "_________________________"}<br>
-                Endereço: ${test1.endereco || "_________________________"}
-            </div>
-            <div class="testemunha">
-                Testemunha:<br>
-                Nome: ${test2.nome || "_________________________"}<br>
-                CPF/CI: ${test2.cpf || "_________________________"}<br>
-                Endereço: ${test2.endereco || "_________________________"}
-            </div>
-        </div>
-    `;
-    
-    document.getElementById('contratoPDF').innerHTML = html;
+    let btn = document.querySelector('.btn-gerar');
+    let textoOriginal = btn.innerHTML;
+    btn.innerHTML = '⏳ GERANDO PDF, AGUARDE...';
+    btn.disabled = true;
     
     setTimeout(() => {
-        html2pdf().set({ 
-            margin: { top: 0.5, bottom: 0.5, left: 0.4, right: 0.4 },
-            filename: `PSCM_${numPSCM}.pdf`, 
-            image: { type: 'jpeg', quality: 0.98 }, 
-            html2canvas: { scale: 2, letterRendering: true, useCORS: true },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
-        }).from(document.getElementById('contratoPDF')).save();
-    }, 300);
+        try {
+            let numPSCM = document.getElementById('numPSCM').value || "_______________";
+            let valorPago = parseFloat(document.getElementById('valorPago').value) || 0;
+            let prazoAtivacao = document.getElementById('prazoAtivacao').value || 10;
+            let taxaVisita = parseFloat(document.getElementById('taxaVisita').value) || 50;
+            let vigencia = 12;
+            
+            let test1 = JSON.parse(document.getElementById('testemunha1').value || '{}');
+            let test2 = JSON.parse(document.getElementById('testemunha2').value || '{}');
+            
+            let cliente = {
+                nome: document.getElementById('clienteNome').value || "_________________________",
+                doc: document.getElementById('clienteDoc').value || "_________________________",
+                rg: document.getElementById('clienteRg').value || "_________________________",
+                endereco: document.getElementById('endereco').value || "_________________________",
+                numero: document.getElementById('numero').value || "___",
+                bairro: document.getElementById('bairro').value || "_________",
+                cidade: document.getElementById('cidade').value || "ITAPIRANGA",
+                telefone: document.getElementById('telefone').value || "(00) 00000-0000",
+                email: document.getElementById('email').value || "_________________"
+            };
+            
+            let totalAdicionais = calcularTotalAdicionais();
+            let adicionaisLista = getAdicionaisLista();
+            let totalMensal = planoAtual.totalBase + totalAdicionais;
+            
+            let beneficioReal = valorPago >= planoAtual.beneficio ? 0 : planoAtual.beneficio - valorPago;
+            let multaMensalBase = beneficioReal / vigencia;
+            
+            let tabelaMultaHTML = '<table class="tabela-multa" style="width:100%; border-collapse:collapse; margin:8px 0;"><thead><tr><th style="border:1px solid #000; padding:4px;">Mês</th><th style="border:1px solid #000; padding:4px;">Fórmula</th><th style="border:1px solid #000; padding:4px;">Valor</th></tr></thead><tbody>';
+            for (let i = 1; i <= vigencia; i++) {
+                let valorMulta = multaMensalBase * (vigencia - i + 1);
+                tabelaMultaHTML += `<tr><td style="border:1px solid #000; padding:4px;">${i}° mês</td><td style="border:1px solid #000; padding:4px;">(BENEFÍCIO REAL / ${vigencia}) × ${vigencia - i + 1}</td><td style="border:1px solid #000; padding:4px;">R$ ${valorMulta.toFixed(2)}</td></tr>`;
+            }
+            tabelaMultaHTML += '</tbody></table>';
+            
+            let equipamentosRows = `
+                <tr><td style="border:1px solid #000; padding:4px;">${planoAtual.comodato}</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">(X) COMODADO</td><td style="border:1px solid #000; padding:4px;">${planoAtual.valorComodato}</td></tr>
+                ${planoAtual.locado1 ? `<tr><td style="border:1px solid #000; padding:4px;">${planoAtual.locado1}</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">(X) LOCAÇÃO</td><td style="border:1px solid #000; padding:4px;">${planoAtual.valorLocado1}</td></tr>` : ''}
+                ${planoAtual.locado2 ? `<tr><td style="border:1px solid #000; padding:4px;">${planoAtual.locado2}</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">(X) LOCAÇÃO</td><td style="border:1px solid #000; padding:4px;">${planoAtual.valorLocado2}</td></tr>` : ''}
+            `;
+            
+            let servicosRows = `
+                <tr><td style="border:1px solid #000; padding:4px;">SCM</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">R$ ${planoAtual.scm.toFixed(2)}</td></tr>
+                <tr><td style="border:1px solid #000; padding:4px;">EBOOK</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">R$ ${planoAtual.ebook.toFixed(2)}</td></tr>
+                <tr><td style="border:1px solid #000; padding:4px;">LOCAÇÃO</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">R$ ${planoAtual.locacao.toFixed(2)}</td></tr>
+            `;
+            
+            adicionaisLista.forEach(ad => {
+                servicosRows += `<tr><td style="border:1px solid #000; padding:4px;">${ad.nome}</td><td style="border:1px solid #000; padding:4px;">${ad.qtd}</td><td style="border:1px solid #000; padding:4px;">R$ ${ad.subtotal.toFixed(2)}</td></tr>`;
+            });
+            servicosRows += `<tr style="font-weight:bold"><td colspan="2" style="border:1px solid #000; padding:4px;">TOTAL DO PLANO</td><td style="border:1px solid #000; padding:4px;">R$ ${totalMensal.toFixed(2)}</td></tr>`;
+            
+            let data = new Date().toLocaleDateString();
+            
+            let html = `
+                <div style="font-family: 'Times New Roman', Times, serif; font-size: 10pt; padding: 20px;">
+                    <div style="text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 5px;">PSCM - PLANO DE SERVIÇO DE COMUNICAÇÃO MULTIMÍDIA - NEDEL TELECOM</div>
+                    <div style="text-align: center; font-size: 11pt; margin-bottom: 15px; font-weight: bold;">Número do PSCM: ${numPSCM}</div>
+                    
+                    <div style="border: 1px solid #000; padding: 8px; margin-bottom: 10px;">
+                        <strong>DE UM LADO:</strong><br>
+                        INFORMATICA ITAPIRANGA LTDA - NEDEL TELECOM<br>
+                        CNPJ: 00.938.920/0001-55<br>
+                        Av. Beira Rio, 349 - Itapiranga/SC<br>
+                        Fone: (49) 3677-0521 | 0800.643.0582
+                    </div>
+                    
+                    <div style="border: 1px solid #000; padding: 8px; margin-bottom: 10px;">
+                        <strong>CLIENTE:</strong><br>
+                        ${cliente.nome}<br>
+                        ${cliente.doc} | ${cliente.rg}<br>
+                        ${cliente.endereco}, ${cliente.numero} - ${cliente.bairro}<br>
+                        ${cliente.cidade}/SC | Tel: ${cliente.telefone} | Email: ${cliente.email}
+                    </div>
+                    
+                    <div style="font-weight: bold; margin-top: 12px; background: #ddd; padding: 3px 8px;">CLÁUSULA SEGUNDA – EQUIPAMENTOS</div>
+                    <table style="width:100%; border-collapse:collapse; margin:8px 0;"><thead><tr><th style="border:1px solid #000; padding:4px;">Tipo</th><th style="border:1px solid #000; padding:4px;">Qtd</th><th style="border:1px solid #000; padding:4px;">Modalidade</th><th style="border:1px solid #000; padding:4px;">Benefícios</th></tr></thead><tbody>${equipamentosRows}</tbody></table>
+                    <p>TAXA DE ADESÃO: R$ ${valorPago.toFixed(2)}</p>
+                    <p><strong>TOTAL DE BENEFICIOS: R$ ${planoAtual.beneficio.toFixed(2)}</strong></p>
+                    
+                    <div style="font-weight: bold; margin-top: 12px; background: #ddd; padding: 3px 8px;">CLÁUSULA TERCEIRA – PLANO CONTRATADO</div>
+                    <p><strong>${planoAtual.nome}</strong><br>
+                    Download: ${planoAtual.velDown} Kbits | Upload: ${planoAtual.velUp} Kbits<br>
+                    Garantia: ${planoAtual.garantiaDown}/${planoAtual.garantiaUp} Kbits<br>
+                    Prazo Ativação: ${prazoAtivacao} dias | Fidelidade: ${vigencia} meses</p>
+                    <p>TAXA MINIMA DE VISITA TÉCNICA: R$ ${taxaVisita.toFixed(2)}</p>
+                    
+                    <table style="width:100%; border-collapse:collapse; margin:8px 0;"><thead><tr><th style="border:1px solid #000; padding:4px;">SERVIÇOS</th><th style="border:1px solid #000; padding:4px;">QTD</th><th style="border:1px solid #000; padding:4px;">VALOR MENSAL</th></tr></thead><tbody>${servicosRows}</tbody></table>
+                    
+                    <div style="font-weight: bold; margin-top: 12px; background: #ddd; padding: 3px 8px;">CLAUSULA QUARTA - TAXA DE INSTALAÇÃO</div>
+                    <p>Valor da taxa de instalação: R$ ${valorPago.toFixed(2)}<br>
+                    Desconto concedido ao cliente: R$ ${planoAtual.beneficio.toFixed(2)}<br>
+                    <strong>VALOR TOTAL DOS BENEFICIOS: R$ ${beneficioReal.toFixed(2)}</strong></p>
+                    
+                    <div style="font-weight: bold; margin-top: 12px; background: #ddd; padding: 3px 8px;">CLÁUSULA QUINTA – FIDELIDADE</div>
+                    ${tabelaMultaHTML}
+                    <p>Após ${vigencia} meses, renovação automática sem multa.</p>
+                    
+                    <div style="font-weight: bold; margin-top: 12px; background: #ddd; padding: 3px 8px;">CLÁUSULA SEXTA E SÉTIMA</div>
+                    <p>Foro eleito: Itapiranga/SC. Este contrato segue normas da ANATEL.</p>
+                    <p><em>Nos termos do art. 10, § 2º, da Medida Provisória nº 2.200-2, as Partes concordam com a validade jurídica deste documento eletrônico.</em></p>
+                    
+                    <div style="margin-top: 25px; display: flex; justify-content: space-between;">
+                        <div style="text-align: center; width: 45%;">
+                            Itapiranga/SC, ${data}<br><br>
+                            <div style="border-top: 1px solid #000; margin-top: 35px; padding-top: 5px;"></div>
+                            <strong>NEDEL TELECOM</strong><br>
+                            HENRIQUE NEDEL
+                        </div>
+                        <div style="text-align: center; width: 45%;">
+                            <div style="border-top: 1px solid #000; margin-top: 35px; padding-top: 5px;"></div>
+                            <strong>CLIENTE</strong><br>
+                            ${cliente.nome}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; display: flex; justify-content: space-between; gap: 20px;">
+                        <div style="flex: 1; text-align: center; border-top: 1px solid #000; padding-top: 15px;">
+                            Testemunha:<br>
+                            ${test1.nome || "_________________________"}<br>
+                            CPF: ${test1.cpf || "_________________________"}
+                        </div>
+                        <div style="flex: 1; text-align: center; border-top: 1px solid #000; padding-top: 15px;">
+                            Testemunha:<br>
+                            ${test2.nome || "_________________________"}<br>
+                            CPF: ${test2.cpf || "_________________________"}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            tempDiv.style.position = 'absolute';
+            tempDiv.style.left = '-9999px';
+            tempDiv.style.top = '-9999px';
+            document.body.appendChild(tempDiv);
+            
+            html2pdf().set({ 
+                margin: 0.3, 
+                filename: `PSCM_${numPSCM}.pdf`, 
+                image: { type: 'jpeg', quality: 0.95 }, 
+                html2canvas: { scale: 2, letterRendering: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
+            }).from(tempDiv).save().then(() => {
+                document.body.removeChild(tempDiv);
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error("Erro:", err);
+                alert("Erro ao gerar PDF: " + err);
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+                if (document.body.contains(tempDiv)) document.body.removeChild(tempDiv);
+            });
+            
+        } catch(e) {
+            alert("Erro: " + e.message);
+            btn.innerHTML = textoOriginal;
+            btn.disabled = false;
+        }
+    }, 100);
 }
 
 popularPlanos();
