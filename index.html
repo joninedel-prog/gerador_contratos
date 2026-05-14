@@ -4,18 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nedel Telecom — Pedido e Contrato PSCM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+    /* ============ IDENTIDADE VISUAL NEDEL ============ */
+    :root {
+        --nedel-azul: #0066FF;
+        --nedel-azul-medio: #0058DB;
+        --nedel-azul-escuro: #002A3A;
+        --nedel-azul-petroleo: #011F2A;
+        --nedel-branco: #FFFFFF;
+        --nedel-cinza-claro: #D9D9D6;
+        --nedel-cinza-bg: #F4F5F7;
+
+        --font-titulo: 'Inter', 'Arial Black', sans-serif;
+        --font-corpo: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
     /* ============ BASE ============ */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-        background: #e0e0e0;
-        font-family: 'Segoe UI', Arial, sans-serif;
+        background: var(--nedel-cinza-bg);
+        font-family: var(--font-corpo);
         padding: 20px;
-        color: #222;
+        color: var(--nedel-azul-escuro);
     }
     .app-shell {
         max-width: 1300px;
         margin: 0 auto;
+    }
+
+    /* ============ MARCA NEDEL (cabeçalho global) ============ */
+    .brand-bar {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 4px 18px 4px;
+    }
+    .brand-mark {
+        font-family: var(--font-titulo);
+        font-weight: 800;
+        font-size: 22px;
+        color: var(--nedel-azul);
+        letter-spacing: -0.04em;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .brand-mark::before {
+        content: '';
+        display: inline-block;
+        width: 10px; height: 10px;
+        background: var(--nedel-azul);
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px rgba(0,102,255,.18);
+    }
+    .brand-mark small {
+        font-family: var(--font-corpo);
+        font-weight: 500;
+        font-size: 13px;
+        color: var(--nedel-azul-escuro);
+        letter-spacing: 0;
+        margin-left: 4px;
+        opacity: .85;
+    }
+    .brand-tag {
+        font-size: 11px;
+        color: var(--nedel-azul-escuro);
+        opacity: .65;
+        margin-left: auto;
+        font-style: italic;
+    }
+
+    /* Rodapé global Nedel */
+    .brand-footer {
+        text-align: center;
+        padding: 22px 10px 6px;
+        font-size: 11px;
+        color: var(--nedel-azul-escuro);
+        opacity: .75;
+    }
+    .brand-footer strong {
+        color: var(--nedel-azul);
+        font-weight: 700;
     }
 
     /* ============ ABAS ============ */
@@ -26,48 +98,71 @@
     }
     .tab-btn {
         flex: 1;
-        max-width: 280px;
-        padding: 14px 20px;
-        background: #cfd8e3;
-        color: #1e2a3e;
+        max-width: 320px;
+        padding: 14px 22px;
+        background: var(--nedel-cinza-claro);
+        color: var(--nedel-azul-escuro);
         border: none;
-        border-radius: 10px 10px 0 0;
-        font-size: 15px;
-        font-weight: bold;
+        border-radius: 14px 14px 0 0;
+        font-size: 14px;
+        font-weight: 600;
         cursor: pointer;
-        transition: background .15s;
-        font-family: inherit;
+        transition: background .2s, color .2s, transform .15s;
+        font-family: var(--font-titulo);
+        letter-spacing: -0.01em;
     }
-    .tab-btn:hover { background: #b5c2d2; }
+    .tab-btn:hover {
+        background: #c4c4c0;
+    }
     .tab-btn.active {
-        background: white;
-        color: #004080;
-        box-shadow: 0 -2px 8px rgba(0,0,0,.08);
+        background: var(--nedel-branco);
+        color: var(--nedel-azul);
+        box-shadow: 0 -3px 12px rgba(0,42,58,.08);
     }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
     /* ============ CARD GERAL ============ */
     .form-container {
-        background: white;
-        border-radius: 0 10px 10px 10px;
-        padding: 22px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        background: var(--nedel-branco);
+        border-radius: 0 18px 18px 18px;
+        padding: 26px;
+        box-shadow: 0 4px 16px rgba(0,42,58,.06);
     }
 
     /* ============ HEADER PEDIDO ============ */
     .header-pedido {
         text-align: center;
-        padding: 14px 10px;
-        background: linear-gradient(90deg, #003366, #0066b3);
-        color: white;
-        border-radius: 10px;
-        margin-bottom: 18px;
+        padding: 22px 16px;
+        background: linear-gradient(135deg, var(--nedel-azul), var(--nedel-azul-medio));
+        color: var(--nedel-branco);
+        border-radius: 18px;
+        margin-bottom: 22px;
+        position: relative;
+        overflow: hidden;
     }
-    .header-pedido h1 { font-size: 22px; margin-bottom: 4px; }
-    .header-pedido p { font-size: 12px; opacity: .9; }
+    .header-pedido::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -10%;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, rgba(255,255,255,.12), transparent 70%);
+        pointer-events: none;
+    }
+    .header-pedido h1 {
+        font-family: var(--font-titulo);
+        font-weight: 800;
+        font-size: 24px;
+        margin-bottom: 6px;
+        letter-spacing: -0.03em;
+    }
+    .header-pedido p {
+        font-size: 13px;
+        opacity: .92;
+        font-weight: 400;
+    }
 
-    /* ============ TAB PEDIDO (form-field model) ============ */
+    /* ============ TAB PEDIDO ============ */
     .tab-pedido .form-row {
         display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px;
     }
@@ -76,324 +171,568 @@
         display: flex; flex-direction: column;
     }
     .tab-pedido .form-field label {
-        font-size: 11px; font-weight: 600; color: #1f4a6e;
-        margin-bottom: 4px; text-transform: uppercase;
+        font-size: 11px; font-weight: 600;
+        color: var(--nedel-azul-escuro);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
     }
     .tab-pedido .form-field input,
     .tab-pedido .form-field select,
     .tab-pedido .form-field textarea {
-        padding: 7px 10px;
-        border: 1px solid #cbdbe2;
-        border-radius: 8px;
+        padding: 9px 12px;
+        border: 1.5px solid var(--nedel-cinza-claro);
+        border-radius: 10px;
         font-size: 13px;
-        background: #fefefe;
+        background: var(--nedel-branco);
         font-family: inherit;
+        color: var(--nedel-azul-escuro);
+        transition: border-color .15s, box-shadow .15s;
     }
     .tab-pedido .form-field input:focus,
     .tab-pedido .form-field select:focus,
     .tab-pedido .form-field textarea:focus {
-        border-color: #0077b6; outline: none;
+        border-color: var(--nedel-azul);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0,102,255,.12);
     }
     .tab-pedido .form-field-small { flex: 0 1 80px; }
 
     .tab-pedido .section-card {
-        background: #f9fbfd;
-        border-radius: 12px;
-        padding: 14px 18px;
+        background: var(--nedel-branco);
+        border-radius: 16px;
+        padding: 18px 22px;
         margin-bottom: 16px;
-        border: 1px solid #e3eaf0;
+        border: 1px solid var(--nedel-cinza-claro);
+        box-shadow: 0 1px 3px rgba(0,42,58,.04);
     }
     .tab-pedido .section-title {
+        font-family: var(--font-titulo);
         font-size: 15px; font-weight: 700;
-        color: #003366;
-        border-left: 4px solid #ff8c00;
+        color: var(--nedel-azul-escuro);
+        border-left: 4px solid var(--nedel-azul);
         padding-left: 12px;
-        margin-bottom: 12px;
-    }
-    .tab-pedido .plan-select-group {
-        display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;
-    }
-    .tab-pedido .plan-select-item { flex: 1; min-width: 200px; }
-    .tab-pedido .plan-select-item label {
-        font-size: 12px; font-weight: 600; color: #003366;
-        display: block; margin-bottom: 5px;
-    }
-    .tab-pedido .plan-select-item select {
-        width: 100%; padding: 8px 10px;
-        border-radius: 8px; border: 1px solid #cbdbe2;
-        background: white; font-size: 13px;
+        margin-bottom: 14px;
+        letter-spacing: -0.01em;
     }
     .tab-pedido .addon-table,
-    .tab-pedido .camera-table {
+    .tab-pedido .camera-table,
+    .tab-pedido .tabela-adicionais {
         width: 100%; border-collapse: collapse; font-size: 13px;
     }
     .tab-pedido .addon-table th,
     .tab-pedido .addon-table td,
     .tab-pedido .camera-table th,
-    .tab-pedido .camera-table td {
-        text-align: left; padding: 6px 4px;
-        border-bottom: 1px solid #dee4ea;
+    .tab-pedido .camera-table td,
+    .tab-pedido .tabela-adicionais th,
+    .tab-pedido .tabela-adicionais td {
+        text-align: left; padding: 8px 6px;
+        border-bottom: 1px solid var(--nedel-cinza-claro);
+    }
+    .tab-pedido .tabela-adicionais th {
+        background: var(--nedel-cinza-bg);
+        color: var(--nedel-azul-escuro);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.05em;
     }
     .tab-pedido .qty-input,
-    .tab-pedido .cam-qty {
-        width: 70px; padding: 5px;
-        border-radius: 6px; border: 1px solid #ccc;
+    .tab-pedido .cam-qty,
+    .tab-pedido .ped-qtd-adicional {
+        width: 70px; padding: 6px 8px;
+        border-radius: 8px;
+        border: 1.5px solid var(--nedel-cinza-claro);
         text-align: center;
+        font-family: inherit;
     }
-    .tab-pedido .qty-input:disabled { background: #f0f0f0; color: #999; }
-    .tab-pedido .la-carte-horizontal {
-        display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px; align-items: center;
-    }
-    .tab-pedido .la-carte-item {
-        display: flex; align-items: center; gap: 6px; font-size: 13px;
+    .tab-pedido .qty-input:disabled,
+    .tab-pedido .ped-qtd-adicional:disabled {
+        background: #f3f4f6; color: #9ca3af;
     }
     .tab-pedido .total-mensal {
-        background: #eef2fa;
-        border-radius: 20px; padding: 12px 22px;
+        background: linear-gradient(135deg, var(--nedel-azul), var(--nedel-azul-medio));
+        color: var(--nedel-branco);
+        border-radius: 18px;
+        padding: 16px 24px;
         display: flex; justify-content: space-between; align-items: center;
-        margin: 16px 0;
+        margin: 20px 0;
+        box-shadow: 0 6px 16px rgba(0,102,255,.18);
     }
-    .tab-pedido .total-label { font-size: 17px; font-weight: 700; }
-    .tab-pedido .total-value { font-size: 26px; font-weight: 800; color: #006633; }
+    .tab-pedido .total-label {
+        font-size: 15px; font-weight: 600;
+        font-family: var(--font-titulo);
+        letter-spacing: -0.01em;
+    }
+    .tab-pedido .total-value {
+        font-size: 28px; font-weight: 800;
+        font-family: var(--font-titulo);
+        color: var(--nedel-branco);
+        letter-spacing: -0.03em;
+    }
     .tab-pedido .signature {
-        margin-top: 18px; border-top: 1px solid #ccc;
-        padding-top: 14px; font-size: 11px;
+        margin-top: 22px;
+        border-top: 1px solid var(--nedel-cinza-claro);
+        padding-top: 16px; font-size: 11px;
         display: flex; justify-content: space-between;
-        flex-wrap: wrap; gap: 20px;
+        flex-wrap: wrap; gap: 24px;
+        color: var(--nedel-azul-escuro);
     }
     .tab-pedido footer {
-        font-size: 9px; text-align: center; margin-top: 12px; color: #6c86a3;
+        font-size: 10px; text-align: center;
+        margin-top: 14px;
+        color: #6c86a3;
+        padding: 10px;
+        border-top: 1px solid var(--nedel-cinza-claro);
     }
     .tab-pedido .viabilidade {
-        font-size: 10px; color: #555; font-style: italic;
+        font-size: 10px; color: #6c86a3;
+        font-style: italic;
         margin: 10px 0; text-align: center;
-        border-top: 1px dashed #ccc; padding-top: 8px;
+        border-top: 1px dashed var(--nedel-cinza-claro);
+        padding-top: 8px;
+    }
+    .tab-pedido #ped_infoPlano {
+        background: linear-gradient(90deg, rgba(0,102,255,.07), rgba(0,102,255,.02)) !important;
+        border-left: 4px solid var(--nedel-azul) !important;
+        border-radius: 10px !important;
+        color: var(--nedel-azul-escuro);
     }
     .hidden-field { display: none; }
 
     /* ============ TAB PSCM ============ */
-    .tab-pscm h2 { margin-bottom: 15px; color: #004080; }
+    .tab-pscm h2 {
+        font-family: var(--font-titulo);
+        font-weight: 800;
+        margin-bottom: 18px;
+        color: var(--nedel-azul-escuro);
+        letter-spacing: -0.02em;
+    }
     .tab-pscm h3 {
-        margin: 18px 0 8px; color: #004080;
-        border-bottom: 2px solid #004080; padding-bottom: 4px;
+        font-family: var(--font-titulo);
+        font-weight: 700;
+        margin: 22px 0 10px;
+        color: var(--nedel-azul-escuro);
+        border-bottom: 2px solid var(--nedel-azul);
+        padding-bottom: 6px;
+        letter-spacing: -0.01em;
     }
     .tab-pscm .form-row {
-        display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 12px;
+        display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 14px;
     }
     .tab-pscm .form-group {
         flex: 1; min-width: 180px; position: relative;
     }
     .tab-pscm .form-group label {
-        display: block; font-weight: bold; margin-bottom: 4px; font-size: 12px;
+        display: block; font-weight: 600;
+        margin-bottom: 5px; font-size: 12px;
+        color: var(--nedel-azul-escuro);
     }
-    .tab-pscm .form-group label .obrig { color: #c00; }
+    .tab-pscm .form-group label .obrig { color: #DC2626; }
     .tab-pscm .form-group input,
     .tab-pscm .form-group select {
-        width: 100%; padding: 8px;
-        border: 1px solid #ccc; border-radius: 5px;
+        width: 100%; padding: 9px 12px;
+        border: 1.5px solid var(--nedel-cinza-claro);
+        border-radius: 10px;
         font-size: 13px; font-family: inherit;
+        color: var(--nedel-azul-escuro);
+        background: var(--nedel-branco);
+        transition: border-color .15s, box-shadow .15s;
     }
     .tab-pscm .form-group input:focus,
     .tab-pscm .form-group select:focus {
-        outline: none; border-color: #004080;
-        box-shadow: 0 0 0 2px rgba(0,64,128,.15);
+        outline: none;
+        border-color: var(--nedel-azul);
+        box-shadow: 0 0 0 3px rgba(0,102,255,.12);
     }
-    .tab-pscm .form-group input.invalido { border-color: #c00; background: #fff4f4; }
-    .tab-pscm .erro-msg { font-size: 11px; color: #c00; margin-top: 2px; display: none; }
+    .tab-pscm .form-group input.invalido { border-color: #DC2626; background: #FEF2F2; }
+    .tab-pscm .erro-msg { font-size: 11px; color: #DC2626; margin-top: 3px; display: none; }
     .tab-pscm .form-group input.invalido + .erro-msg { display: block; }
     .tab-pscm .tabela-adicionais {
-        width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;
+        width: 100%; border-collapse: collapse;
+        margin-top: 10px; font-size: 13px;
+        border-radius: 10px; overflow: hidden;
     }
     .tab-pscm .tabela-adicionais th,
     .tab-pscm .tabela-adicionais td {
-        border: 1px solid #ccc; padding: 6px; text-align: left;
+        border: 1px solid var(--nedel-cinza-claro);
+        padding: 8px 10px; text-align: left;
     }
-    .tab-pscm .tabela-adicionais th { background: #f0f0f0; }
+    .tab-pscm .tabela-adicionais th {
+        background: var(--nedel-cinza-bg);
+        color: var(--nedel-azul-escuro);
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
     .tab-pscm .tabela-adicionais input {
-        width: 70px; padding: 4px; text-align: center;
-        border: 1px solid #ccc; border-radius: 4px;
+        width: 70px; padding: 5px 8px; text-align: center;
+        border: 1.5px solid var(--nedel-cinza-claro);
+        border-radius: 8px;
+        font-family: inherit;
     }
     .tab-pscm .info-plano {
-        background: #e8f0fe; padding: 12px;
-        border-radius: 5px; margin: 12px 0;
-        border-left: 4px solid #004080;
+        background: linear-gradient(90deg, rgba(0,102,255,.07), rgba(0,102,255,.02));
+        padding: 14px 16px;
+        border-radius: 12px;
+        margin: 14px 0;
+        border-left: 4px solid var(--nedel-azul);
+        color: var(--nedel-azul-escuro);
     }
 
     /* ============ BOTÕES ============ */
     .botoes-acao {
-        display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;
+        display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap;
     }
     .btn {
-        border: none; padding: 12px 24px;
-        font-size: 15px; font-weight: bold;
-        border-radius: 5px; cursor: pointer;
-        font-family: inherit; transition: opacity .15s;
+        border: none;
+        padding: 12px 24px;
+        font-size: 14px; font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: var(--font-titulo);
+        letter-spacing: -0.01em;
+        transition: transform .12s, box-shadow .15s, background .2s;
     }
-    .btn:hover { opacity: .9; }
-    .btn-primario { background: #004080; color: white; flex: 2; min-width: 200px; }
-    .btn-primario:disabled { background: #888; cursor: not-allowed; }
-    .btn-secundario { background: #6c757d; color: white; flex: 1; min-width: 140px; }
-    .btn-terciario { background: #28a745; color: white; flex: 1; min-width: 140px; }
-    .btn-print { background: #004e92; color: white; }
-    .btn-clear { background: #d9e2ec; color: #1e4668; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primario {
+        background: var(--nedel-azul);
+        color: var(--nedel-branco);
+        flex: 2; min-width: 200px;
+        box-shadow: 0 4px 12px rgba(0,102,255,.25);
+    }
+    .btn-primario:hover { background: var(--nedel-azul-medio); box-shadow: 0 6px 16px rgba(0,102,255,.32); }
+    .btn-primario:disabled {
+        background: #9ca3af; cursor: not-allowed;
+        box-shadow: none; transform: none;
+    }
+    .btn-secundario {
+        background: var(--nedel-cinza-claro);
+        color: var(--nedel-azul-escuro);
+        flex: 1; min-width: 140px;
+    }
+    .btn-secundario:hover { background: #c4c4c0; }
+    .btn-terciario {
+        background: var(--nedel-azul-escuro);
+        color: var(--nedel-branco);
+        flex: 1; min-width: 140px;
+    }
+    .btn-terciario:hover { background: var(--nedel-azul-petroleo); }
+    .btn-print {
+        background: var(--nedel-azul);
+        color: var(--nedel-branco);
+        box-shadow: 0 4px 12px rgba(0,102,255,.22);
+    }
+    .btn-print:hover { background: var(--nedel-azul-medio); }
+    .btn-clear {
+        background: var(--nedel-cinza-claro);
+        color: var(--nedel-azul-escuro);
+    }
+    .btn-clear:hover { background: #c4c4c0; }
 
     /* ============ MODAL ============ */
     .modal-bg {
         position: fixed; inset: 0;
-        background: rgba(0,0,0,.6);
+        background: rgba(1,31,42,.65);
+        backdrop-filter: blur(2px);
         display: none; align-items: center; justify-content: center;
         z-index: 8000;
     }
     .modal-bg.show { display: flex; }
     .modal {
-        background: white; max-width: 850px; width: 95%;
-        max-height: 90vh; border-radius: 8px;
-        display: flex; flex-direction: column; overflow: hidden;
+        background: var(--nedel-branco);
+        max-width: 880px; width: 95%;
+        max-height: 92vh;
+        border-radius: 18px;
+        display: flex; flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0,42,58,.35);
     }
     .modal-head {
-        padding: 12px 16px; background: #004080; color: white;
+        padding: 16px 22px;
+        background: linear-gradient(90deg, var(--nedel-azul), var(--nedel-azul-medio));
+        color: var(--nedel-branco);
         display: flex; justify-content: space-between; align-items: center;
+        font-family: var(--font-titulo);
+        font-weight: 700;
     }
-    .modal-body { padding: 16px; overflow-y: auto; }
+    .modal-body { padding: 20px; overflow-y: auto; }
     .modal-foot {
-        padding: 12px 16px; border-top: 1px solid #ddd;
+        padding: 14px 20px;
+        border-top: 1px solid var(--nedel-cinza-claro);
         display: flex; gap: 10px; justify-content: flex-end;
+        background: var(--nedel-cinza-bg);
     }
     .modal-close {
-        background: none; border: none; color: white;
-        font-size: 20px; cursor: pointer;
+        background: none; border: none;
+        color: var(--nedel-branco);
+        font-size: 22px; cursor: pointer;
+        line-height: 1;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition: background .15s;
     }
+    .modal-close:hover { background: rgba(255,255,255,.15); }
 
     /* ============ TOAST ============ */
     .toast {
         position: fixed; top: 20px; right: 20px;
-        background: #28a745; color: white;
-        padding: 12px 18px; border-radius: 5px;
-        box-shadow: 0 4px 12px rgba(0,0,0,.2);
-        z-index: 9999; opacity: 0;
+        background: var(--nedel-azul-escuro);
+        color: var(--nedel-branco);
+        padding: 14px 20px;
+        border-radius: 12px;
+        box-shadow: 0 10px 24px rgba(0,42,58,.25);
+        z-index: 9999;
+        opacity: 0;
         transform: translateY(-10px);
         transition: opacity .3s, transform .3s;
-        font-size: 13px; max-width: 320px;
+        font-size: 13px; max-width: 340px;
+        font-weight: 500;
+        border-left: 4px solid var(--nedel-azul);
     }
     .toast.show { opacity: 1; transform: translateY(0); }
-    .toast.erro { background: #c00; }
-    .toast.info { background: #004080; }
+    .toast.erro { background: #991B1B; border-left-color: #DC2626; }
+    .toast.info { background: var(--nedel-azul-escuro); border-left-color: var(--nedel-azul); }
 
     /* ============ TAB TITULARIDADE ============ */
     .tab-titularidade .termo-pdf {
-        background: white;
+        background: var(--nedel-branco);
         margin: 0;
         padding: 25px 30px;
     }
-    .tab-titularidade .titulo-principal { text-align: center; margin-bottom: 18px; }
+    .tab-titularidade .titulo-principal { text-align: center; margin-bottom: 20px; }
     .tab-titularidade h1 {
-        font-size: 1.3rem; text-align: center; color: #0f3b5f;
-        border-bottom: 2px solid #0f3b5f; display: inline-block;
-        width: auto; margin: 0 auto 8px auto; padding-bottom: 5px;
-        font-weight: 700;
+        font-family: var(--font-titulo);
+        font-size: 1.3rem; text-align: center;
+        color: var(--nedel-azul-escuro);
+        border-bottom: 3px solid var(--nedel-azul);
+        display: inline-block;
+        width: auto; margin: 0 auto 8px auto;
+        padding-bottom: 6px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
     }
     .tab-titularidade .subtitulo {
-        text-align: center; font-size: 0.75rem; color: #2c5282;
-        font-weight: 500; background: #eef2ff; display: inline-block;
-        padding: 3px 14px; border-radius: 40px; margin-top: 4px;
+        text-align: center; font-size: 0.78rem;
+        color: var(--nedel-azul);
+        font-weight: 600;
+        background: rgba(0,102,255,.08);
+        display: inline-block;
+        padding: 4px 14px; border-radius: 40px;
+        margin-top: 6px;
     }
     .tab-titularidade .secao {
-        background: #fefefe; border-radius: 14px;
-        padding: 14px 18px; margin-bottom: 14px;
-        border: 1px solid #e2edf2;
+        background: var(--nedel-branco);
+        border-radius: 14px;
+        padding: 16px 20px; margin-bottom: 14px;
+        border: 1px solid var(--nedel-cinza-claro);
+        box-shadow: 0 1px 3px rgba(0,42,58,.04);
     }
     .tab-titularidade .secao h2 {
-        font-size: 1rem; color: #1e4a6e;
-        border-left: 3px solid #2c7da0; padding-left: 10px;
-        margin-bottom: 12px; font-weight: 600; border-bottom: none;
+        font-family: var(--font-titulo);
+        font-size: 1rem;
+        color: var(--nedel-azul-escuro);
+        border-left: 4px solid var(--nedel-azul);
+        padding-left: 12px;
+        margin-bottom: 14px;
+        font-weight: 700;
+        border-bottom: none;
+        letter-spacing: -0.01em;
     }
     .tab-titularidade .campo-linha {
         display: flex; flex-wrap: wrap; gap: 12px;
-        margin-bottom: 10px; align-items: flex-end;
+        margin-bottom: 12px; align-items: flex-end;
     }
     .tab-titularidade .campo { flex: 1; min-width: 150px; }
     .tab-titularidade .campo label {
-        display: block; font-size: 0.68rem;
-        font-weight: 700; text-transform: uppercase;
-        letter-spacing: 0.3px; color: #2c5282; margin-bottom: 3px;
+        display: block; font-size: 0.7rem;
+        font-weight: 600; text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--nedel-azul-escuro);
+        margin-bottom: 4px;
     }
     .tab-titularidade .campo input,
     .tab-titularidade .campo select {
-        width: 100%; padding: 7px 10px; border-radius: 10px;
-        border: 1.5px solid #cbd5e1; font-size: 0.85rem;
-        background: #ffffff; font-family: inherit;
+        width: 100%; padding: 8px 12px;
+        border-radius: 10px;
+        border: 1.5px solid var(--nedel-cinza-claro);
+        font-size: 0.85rem;
+        background: var(--nedel-branco);
+        font-family: inherit;
+        color: var(--nedel-azul-escuro);
+        transition: border-color .15s, box-shadow .15s;
     }
     .tab-titularidade .campo input:focus,
     .tab-titularidade .campo select:focus {
-        outline: none; border-color: #2c7da0;
-        box-shadow: 0 0 0 2px rgba(44,125,160,0.2);
+        outline: none;
+        border-color: var(--nedel-azul);
+        box-shadow: 0 0 0 3px rgba(0,102,255,.12);
     }
     .tab-titularidade .linha-dupla { display: flex; flex-wrap: wrap; gap: 12px; }
     .tab-titularidade .endereco-group { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
     .tab-titularidade .cidade-group { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
     .tab-titularidade .telefones { display: flex; flex-wrap: wrap; gap: 12px; }
     .tab-titularidade .obrigatorio:after {
-        content: "*"; color: #e53e3e; margin-left: 3px; font-weight: bold;
+        content: "*"; color: #DC2626; margin-left: 3px; font-weight: bold;
     }
     .tab-titularidade .checkbox-group {
         display: flex; gap: 24px; align-items: center;
-        flex-wrap: wrap; margin-top: 4px;
+        flex-wrap: wrap; margin-top: 6px;
     }
     .tab-titularidade .checkbox-group label {
         display: flex; align-items: center; gap: 8px;
         font-weight: normal; text-transform: none;
-        font-size: 0.85rem; color: #1e293b; white-space: nowrap;
+        font-size: 0.85rem;
+        color: var(--nedel-azul-escuro);
+        white-space: nowrap;
     }
     .tab-titularidade .declaracao-bloco {
-        background: #f9fafb; border-left: 3px solid #cbd5e1;
-        padding: 12px 16px; font-size: 0.78rem; color: #2d3748;
-        margin: 14px 0; border-radius: 10px; line-height: 1.5;
+        background: var(--nedel-cinza-bg);
+        border-left: 3px solid var(--nedel-azul);
+        padding: 14px 18px; font-size: 0.8rem;
+        color: var(--nedel-azul-escuro);
+        margin: 16px 0; border-radius: 12px; line-height: 1.55;
     }
     .tab-titularidade .codigo-penal {
-        font-family: monospace; background: #f1f5f9;
-        padding: 8px 10px; border-radius: 8px;
-        font-size: 0.72rem; margin-top: 6px;
+        font-family: 'Courier New', monospace;
+        background: var(--nedel-branco);
+        border: 1px solid var(--nedel-cinza-claro);
+        padding: 10px 12px; border-radius: 10px;
+        font-size: 0.72rem; margin-top: 8px;
     }
     .tab-titularidade .data-obs-linha {
         display: flex; flex-wrap: wrap; gap: 20px;
-        margin: 16px 0 26px 0; align-items: flex-end;
+        margin: 18px 0 26px 0; align-items: flex-end;
     }
     .tab-titularidade .data-obs-linha .campo { flex: 1; }
     .tab-titularidade .assinaturas-linha {
         display: flex; flex-wrap: wrap; gap: 40px;
-        margin-top: 10px; margin-bottom: 15px;
+        margin-top: 12px; margin-bottom: 18px;
     }
     .tab-titularidade .assinatura-coluna { flex: 1; text-align: center; }
     .tab-titularidade .linha-assinatura-fisica {
-        border-bottom: 1px solid #000; margin-bottom: 8px; height: 35px; width: 100%;
+        border-bottom: 1.5px solid var(--nedel-azul-escuro);
+        margin-bottom: 8px; height: 38px; width: 100%;
     }
     .tab-titularidade .texto-assinatura-label {
-        font-size: 0.78rem; color: #334155;
-        font-weight: 500; margin-bottom: 4px;
+        font-size: 0.78rem;
+        color: var(--nedel-azul-escuro);
+        font-weight: 600; margin-bottom: 4px;
     }
     .tab-titularidade .nome-automatico {
-        font-size: 0.85rem; font-weight: 500; color: #0f3b5f;
+        font-family: var(--font-titulo);
+        font-size: 0.9rem; font-weight: 700;
+        color: var(--nedel-azul);
         text-align: center; padding: 4px 8px;
         word-break: break-word; margin-top: 5px;
+        letter-spacing: -0.01em;
     }
     .tab-titularidade .select-pequeno { max-width: 100px; }
     .tab-titularidade .aviso-campos {
-        font-size: 0.65rem; color: #5f6c84;
-        text-align: center; margin-top: 15px;
-        padding-top: 6px; border-top: 1px solid #e2edf2;
+        font-size: 0.7rem;
+        color: #6c86a3;
+        text-align: center; margin-top: 16px;
+        padding-top: 8px;
+        border-top: 1px solid var(--nedel-cinza-claro);
     }
 
     /* ============ IMPRESSÃO ============ */
     @media print {
+        @page { size: A4; margin: 8mm; }
         body { background: white; padding: 0; margin: 0; }
         .tabs, .no-print, .botoes-acao { display: none !important; }
         .tab-panel:not(.active) { display: none !important; }
-        .form-container { box-shadow: none; border-radius: 0; padding: 10mm; }
+        .form-container { box-shadow: none; border-radius: 0; padding: 6mm; }
         .tab-titularidade .secao,
         .tab-titularidade .assinaturas-linha,
         .tab-titularidade .declaracao-bloco {
             break-inside: avoid; page-break-inside: avoid;
         }
+
+        /* === PEDIDO em 1 página === */
+        .tab-pedido { font-size: 9pt; }
+        .tab-pedido .header-pedido {
+            padding: 6px 12px; margin-bottom: 8px;
+            background: #0066FF !important;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        .tab-pedido .header-pedido h1 { font-size: 14pt; margin-bottom: 2px; }
+        .tab-pedido .header-pedido p { font-size: 8pt; }
+
+        .tab-pedido .section-card {
+            padding: 4px 8px;
+            margin-bottom: 4px;
+            border: 1px solid #D9D9D6;
+            background: white !important;
+            page-break-inside: avoid;
+            box-shadow: none !important;
+        }
+        .tab-pedido .section-title {
+            font-size: 10pt;
+            margin-bottom: 4px;
+            padding-left: 8px;
+            border-left-width: 3px;
+            color: #002A3A !important;
+        }
+
+        .tab-pedido .form-row { margin-bottom: 3px; gap: 6px; }
+        .tab-pedido .form-field label {
+            font-size: 7pt;
+            margin-bottom: 0;
+            letter-spacing: 0;
+        }
+        .tab-pedido .form-field input,
+        .tab-pedido .form-field select,
+        .tab-pedido .form-field textarea {
+            padding: 2px 5px;
+            font-size: 9pt;
+            border-radius: 3px;
+            border-color: #bbb;
+        }
+        .tab-pedido textarea { min-height: 18px; }
+
+        .tab-pedido .tabela-adicionais,
+        .tab-pedido .camera-table { font-size: 9pt; }
+        .tab-pedido .tabela-adicionais th,
+        .tab-pedido .tabela-adicionais td,
+        .tab-pedido .camera-table th,
+        .tab-pedido .camera-table td { padding: 2px 5px; }
+
+        /* Esconde linhas com qtd zero */
+        .tab-pedido tr.row-zero { display: none !important; }
+        /* Esconde seções inteiras quando sinalizadas */
+        .tab-pedido .section-empty { display: none !important; }
+
+        /* Total compacto */
+        .tab-pedido .total-mensal {
+            padding: 6px 14px; margin: 6px 0;
+            background: #0066FF !important;
+            color: white !important;
+            box-shadow: none !important;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        .tab-pedido .total-label { font-size: 11pt; color: white !important; }
+        .tab-pedido .total-value { font-size: 16pt; color: white !important; }
+
+        /* Info plano */
+        .tab-pedido #ped_infoPlano {
+            padding: 5px 8px !important;
+            font-size: 9pt !important;
+            margin: 6px 0 !important;
+        }
+
+        /* Aviso de adicional fica oculto na impressão */
+        .tab-pedido #ped_avisoAddBlock { display: none !important; }
+
+        .tab-pedido .signature {
+            font-size: 9pt;
+            padding-top: 8px;
+            margin-top: 10px;
+        }
+        .tab-pedido .viabilidade { font-size: 7pt; margin: 4px 0; padding-top: 4px; }
+        .tab-pedido footer { font-size: 7pt; padding: 4px 0; }
     }
 </style>
 </head>
@@ -402,6 +741,12 @@
 <div id="toast" class="toast"></div>
 
 <div class="app-shell">
+
+    <!-- MARCA NEDEL -->
+    <div class="brand-bar no-print">
+        <div class="brand-mark">NEDEL<small>Telecom</small></div>
+        <div class="brand-tag">A internet da nossa cidade!</div>
+    </div>
 
     <!-- ABAS -->
     <div class="tabs no-print">
@@ -414,7 +759,7 @@
     <div class="form-container tab-panel tab-pedido active" id="tabPedido">
         <div class="header-pedido">
             <h1>NEDEL TELECOM — PEDIDO DE SERVIÇOS</h1>
-            <p>Itapiranga · Iporã do Oeste · Mondaí</p>
+            
         </div>
 
         <!-- DADOS DO CLIENTE -->
@@ -516,7 +861,7 @@
         </div>
 
         <!-- CÂMERAS -->
-        <div class="section-card">
+        <div class="section-card" id="ped_camerasSection">
             <div class="section-title">🛡️ CÂMERAS (valor mensal por unidade)</div>
             <table class="camera-table">
                 <tr><td>Externa ou Interna</td><td>R$30,00</td><td><input type="number" min="0" max="20" value="0" class="cam-qty" data-cam-preco="30.00" data-cam="mix"></td><td class="cam-mix-total">R$0,00</td></tr>
@@ -526,7 +871,7 @@
         </div>
 
         <!-- TELEFONIA -->
-        <div class="section-card">
+        <div class="section-card" id="ped_telefoniaSection">
             <div class="section-title">☎️ TELEFONIA</div>
             <div class="form-row">
                 <div class="form-field"><label>COM INTERNET</label>
@@ -551,7 +896,7 @@
         </div>
 
         <!-- IP FIXO -->
-        <div class="form-row">
+        <div class="form-row" id="ped_ipFixoRow">
             <div class="form-field"><label><input type="checkbox" id="ped_ipFixo" value="15"> IP Fixo — Adicional Mensal R$15,00</label></div>
         </div>
 
@@ -881,6 +1226,11 @@
         </div>
     </div>
 
+    <!-- RODAPÉ GLOBAL NEDEL -->
+    <div class="brand-footer no-print">
+        <strong>©2025 Nedel Telecom</strong> · Conexão de verdade, aqui por você.
+    </div>
+
 </div>
 
 <!-- Modal PSCM -->
@@ -1148,41 +1498,54 @@ function initPedidoApp() {
         let total = 0;
         let totalAdicionais = 0;
         let qtdAdicionaisTotal = 0;
+        let qtdCamerasTotal = 0;
 
         if (p) total += p.totalBase;
 
-        // Adicionais
+        // Adicionais — marca linha com row-zero quando qtd == 0
         document.querySelectorAll('.ped-qtd-adicional').forEach(inp => {
             const qtd = Math.max(0, parseInt(inp.value, 10) || 0);
             qtdAdicionaisTotal += qtd;
             const val = parseFloat(inp.dataset.valor) || 0;
             const sub = qtd * val;
             totalAdicionais += sub;
-            const td = inp.closest('tr').querySelector('.ped-subtotal-adicional');
+            const tr = inp.closest('tr');
+            const td = tr.querySelector('.ped-subtotal-adicional');
             if (td) td.textContent = fmtR$(sub);
+            tr.classList.toggle('row-zero', qtd === 0);
         });
         total += totalAdicionais;
         document.getElementById('ped_totalAdicionaisValor').textContent = fmtR$(totalAdicionais);
+
+        // Esconde a tabela de adicionais inteira se nenhum selecionado
+        document.getElementById('ped_adicionaisSection').classList.toggle('section-empty', qtdAdicionaisTotal === 0);
 
         // Câmeras
         document.querySelectorAll('#tabPedido .cam-qty').forEach(cam => {
             const preco = parseFloat(cam.getAttribute('data-cam-preco'));
             const qtd = parseInt(cam.value) || 0;
+            qtdCamerasTotal += qtd;
             const val = preco * qtd;
             total += val;
             const tipo = cam.getAttribute('data-cam');
             const target = document.querySelector('#tabPedido .cam-' + tipo + '-total');
             if (target) target.innerText = fmtR$(val);
+            cam.closest('tr').classList.toggle('row-zero', qtd === 0);
         });
+        document.getElementById('ped_camerasSection').classList.toggle('section-empty', qtdCamerasTotal === 0);
 
         // Telefonia
-        total += parseFloat(document.getElementById('ped_telefoniaCombo').value) || 0;
-        total += parseFloat(document.getElementById('ped_telefoniaSolo').value) || 0;
+        const telCombo = parseFloat(document.getElementById('ped_telefoniaCombo').value) || 0;
+        const telSolo = parseFloat(document.getElementById('ped_telefoniaSolo').value) || 0;
+        total += telCombo + telSolo;
+        document.getElementById('ped_telefoniaSection').classList.toggle('section-empty', telCombo === 0 && telSolo === 0);
 
         // IP Fixo (adicional avulso, somente se plano não tiver embutido)
-        if (document.getElementById('ped_ipFixo').checked) {
+        const ipFixoChecked = document.getElementById('ped_ipFixo').checked;
+        if (ipFixoChecked) {
             if (!p || (p.ipFixo || 0) === 0) total += 15;
         }
+        document.getElementById('ped_ipFixoRow').classList.toggle('section-empty', !ipFixoChecked);
 
         document.getElementById('ped_totalMensalDisplay').innerText = fmtR$(total);
 
