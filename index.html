@@ -279,12 +279,121 @@
     .toast.erro { background: #c00; }
     .toast.info { background: #004080; }
 
+    /* ============ TAB TITULARIDADE ============ */
+    .tab-titularidade .termo-pdf {
+        background: white;
+        margin: 0;
+        padding: 25px 30px;
+    }
+    .tab-titularidade .titulo-principal { text-align: center; margin-bottom: 18px; }
+    .tab-titularidade h1 {
+        font-size: 1.3rem; text-align: center; color: #0f3b5f;
+        border-bottom: 2px solid #0f3b5f; display: inline-block;
+        width: auto; margin: 0 auto 8px auto; padding-bottom: 5px;
+        font-weight: 700;
+    }
+    .tab-titularidade .subtitulo {
+        text-align: center; font-size: 0.75rem; color: #2c5282;
+        font-weight: 500; background: #eef2ff; display: inline-block;
+        padding: 3px 14px; border-radius: 40px; margin-top: 4px;
+    }
+    .tab-titularidade .secao {
+        background: #fefefe; border-radius: 14px;
+        padding: 14px 18px; margin-bottom: 14px;
+        border: 1px solid #e2edf2;
+    }
+    .tab-titularidade .secao h2 {
+        font-size: 1rem; color: #1e4a6e;
+        border-left: 3px solid #2c7da0; padding-left: 10px;
+        margin-bottom: 12px; font-weight: 600; border-bottom: none;
+    }
+    .tab-titularidade .campo-linha {
+        display: flex; flex-wrap: wrap; gap: 12px;
+        margin-bottom: 10px; align-items: flex-end;
+    }
+    .tab-titularidade .campo { flex: 1; min-width: 150px; }
+    .tab-titularidade .campo label {
+        display: block; font-size: 0.68rem;
+        font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.3px; color: #2c5282; margin-bottom: 3px;
+    }
+    .tab-titularidade .campo input,
+    .tab-titularidade .campo select {
+        width: 100%; padding: 7px 10px; border-radius: 10px;
+        border: 1.5px solid #cbd5e1; font-size: 0.85rem;
+        background: #ffffff; font-family: inherit;
+    }
+    .tab-titularidade .campo input:focus,
+    .tab-titularidade .campo select:focus {
+        outline: none; border-color: #2c7da0;
+        box-shadow: 0 0 0 2px rgba(44,125,160,0.2);
+    }
+    .tab-titularidade .linha-dupla { display: flex; flex-wrap: wrap; gap: 12px; }
+    .tab-titularidade .endereco-group { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+    .tab-titularidade .cidade-group { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+    .tab-titularidade .telefones { display: flex; flex-wrap: wrap; gap: 12px; }
+    .tab-titularidade .obrigatorio:after {
+        content: "*"; color: #e53e3e; margin-left: 3px; font-weight: bold;
+    }
+    .tab-titularidade .checkbox-group {
+        display: flex; gap: 24px; align-items: center;
+        flex-wrap: wrap; margin-top: 4px;
+    }
+    .tab-titularidade .checkbox-group label {
+        display: flex; align-items: center; gap: 8px;
+        font-weight: normal; text-transform: none;
+        font-size: 0.85rem; color: #1e293b; white-space: nowrap;
+    }
+    .tab-titularidade .declaracao-bloco {
+        background: #f9fafb; border-left: 3px solid #cbd5e1;
+        padding: 12px 16px; font-size: 0.78rem; color: #2d3748;
+        margin: 14px 0; border-radius: 10px; line-height: 1.5;
+    }
+    .tab-titularidade .codigo-penal {
+        font-family: monospace; background: #f1f5f9;
+        padding: 8px 10px; border-radius: 8px;
+        font-size: 0.72rem; margin-top: 6px;
+    }
+    .tab-titularidade .data-obs-linha {
+        display: flex; flex-wrap: wrap; gap: 20px;
+        margin: 16px 0 26px 0; align-items: flex-end;
+    }
+    .tab-titularidade .data-obs-linha .campo { flex: 1; }
+    .tab-titularidade .assinaturas-linha {
+        display: flex; flex-wrap: wrap; gap: 40px;
+        margin-top: 10px; margin-bottom: 15px;
+    }
+    .tab-titularidade .assinatura-coluna { flex: 1; text-align: center; }
+    .tab-titularidade .linha-assinatura-fisica {
+        border-bottom: 1px solid #000; margin-bottom: 8px; height: 35px; width: 100%;
+    }
+    .tab-titularidade .texto-assinatura-label {
+        font-size: 0.78rem; color: #334155;
+        font-weight: 500; margin-bottom: 4px;
+    }
+    .tab-titularidade .nome-automatico {
+        font-size: 0.85rem; font-weight: 500; color: #0f3b5f;
+        text-align: center; padding: 4px 8px;
+        word-break: break-word; margin-top: 5px;
+    }
+    .tab-titularidade .select-pequeno { max-width: 100px; }
+    .tab-titularidade .aviso-campos {
+        font-size: 0.65rem; color: #5f6c84;
+        text-align: center; margin-top: 15px;
+        padding-top: 6px; border-top: 1px solid #e2edf2;
+    }
+
     /* ============ IMPRESSÃO ============ */
     @media print {
         body { background: white; padding: 0; margin: 0; }
         .tabs, .no-print, .botoes-acao { display: none !important; }
         .tab-panel:not(.active) { display: none !important; }
         .form-container { box-shadow: none; border-radius: 0; padding: 10mm; }
+        .tab-titularidade .secao,
+        .tab-titularidade .assinaturas-linha,
+        .tab-titularidade .declaracao-bloco {
+            break-inside: avoid; page-break-inside: avoid;
+        }
     }
 </style>
 </head>
@@ -298,6 +407,7 @@
     <div class="tabs no-print">
         <button class="tab-btn active" data-tab="pedido">📋 Pedido de Serviços</button>
         <button class="tab-btn" data-tab="pscm">📄 Contrato PSCM</button>
+        <button class="tab-btn" data-tab="titularidade">📑 Transferência de Titularidade</button>
     </div>
 
     <!-- ============ TAB 1: PEDIDO ============ -->
@@ -328,8 +438,14 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="form-field"><label>ENDEREÇO</label><input type="text" id="ped_endereco" placeholder="Rua, número, bairro"></div>
+            <div class="form-field" style="flex:3;"><label>ENDEREÇO</label><input type="text" id="ped_endereco" placeholder="Rua, Avenida..."></div>
+            <div class="form-field" style="flex:0 1 100px;"><label>NÚMERO</label><input type="text" id="ped_numero" placeholder="Nº"></div>
+            <div class="form-field"><label>BAIRRO</label><input type="text" id="ped_bairro" placeholder="Bairro"></div>
+        </div>
+        <div class="form-row">
             <div class="form-field"><label>MUNICÍPIO</label><input type="text" id="ped_municipio" placeholder="Cidade"></div>
+            <div class="form-field" style="flex:0 1 100px;"><label>UF</label><input type="text" id="ped_uf" placeholder="SC" maxlength="2"></div>
+            <div class="form-field"><label>CEP</label><input type="text" id="ped_cep" placeholder="00000-000" maxlength="9"></div>
         </div>
         <div class="form-row">
             <div class="form-field"><label>CONTATO TEL 1</label><input type="text" id="ped_tel1" placeholder="(00) 00000-0000" maxlength="16"></div>
@@ -351,96 +467,52 @@
             </div>
         </div>
 
-        <!-- PLANOS FIBRA -->
+        <!-- PLANO (estrutura unificada com a aba Contrato) -->
         <div class="section-card">
-            <div class="section-title">🌐 PLANOS INTERNET VIA FIBRA</div>
-            <div class="plan-select-group">
-                <div class="plan-select-item">
-                    <label>500 Mb</label>
-                    <select id="ped_plano500" class="plano-select">
-                        <option value="">Selecione</option>
-                        <option value="500_scm"       data-preco="96.90"  data-bloq-apps="sim" data-bloq-carte="sim">SCM — R$96,90</option>
-                        <option value="500_basico"    data-preco="99.90"  data-bloq-apps="sim" data-bloq-carte="sim">Básico — R$99,90</option>
-                        <option value="500_mesh"      data-preco="119.90" data-bloq-apps="sim" data-bloq-carte="sim">Mesh ou Deco — R$119,90</option>
-                        <option value="500_deco"      data-preco="139.90" data-bloq-apps="sim" data-bloq-carte="sim">Deco Mesh — R$139,90</option>
-                        <option value="500_triplo"    data-preco="159.90" data-bloq-apps="sim" data-bloq-carte="sim">Deco Mesh Triplo — R$159,90</option>
-                        <option value="500_corp"      data-preco="149.90" data-bloq-apps="sim" data-bloq-carte="sim">Corporativo — R$149,90</option>
-                        <option value="500_corp_mesh" data-preco="169.90" data-bloq-apps="sim" data-bloq-carte="sim">Corporativo Mesh — R$169,90</option>
+            <div class="section-title">🌐 PLANO CONTRATADO</div>
+            <div class="form-row">
+                <div class="form-field" style="flex:3;">
+                    <label>Plano</label>
+                    <select id="ped_planoSelect">
+                        <option value="">-- Selecione --</option>
                     </select>
                 </div>
-                <div class="plan-select-item">
-                    <label>600 Mb</label>
-                    <select id="ped_plano600" class="plano-select">
-                        <option value="">Selecione</option>
-                        <option value="600_basico" data-preco="100.00" data-bloq-apps="nao" data-bloq-carte="nao">Básico — R$100,00</option>
-                        <option value="600_mesh"   data-preco="120.00" data-bloq-apps="nao" data-bloq-carte="nao">Mesh ou Deco — R$120,00</option>
-                        <option value="600_deco"   data-preco="140.00" data-bloq-apps="nao" data-bloq-carte="nao">Deco Mesh — R$140,00</option>
-                        <option value="600_triplo" data-preco="160.00" data-bloq-apps="nao" data-bloq-carte="nao">Deco Mesh Triplo — R$160,00</option>
-                    </select>
-                </div>
-                <div class="plan-select-item">
-                    <label>800 Mb</label>
-                    <select id="ped_plano800" class="plano-select">
-                        <option value="">Selecione</option>
-                        <option value="800_basico"     data-preco="110.00" data-bloq-apps="nao" data-bloq-carte="nao">Básico — R$110,00</option>
-                        <option value="800_mesh"       data-preco="130.00" data-bloq-apps="nao" data-bloq-carte="nao">Mesh ou Deco — R$130,00</option>
-                        <option value="800_deco"       data-preco="150.00" data-bloq-apps="nao" data-bloq-carte="nao">Deco Mesh — R$150,00</option>
-                        <option value="800_triplo"     data-preco="170.00" data-bloq-apps="nao" data-bloq-carte="nao">Deco Mesh Triplo — R$170,00</option>
-                        <option value="800_combo"      data-preco="199.80" data-bloq-apps="sim" data-bloq-carte="nao">⭐ Combo Total — R$199,80</option>
-                        <option value="800_combo_mesh" data-preco="219.80" data-bloq-apps="sim" data-bloq-carte="nao">Combo Total Mesh/Deco — R$219,80</option>
-                        <option value="800_exitlag"    data-preco="129.90" data-bloq-apps="sim" data-bloq-carte="nao">Combo Exitlag — R$129,90</option>
+                <div class="form-field">
+                    <label>Taxa Adesão (R$)</label>
+                    <select id="ped_taxaFibra">
+                        <option value="0">Nenhuma</option>
+                        <option value="150">R$ 150,00</option>
+                        <option value="200">R$ 200,00</option>
+                        <option value="300">R$ 300,00</option>
+                        <option value="500">R$ 500,00</option>
+                        <option value="700">R$ 700,00</option>
                     </select>
                 </div>
             </div>
+            <div id="ped_infoPlano" style="display:none; background:#e8f0fe; padding:10px; border-radius:6px; border-left:4px solid #004080; font-size:13px;"></div>
         </div>
 
-        <!-- PLANOS RÁDIO -->
-        <div class="section-card">
-            <div class="section-title">📡 PLANOS INTERNET VIA RÁDIO</div>
-            <div class="plan-select-item" style="max-width:300px;">
-                <select id="ped_planoRadio" class="plano-select">
-                    <option value="">Selecione</option>
-                    <option value="radio_10"       data-preco="89.00"  data-bloq-apps="sim" data-bloq-carte="sim">10 Mb — R$89,00</option>
-                    <option value="radio_30"       data-preco="119.90" data-bloq-apps="nao" data-bloq-carte="nao">30 Mb — R$119,90</option>
-                    <option value="radio_30_combo" data-preco="209.70" data-bloq-apps="sim" data-bloq-carte="nao">30 Mb Combo Total — R$209,70</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- TAXA ADESÃO -->
-        <div class="form-row">
-            <div class="form-field"><label>Taxa Adesão — Área Rural</label>
-                <select id="ped_taxaFibra">
-                    <option value="0">Nenhuma</option>
-                    <option value="150">R$150,00</option>
-                    <option value="200">R$200,00</option>
-                    <option value="300">R$300,00</option>
-                    <option value="500">R$500,00</option>
-                    <option value="700">R$700,00</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- ADICIONAIS APPS -->
+        <!-- ADICIONAIS (mesma estrutura da aba Contrato) -->
         <div class="section-card" id="ped_adicionaisSection">
-            <div class="section-title">📲 ADICIONAIS — APPS</div>
-            <table class="addon-table">
-                <thead><tr><th>APPS</th><th>VALOR UNIT</th><th>QTD.</th><th>TOTAL</th></tr></thead>
-                <tbody>
-                    <tr><td style="color:#0066cc; font-weight:500;">Standard</td><td>R$9,90</td><td><input type="number" min="0" max="99" value="0" class="qty-input" data-preco="9.90" data-addon="standard"></td><td class="total-standard">R$0,00</td></tr>
-                    <tr><td style="color:#0066cc; font-weight:500;">Advanced</td><td>R$14,90</td><td><input type="number" min="0" max="99" value="0" class="qty-input" data-preco="14.90" data-addon="advanced"></td><td class="total-advanced">R$0,00</td></tr>
-                    <tr><td style="color:#0066cc; font-weight:500;">Premium</td><td>R$29,90</td><td><input type="number" min="0" max="99" value="0" class="qty-input" data-preco="29.90" data-addon="premium"></td><td class="total-premium">R$0,00</td></tr>
-                </tbody>
+            <div class="section-title">📲 ADICIONAIS</div>
+            <table class="tabela-adicionais" style="width:100%; border-collapse:collapse; font-size:13px;">
+                <thead>
+                    <tr style="background:#f0f0f0;">
+                        <th style="border:1px solid #ccc; padding:6px; text-align:left;">Adicional</th>
+                        <th style="border:1px solid #ccc; padding:6px; text-align:left;">Valor</th>
+                        <th style="border:1px solid #ccc; padding:6px; text-align:left;">Qtd</th>
+                        <th style="border:1px solid #ccc; padding:6px; text-align:left;">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody id="ped_tbodyAdicionais"></tbody>
+                <tfoot>
+                    <tr style="background:#e8f0fe;">
+                        <td colspan="3" style="border:1px solid #ccc; padding:6px;"><strong>TOTAL ADICIONAIS</strong></td>
+                        <td id="ped_totalAdicionaisValor" style="border:1px solid #ccc; padding:6px;">R$ 0,00</td>
+                    </tr>
+                </tfoot>
             </table>
-            <div style="margin-top:12px;"><strong>À LA CARTE</strong></div>
-            <div class="la-carte-horizontal" id="ped_laCarteGroup">
-                <label class="la-carte-item"><input type="checkbox" value="29.90"> Nosso Futebol — R$29,90</label>
-                <label class="la-carte-item"><input type="checkbox" value="34.90"> Combate — R$34,90</label>
-                <label class="la-carte-item"><input type="checkbox" value="29.90"> Telecine — R$29,90</label>
-                <label class="la-carte-item"><input type="checkbox" value="59.90"> Premiere — R$59,90</label>
-                <label class="la-carte-item"><input type="checkbox" value="99.90"> Sky+ Full — R$99,90</label>
-            </div>
-            <div id="ped_avisoAddBlock" style="color:#b91c1c; font-size:11px; margin-top:6px;"></div>
+            <div id="ped_avisoAddBlock" style="color:#92400e; font-size:11px; margin-top:8px;"></div>
         </div>
 
         <!-- CÂMERAS -->
@@ -653,6 +725,162 @@
         </div>
     </div>
 
+    <!-- ============ TAB 3: TITULARIDADE ============ -->
+    <div class="form-container tab-panel tab-titularidade" id="tabTitularidade">
+        <div id="tit_termoParaPDF" class="termo-pdf">
+            <div class="titulo-principal">
+                <h1>TERMO DE TRANSFERÊNCIA DE TITULARIDADE DE SERVIÇO SCM/STFC</h1>
+                <div class="subtitulo">Documento válido para alteração contratual</div>
+            </div>
+
+            <div class="secao">
+                <h2>DADOS DO CEDENTE</h2>
+                <div class="campo-linha">
+                    <div class="campo">
+                        <label class="obrigatorio">Nome Completo / Razão Social</label>
+                        <input type="text" id="tit_cedenteNome" placeholder="Ex: João da Silva Santos ou Empresa Ltda" autocomplete="off">
+                    </div>
+                </div>
+                <div class="linha-dupla">
+                    <div class="campo" style="max-width: 100px;">
+                        <label class="obrigatorio">Tipo</label>
+                        <select id="tit_cedenteTipoDoc" class="select-pequeno">
+                            <option value="cpf">CPF</option>
+                            <option value="cnpj">CNPJ</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label class="obrigatorio">CPF / CNPJ</label>
+                        <input type="text" id="tit_cedenteCpfCnpj" placeholder="000.000.000-00" maxlength="18">
+                    </div>
+                    <div class="campo">
+                        <label class="obrigatorio">RG / IE</label>
+                        <input type="text" id="tit_cedenteRgIe" placeholder="RG ou Inscrição Estadual">
+                    </div>
+                </div>
+            </div>
+
+            <div class="secao">
+                <h2>DADOS DO CESSIONÁRIO – ADQUIRENTE</h2>
+                <div class="campo-linha">
+                    <div class="campo">
+                        <label class="obrigatorio">Nome Completo / Razão Social</label>
+                        <input type="text" id="tit_cessionarioNome" placeholder="Nome completo ou empresa" autocomplete="off">
+                    </div>
+                </div>
+                <div class="linha-dupla">
+                    <div class="campo" style="max-width: 100px;">
+                        <label class="obrigatorio">Tipo</label>
+                        <select id="tit_cessionarioTipoDoc" class="select-pequeno">
+                            <option value="cpf">CPF</option>
+                            <option value="cnpj">CNPJ</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label class="obrigatorio">CPF / CNPJ</label>
+                        <input type="text" id="tit_cessionarioCpfCnpj" placeholder="000.000.000-00" maxlength="18">
+                    </div>
+                    <div class="campo">
+                        <label class="obrigatorio">RG / IE</label>
+                        <input type="text" id="tit_cessionarioRgIe" placeholder="RG ou Inscrição Estadual">
+                    </div>
+                </div>
+                <div class="endereco-group">
+                    <div class="campo">
+                        <label>Endereço</label>
+                        <input type="text" id="tit_endereco" placeholder="Rua, Av, nº, complemento">
+                    </div>
+                    <div class="campo">
+                        <label>Bairro</label>
+                        <input type="text" id="tit_bairro" placeholder="Bairro">
+                    </div>
+                </div>
+                <div class="cidade-group">
+                    <div class="campo">
+                        <label>Município</label>
+                        <input type="text" id="tit_municipio" placeholder="Cidade / Estado">
+                    </div>
+                    <div class="campo">
+                        <label>CEP</label>
+                        <input type="text" id="tit_cep" placeholder="00000-000">
+                    </div>
+                </div>
+                <div class="telefones">
+                    <div class="campo">
+                        <label>Contato Telefone</label>
+                        <input type="text" id="tit_contatoTel1" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="campo">
+                        <label>Contato Telefone (adicional)</label>
+                        <input type="text" id="tit_contatoTel2" placeholder="(00) 0000-0000">
+                    </div>
+                </div>
+            </div>
+
+            <div class="secao">
+                <h2>DADOS DO SERVIÇO</h2>
+                <div class="campo-linha">
+                    <div class="campo">
+                        <label class="obrigatorio">Nome do Serviço (selecione uma ou ambas opções)</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" id="tit_servicoSCM" value="SCM"> SCM (Serviço de Comunicação Multimídia)</label>
+                            <label><input type="checkbox" id="tit_servicoSTFC" value="STFC"> STFC (Serviço Telefônico Fixo Comutado)</label>
+                        </div>
+                        <input type="hidden" id="tit_nomeServicoFinal">
+                    </div>
+                </div>
+                <div class="campo-linha">
+                    <div class="campo">
+                        <label>Motivo da transferência</label>
+                        <input type="text" id="tit_motivoTransferencia" placeholder="Ex: Venda do imóvel, cessão de direitos etc.">
+                    </div>
+                </div>
+            </div>
+
+            <div class="declaracao-bloco">
+                <p><strong>Responsabilidade das informações:</strong> Os dados informados são de responsabilidade do contratante. Informações incorretas poderão inviabilizar o atendimento.</p>
+                <p style="margin-top: 6px;">Declaro que as informações fornecidas neste formulário são verdadeiras e estou ciente de que a falsidade do presente formulário pode implicar na sanção penal prevista no art. 299 do Código Penal, conforme transcrição abaixo:</p>
+                <div class="codigo-penal">
+                    "Art. 299 - Omitir, em documento público ou particular, declaração que dele devia constar, ou nele inserir ou fazer inserir declaração falsa ou diversa da que devia ser escrita, com o fim de prejudicar direito, criar obrigação ou alterar a verdade sobre fato juridicamente relevante: Pena - reclusão, de um a cinco anos, e multa, se o documento é público, e reclusão de um a três anos, e multa, se o documento é particular".
+                </div>
+                <p style="margin-top: 8px;">Pelo presente Termo de Transferência de Titularidade, é acordado entre as Partes, a transferência das responsabilidades e obrigações referidas no Contrato de Prestação de Serviço, assim como quaisquer outros documentos firmados entre a Informática Itapiranga Ltda EPP e o Cedente, para o Cessionário.</p>
+            </div>
+
+            <div class="data-obs-linha">
+                <div class="campo">
+                    <label>DATA</label>
+                    <input type="date" id="tit_dataTermo">
+                </div>
+                <div class="campo">
+                    <label>OBS</label>
+                    <input type="text" id="tit_observacao" placeholder="Observações adicionais...">
+                </div>
+            </div>
+
+            <div class="assinaturas-linha">
+                <div class="assinatura-coluna">
+                    <div class="texto-assinatura-label">Assinatura do Cedente (antigo titular)</div>
+                    <div class="linha-assinatura-fisica"></div>
+                    <div id="tit_nomeAssinaturaCedente" class="nome-automatico">-</div>
+                </div>
+                <div class="assinatura-coluna">
+                    <div class="texto-assinatura-label">Assinatura do Cessionário - Adquirente (novo titular)</div>
+                    <div class="linha-assinatura-fisica"></div>
+                    <div id="tit_nomeAssinaturaCessionario" class="nome-automatico">-</div>
+                </div>
+            </div>
+
+            <div class="aviso-campos">
+                *Campos com asterisco são obrigatórios.
+            </div>
+        </div>
+
+        <div class="botoes-acao no-print" style="margin-top: 18px;">
+            <button type="button" class="btn btn-secundario" id="tit_btnLimpar">Limpar formulário</button>
+            <button type="button" class="btn btn-print" id="tit_btnImprimir">🖨️ Imprimir / Salvar PDF</button>
+        </div>
+    </div>
+
 </div>
 
 <!-- Modal PSCM -->
@@ -674,19 +902,30 @@
 /* ============================================================
    TAB SWITCHING
    ============================================================ */
+const tabPanelIds = { pedido: 'tabPedido', pscm: 'tabPSCM', titularidade: 'tabTitularidade' };
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById(btn.dataset.tab === 'pedido' ? 'tabPedido' : 'tabPSCM').classList.add('active');
+        const panelId = tabPanelIds[btn.dataset.tab];
+        if (panelId) document.getElementById(panelId).classList.add('active');
+        // Sinaliza ao body qual aba está ativa (para regras @media print)
+        document.body.dataset.activeTab = btn.dataset.tab;
     });
 });
+document.body.dataset.activeTab = 'pedido';
 
 /* ============================================================
    ABA 1 — PEDIDO DE SERVIÇOS
+   (Usa planosDB e adicionaisDB compartilhados — mesma estrutura
+    da aba Contrato para facilitar a importação)
+   NOTA: função inicializada via DOMContentLoaded para garantir
+   que planosDB/adicionaisDB já tenham sido declarados.
    ============================================================ */
-(function pedidoApp() {
+window.pedidoEstado = { planoIdx: null, planoAtual: null };
+
+function initPedidoApp() {
     function maskCPF(input) {
         let v = input.value.replace(/\D/g, '');
         if (v.length <= 11) {
@@ -757,65 +996,175 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById('ped_tel1').addEventListener('input', function(){ maskTel(this); });
     document.getElementById('ped_tel2').addEventListener('input', function(){ maskTel(this); });
 
-    const selects = ['ped_plano500','ped_plano600','ped_plano800','ped_planoRadio'];
-    function limparOutros(selecionado) {
-        selects.forEach(id => { if (id !== selecionado) document.getElementById(id).value = ''; });
-    }
-    selects.forEach(id => {
-        document.getElementById(id).addEventListener('change', function() {
-            if (this.value) limparOutros(id);
-            atualizarTudo();
+    // -------- popular planos (com agrupamento por família) --------
+    function popularPlanosPedido() {
+        const sel = document.getElementById('ped_planoSelect');
+        // Limpa
+        while (sel.options.length > 1) sel.remove(1);
+        // Agrupa por família
+        const grupos = { 'BÁSICO 500 MB': [], 'COMBO 600 MB': [], 'COMBO 800 MB': [], 'NITRO (RÁDIO)': [], 'OUTROS': [] };
+        planosDB.forEach((p, i) => {
+            let chave;
+            if (p.nome.startsWith('BASICO 500') || p.nome.startsWith('BASICO FIBRA 500') || p.nome.startsWith('CORPORATIVO')) chave = 'BÁSICO 500 MB';
+            else if (p.nome.startsWith('COMBO 600')) chave = 'COMBO 600 MB';
+            else if (p.nome.startsWith('COMBO 800')) chave = 'COMBO 800 MB';
+            else if (p.nome.startsWith('NITRO')) chave = 'NITRO (RÁDIO)';
+            else chave = 'OUTROS';
+            grupos[chave].push({ idx: i, plano: p });
         });
-    });
+        Object.entries(grupos).forEach(([nomeGrupo, lista]) => {
+            if (!lista.length) return;
+            const og = document.createElement('optgroup');
+            og.label = nomeGrupo;
+            lista.forEach(({ idx, plano }) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.textContent = `${plano.nome} — ${moeda.format(plano.totalBase)}`;
+                og.appendChild(opt);
+            });
+            sel.appendChild(og);
+        });
+    }
 
-    function getPlanoAtivo() {
-        for (let id of selects) {
-            const sel = document.getElementById(id);
-            if (sel && sel.value) {
-                const opt = sel.selectedOptions[0];
-                return {
-                    preco: parseFloat(opt.getAttribute('data-preco')),
-                    bloqApps: opt.getAttribute('data-bloq-apps') === 'sim',
-                    bloqCarte: opt.getAttribute('data-bloq-carte') === 'sim'
-                };
+    // -------- popular adicionais (mesma estrutura do Contrato) --------
+    function popularAdicionaisPedido() {
+        const tbody = document.getElementById('ped_tbodyAdicionais');
+        tbody.innerHTML = '';
+        adicionaisDB.forEach(a => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="border:1px solid #ccc; padding:6px;">${escapeHtml(a.nome)}</td>
+                <td class="ped-valor-unit" style="border:1px solid #ccc; padding:6px;">${fmtR$(a.valor)}</td>
+                <td style="border:1px solid #ccc; padding:6px;">
+                    <input type="number" min="0" step="1" class="ped-qtd-adicional"
+                           data-valor="${a.valor}" data-nome="${escapeHtml(a.nome)}"
+                           value="0" style="width:70px; padding:4px; text-align:center; border:1px solid #ccc; border-radius:4px;">
+                </td>
+                <td class="ped-subtotal-adicional" style="border:1px solid #ccc; padding:6px;">${fmtR$(0)}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+        // Liga eventos
+        tbody.querySelectorAll('.ped-qtd-adicional').forEach(inp => {
+            inp.addEventListener('input', atualizarTudo);
+            inp.addEventListener('change', atualizarTudo);
+        });
+    }
+
+    // -------- carregar plano selecionado --------
+    // Regras por tipo de plano
+    function regrasPlano(p) {
+        if (!p) return { e500: false, eCombo: false };
+        const e500 = parseInt(p.velDown, 10) === 550000; // todos os planos 500 Mb
+        const eCombo = /^COMBO\s/i.test(p.nome);          // qualquer plano que começa com "COMBO"
+        return { e500, eCombo };
+    }
+
+    function aplicarBloqueioAdicionais(bloqueia) {
+        document.querySelectorAll('.ped-qtd-adicional').forEach(inp => {
+            inp.disabled = bloqueia;
+            if (bloqueia) inp.value = 0;
+        });
+    }
+
+    function carregarPlanoPedido() {
+        const idx = document.getElementById('ped_planoSelect').value;
+        if (idx === '') {
+            window.pedidoEstado.planoIdx = null;
+            window.pedidoEstado.planoAtual = null;
+            document.getElementById('ped_infoPlano').style.display = 'none';
+            document.getElementById('ped_avisoAddBlock').innerText = '';
+            aplicarBloqueioAdicionais(false);
+            document.querySelectorAll('.ped-qtd-adicional').forEach(i => i.value = 0);
+            atualizarTudo();
+            return;
+        }
+        const i = parseInt(idx, 10);
+        window.pedidoEstado.planoIdx = i;
+        window.pedidoEstado.planoAtual = JSON.parse(JSON.stringify(planosDB[i]));
+        const p = window.pedidoEstado.planoAtual;
+        const { e500, eCombo } = regrasPlano(p);
+
+        // Zera adicionais antes de aplicar qualquer regra
+        document.querySelectorAll('.ped-qtd-adicional').forEach(i => i.value = 0);
+
+        // Ajusta preço PREMIUM para planos especiais
+        const inpPremium = document.querySelector('.ped-qtd-adicional[data-nome="PREMIUM"]');
+        const tdPremiumValor = inpPremium ? inpPremium.closest('tr').querySelector('.ped-valor-unit') : null;
+        if (p.premiumEspecial) {
+            inpPremium.dataset.valor = '26.63';
+            if (tdPremiumValor) tdPremiumValor.textContent = fmtR$(26.63);
+        } else {
+            inpPremium.dataset.valor = '29.90';
+            if (tdPremiumValor) tdPremiumValor.textContent = fmtR$(29.90);
+        }
+
+        // REGRA: planos 500 Mb não têm adicionais — bloqueia tudo
+        if (e500) {
+            aplicarBloqueioAdicionais(true);
+        } else {
+            aplicarBloqueioAdicionais(false);
+            // Auto-preenche adicionais padrão do plano (PREMIUM/STANDARD em planos TOTAL)
+            if (p.adicionaisPadrao) {
+                for (const [nome, qtd] of Object.entries(p.adicionaisPadrao)) {
+                    const inp = document.querySelector(`.ped-qtd-adicional[data-nome="${nome}"]`);
+                    if (inp) inp.value = qtd;
+                }
             }
         }
-        return null;
+
+        // Info box
+        const info = document.getElementById('ped_infoPlano');
+        info.style.display = 'block';
+        info.innerHTML = `
+            <strong>${escapeHtml(p.nome)}</strong><br>
+            Velocidade: <strong>${kbpsParaMbps(p.velDown)}</strong> down / <strong>${kbpsParaMbps(p.velUp)}</strong> up<br>
+            Mensal base: <strong>${fmtR$(p.totalBase)}</strong> | Benefício: <strong>${fmtR$(p.beneficio)}</strong>
+        `;
+
+        // Aviso contextual
+        const aviso = document.getElementById('ped_avisoAddBlock');
+        if (e500) {
+            aviso.style.color = '#b91c1c';
+            aviso.innerText = '🚫 Planos 500 Mb não permitem adicionais.';
+        } else if (p.adicionaisPadrao) {
+            const partes = Object.entries(p.adicionaisPadrao).map(([n,q]) => `${q}× ${n}`).join(', ');
+            aviso.style.color = '#166534';
+            aviso.innerText = `⭐ Este plano já inclui: ${partes}. Você pode adicionar mais se quiser.`;
+        } else if (eCombo) {
+            aviso.style.color = '#92400e';
+            aviso.innerText = '⚠️ Plano COMBO: é obrigatório selecionar ao menos um adicional.';
+        } else {
+            aviso.innerText = '';
+        }
+        atualizarTudo();
     }
 
+    document.getElementById('ped_planoSelect').addEventListener('change', carregarPlanoPedido);
+
+    // -------- cálculo total --------
     function atualizarTudo() {
-        const plano = getPlanoAtivo();
-        const bloqApps = plano ? plano.bloqApps : true;
-        const bloqCarte = plano ? plano.bloqCarte : true;
-
-        document.querySelectorAll('#tabPedido .qty-input').forEach(inp => {
-            inp.disabled = bloqApps;
-            if (bloqApps) inp.value = 0;
-        });
-        document.querySelectorAll('#ped_laCarteGroup input').forEach(ch => {
-            ch.disabled = bloqCarte;
-            if (bloqCarte) ch.checked = false;
-        });
-
+        const p = window.pedidoEstado.planoAtual;
         let total = 0;
-        if (plano) total += plano.preco;
+        let totalAdicionais = 0;
+        let qtdAdicionaisTotal = 0;
 
-        document.querySelectorAll('#tabPedido .qty-input').forEach(inp => {
-            const precoUnit = parseFloat(inp.getAttribute('data-preco'));
-            const qtd = (!bloqApps && plano) ? parseInt(inp.value) || 0 : 0;
-            const valor = precoUnit * qtd;
-            const addon = inp.getAttribute('data-addon');
-            const target = document.querySelector('#tabPedido .total-' + addon);
-            if (target) target.innerText = 'R$ ' + valor.toFixed(2);
-            if (!bloqApps && plano) total += valor;
+        if (p) total += p.totalBase;
+
+        // Adicionais
+        document.querySelectorAll('.ped-qtd-adicional').forEach(inp => {
+            const qtd = Math.max(0, parseInt(inp.value, 10) || 0);
+            qtdAdicionaisTotal += qtd;
+            const val = parseFloat(inp.dataset.valor) || 0;
+            const sub = qtd * val;
+            totalAdicionais += sub;
+            const td = inp.closest('tr').querySelector('.ped-subtotal-adicional');
+            if (td) td.textContent = fmtR$(sub);
         });
+        total += totalAdicionais;
+        document.getElementById('ped_totalAdicionaisValor').textContent = fmtR$(totalAdicionais);
 
-        let carteTotal = 0;
-        document.querySelectorAll('#ped_laCarteGroup input[type="checkbox"]').forEach(ch => {
-            if (!bloqCarte && ch.checked) carteTotal += parseFloat(ch.value);
-        });
-        total += carteTotal;
-
+        // Câmeras
         document.querySelectorAll('#tabPedido .cam-qty').forEach(cam => {
             const preco = parseFloat(cam.getAttribute('data-cam-preco'));
             const qtd = parseInt(cam.value) || 0;
@@ -823,57 +1172,108 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
             total += val;
             const tipo = cam.getAttribute('data-cam');
             const target = document.querySelector('#tabPedido .cam-' + tipo + '-total');
-            if (target) target.innerText = 'R$ ' + val.toFixed(2);
+            if (target) target.innerText = fmtR$(val);
         });
 
+        // Telefonia
         total += parseFloat(document.getElementById('ped_telefoniaCombo').value) || 0;
         total += parseFloat(document.getElementById('ped_telefoniaSolo').value) || 0;
-        if (document.getElementById('ped_ipFixo').checked) total += 15;
 
-        const aviso = document.getElementById('ped_avisoAddBlock');
-        if (!plano) {
-            aviso.style.color = '#b91c1c';
-            aviso.innerText = 'Selecione um plano de internet.';
-        } else if (!bloqApps && !bloqCarte) {
-            aviso.style.color = '#166534';
-            aviso.innerText = '✅ APPS e À La Carte liberados para este plano.';
-        } else if (bloqApps && !bloqCarte) {
-            aviso.style.color = '#92400e';
-            aviso.innerText = '⭐ Plano Combo: APPS já inclusos — apenas À La Carte disponível.';
-        } else {
-            aviso.style.color = '#b91c1c';
-            aviso.innerText = '⚠️ Plano selecionado não permite adicionais (APPS e À La Carte bloqueados).';
+        // IP Fixo (adicional avulso, somente se plano não tiver embutido)
+        if (document.getElementById('ped_ipFixo').checked) {
+            if (!p || (p.ipFixo || 0) === 0) total += 15;
         }
 
-        document.getElementById('ped_totalMensalDisplay').innerText = 'R$ ' + total.toFixed(2);
+        document.getElementById('ped_totalMensalDisplay').innerText = fmtR$(total);
+
+        // Atualiza aviso dinâmico (especialmente para COMBO sem adicional)
+        if (p) {
+            const { e500, eCombo } = regrasPlano(p);
+            const aviso = document.getElementById('ped_avisoAddBlock');
+            if (e500) {
+                aviso.style.color = '#b91c1c';
+                aviso.innerText = '🚫 Planos 500 Mb não permitem adicionais.';
+            } else if (eCombo && qtdAdicionaisTotal === 0) {
+                aviso.style.color = '#b91c1c';
+                aviso.innerText = '⚠️ Plano COMBO: é obrigatório selecionar ao menos um adicional.';
+            } else if (p.adicionaisPadrao) {
+                const partes = Object.entries(p.adicionaisPadrao).map(([n,q]) => `${q}× ${n}`).join(', ');
+                aviso.style.color = '#166534';
+                aviso.innerText = `⭐ Este plano já inclui: ${partes}.`;
+            } else if (eCombo) {
+                aviso.style.color = '#166534';
+                aviso.innerText = `✅ Adicional selecionado (${qtdAdicionaisTotal} item${qtdAdicionaisTotal > 1 ? 's' : ''}).`;
+            } else {
+                aviso.innerText = '';
+            }
+        }
     }
 
+    // Eventos
     document.getElementById('ped_telefoniaCombo').addEventListener('change', atualizarTudo);
     document.getElementById('ped_telefoniaSolo').addEventListener('change', atualizarTudo);
-    document.querySelectorAll('#tabPedido .qty-input').forEach(i => i.addEventListener('input', atualizarTudo));
-    document.querySelectorAll('#ped_laCarteGroup input').forEach(c => c.addEventListener('change', atualizarTudo));
     document.querySelectorAll('#tabPedido .cam-qty').forEach(c => c.addEventListener('input', atualizarTudo));
     document.getElementById('ped_ipFixo').addEventListener('change', atualizarTudo);
+    document.getElementById('ped_taxaFibra').addEventListener('change', atualizarTudo);
 
+    // Limpar
     document.getElementById('ped_limparBtn').addEventListener('click', () => {
         document.querySelectorAll('#tabPedido input[type="text"], #tabPedido input[type="email"], #tabPedido textarea').forEach(el => el.value = '');
         document.querySelectorAll('#tabPedido select').forEach(el => {
-            if (el.id !== 'ped_dataPedido') el.value = el.options[0].value;
+            if (el.id !== 'ped_dataPedido') el.value = '';
         });
         document.querySelectorAll('#tabPedido input[type="number"]').forEach(el => el.value = 0);
         document.querySelectorAll('#tabPedido input[type="checkbox"]').forEach(el => el.checked = false);
         document.getElementById('ped_tipoDocumento').value = 'cpf';
+        window.pedidoEstado = { planoIdx: null, planoAtual: null };
+        document.getElementById('ped_infoPlano').style.display = 'none';
+        document.getElementById('ped_avisoAddBlock').innerText = '';
         togglePessoaTipo();
         atualizarTudo();
     });
 
-    document.getElementById('ped_printBtn').addEventListener('click', () => window.print());
+    // Validação antes de imprimir
+    function validarPedidoParaImprimir() {
+        const p = window.pedidoEstado.planoAtual;
+        if (!p) {
+            alert('Selecione um plano antes de imprimir.');
+            return false;
+        }
+        const { eCombo } = regrasPlano(p);
+        if (eCombo) {
+            const totalQtdAd = Array.from(document.querySelectorAll('.ped-qtd-adicional'))
+                .reduce((s, inp) => s + (parseInt(inp.value, 10) || 0), 0);
+            if (totalQtdAd <= 0) {
+                alert('Plano COMBO selecionado: é obrigatório escolher ao menos um adicional.');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    document.getElementById('ped_printBtn').addEventListener('click', () => {
+        if (!validarPedidoParaImprimir()) return;
+        window.print();
+    });
+
+    // Máscara de CEP no Pedido
+    const cepPed = document.getElementById('ped_cep');
+    if (cepPed) {
+        cepPed.addEventListener('input', e => {
+            let v = e.target.value.replace(/\D/g, '').slice(0, 8);
+            if (v.length > 5) v = v.replace(/^(\d{5})(\d)/, '$1-$2');
+            e.target.value = v;
+        });
+    }
 
     // Inicialização
     const hoje = new Date().toISOString().slice(0,10);
     document.getElementById('ped_dataPedido').value = hoje;
+    document.getElementById('ped_uf').value = 'SC';
+    popularPlanosPedido();
+    popularAdicionaisPedido();
     atualizarTudo();
-})();
+}
 
 /* ============================================================
    ABA 2 — GERADOR PSCM
@@ -932,7 +1332,7 @@ const planosDB = [
 
 const adicionaisDB = [
     { nome: "STANDARD",                  valor: 9.90  },
-    { nome: "ADVANCED",                  valor: 19.90 },
+    { nome: "ADVANCED",                  valor: 14.90 },
     { nome: "PREMIUM",                   valor: 29.90 },
     { nome: "À LA CARTE SKY FULL",       valor: 99.90 },
     { nome: "À LA CARTE PREMIERE",       valor: 59.90 },
@@ -1170,27 +1570,57 @@ function limparFormulario() {
     toast('Formulário limpo.', 'info');
 }
 
-/* Importar dados do Pedido para PSCM */
+/* Importar dados do Pedido para PSCM (cliente + plano + adicionais) */
 function importarDoPedido() {
     const nome = document.getElementById('ped_nomeCliente').value.trim();
     const doc = document.getElementById('ped_cpfCnpj').value.trim();
     const rg = document.getElementById('ped_rgIe').value.trim();
     const end = document.getElementById('ped_endereco').value.trim();
+    const numero = document.getElementById('ped_numero').value.trim();
+    const bairro = document.getElementById('ped_bairro').value.trim();
     const cidade = document.getElementById('ped_municipio').value.trim();
+    const uf = document.getElementById('ped_uf').value.trim();
+    const cep = document.getElementById('ped_cep').value.trim();
     const tel = document.getElementById('ped_tel1').value.trim();
     const email = document.getElementById('ped_email').value.trim();
+    const planoIdx = document.getElementById('ped_planoSelect').value;
 
-    if (!nome && !doc && !end) { toast('Nenhum dado no Pedido para importar.', 'erro'); return; }
+    const semDados = !nome && !doc && !end && planoIdx === '';
+    if (semDados) { toast('Nenhum dado no Pedido para importar.', 'erro'); return; }
 
+    // Cliente
     if (nome) document.getElementById('clienteNome').value = nome;
     if (doc) document.getElementById('clienteDoc').value = doc;
     if (rg) document.getElementById('clienteRg').value = rg;
     if (end) document.getElementById('endereco').value = end;
+    if (numero) document.getElementById('numero').value = numero;
+    if (bairro) document.getElementById('bairro').value = bairro;
     if (cidade) document.getElementById('cidade').value = cidade;
+    if (uf) document.getElementById('uf').value = uf;
+    if (cep) document.getElementById('cep').value = cep;
     if (tel) document.getElementById('telefone').value = tel;
     if (email) document.getElementById('email').value = email;
+
+    // Plano
+    if (planoIdx !== '') {
+        document.getElementById('planoSelect').value = planoIdx;
+        carregarPlano();
+
+        // Copia as quantidades de adicionais (já que estrutura é idêntica)
+        document.querySelectorAll('.ped-qtd-adicional').forEach(inpPed => {
+            const nomeAd = inpPed.dataset.nome;
+            const qtd = parseInt(inpPed.value, 10) || 0;
+            const inpCtr = document.querySelector(`#tabPSCM .qtd-adicional[data-nome="${nomeAd}"]`);
+            if (inpCtr && qtd > 0) inpCtr.value = qtd;
+        });
+        calcularTotalAdicionais();
+    }
+
     salvarRascunho();
-    toast('Dados do Pedido importados.', 'info');
+    toast('Dados do Pedido importados para o Contrato.', 'info');
+
+    // Muda para a aba PSCM automaticamente
+    document.querySelector('.tab-btn[data-tab="pscm"]').click();
 }
 
 function coletarDados() {
@@ -1470,7 +1900,137 @@ function gerarPDF() {
     } catch(e) { console.error(e); toast('Erro: ' + e.message, 'erro'); }
 }
 
+/* ============================================================
+   ABA 3 — TRANSFERÊNCIA DE TITULARIDADE
+   (Sem integração com as outras abas — autocontida)
+   ============================================================ */
+function initTitularidadeApp() {
+    function aplicarMascaraDocTit(input, tipo) {
+        let valor = input.value.replace(/\D/g, '');
+        const maxDigitos = (tipo === 'cpf') ? 11 : 14;
+        if (valor.length > maxDigitos) valor = valor.substring(0, maxDigitos);
+        if (tipo === 'cpf') {
+            if (valor.length > 3) valor = valor.replace(/^(\d{3})(\d)/, '$1.$2');
+            if (valor.length > 6) valor = valor.replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+            if (valor.length > 9) valor = valor.replace(/\.(\d{3})(\d{2})$/, '.$1-$2');
+        } else {
+            if (valor.length > 2) valor = valor.replace(/^(\d{2})(\d)/, '$1.$2');
+            if (valor.length > 5) valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+            if (valor.length > 8) valor = valor.replace(/\.(\d{3})(\d)/, '.$1/$2');
+            if (valor.length > 12) valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
+        }
+        input.value = valor;
+    }
+    function aplicarMascaraTelTit(input) {
+        let valor = input.value.replace(/\D/g, '');
+        if (valor.length > 11) valor = valor.substring(0, 11);
+        if (valor.length >= 11) valor = valor.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        else if (valor.length >= 10) valor = valor.replace(/^(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+        else if (valor.length > 0) valor = valor.replace(/^(\d{2})(\d)/, '($1) $2');
+        input.value = valor;
+    }
+
+    function configurarMascaraDocTit(inputId, selectId) {
+        const input = document.getElementById(inputId);
+        const select = document.getElementById(selectId);
+        if (!input || !select) return;
+        const aplicar = () => aplicarMascaraDocTit(input, select.value);
+        input.addEventListener('input', aplicar);
+        select.addEventListener('change', () => { input.value = ''; aplicar(); });
+    }
+    function configurarTelefoneTit(id) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', () => aplicarMascaraTelTit(el));
+    }
+
+    function atualizarAssinaturasTit() {
+        const c = document.getElementById('tit_cedenteNome').value.trim();
+        const ce = document.getElementById('tit_cessionarioNome').value.trim();
+        document.getElementById('tit_nomeAssinaturaCedente').innerText = c || '-';
+        document.getElementById('tit_nomeAssinaturaCessionario').innerText = ce || '-';
+    }
+    function atualizarServicoHiddenTit() {
+        const scm = document.getElementById('tit_servicoSCM').checked;
+        const stfc = document.getElementById('tit_servicoSTFC').checked;
+        let s = '';
+        if (scm && stfc) s = 'SCM + STFC';
+        else if (scm) s = 'SCM';
+        else if (stfc) s = 'STFC';
+        document.getElementById('tit_nomeServicoFinal').value = s;
+    }
+
+    function validarObrigatoriosTit() {
+        const get = id => document.getElementById(id).value.trim();
+        if (!get('tit_cedenteNome')) { alert('Nome do Cedente é obrigatório.'); return false; }
+        if (!get('tit_cessionarioNome')) { alert('Nome do Cessionário é obrigatório.'); return false; }
+        if (!get('tit_cedenteCpfCnpj')) { alert('CPF/CNPJ do Cedente é obrigatório.'); return false; }
+        if (!get('tit_cessionarioCpfCnpj')) { alert('CPF/CNPJ do Cessionário é obrigatório.'); return false; }
+        if (!get('tit_cedenteRgIe')) { alert('RG/IE do Cedente é obrigatório.'); return false; }
+        if (!get('tit_cessionarioRgIe')) { alert('RG/IE do Cessionário é obrigatório.'); return false; }
+        if (!document.getElementById('tit_servicoSCM').checked && !document.getElementById('tit_servicoSTFC').checked) {
+            alert('Selecione pelo menos um serviço: SCM ou STFC.'); return false;
+        }
+        return true;
+    }
+
+    function imprimirTit() {
+        atualizarServicoHiddenTit();
+        if (!validarObrigatoriosTit()) return;
+        window.print();
+    }
+
+    function limparTit() {
+        if (!confirm('Limpar todos os campos?')) return;
+        document.querySelectorAll('#tit_termoParaPDF input, #tit_termoParaPDF select').forEach(input => {
+            if (input.type === 'checkbox') input.checked = false;
+            else if (input.id !== 'tit_dataTermo') input.value = '';
+        });
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('tit_dataTermo').value = hoje;
+        document.getElementById('tit_cedenteTipoDoc').value = 'cpf';
+        document.getElementById('tit_cessionarioTipoDoc').value = 'cpf';
+        atualizarAssinaturasTit();
+        atualizarServicoHiddenTit();
+    }
+
+    // Inicialização
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('tit_dataTermo').value = hoje;
+
+    configurarMascaraDocTit('tit_cedenteCpfCnpj', 'tit_cedenteTipoDoc');
+    configurarMascaraDocTit('tit_cessionarioCpfCnpj', 'tit_cessionarioTipoDoc');
+    configurarTelefoneTit('tit_contatoTel1');
+    configurarTelefoneTit('tit_contatoTel2');
+
+    const cepInput = document.getElementById('tit_cep');
+    if (cepInput) {
+        cepInput.addEventListener('input', function(e) {
+            let val = e.target.value.replace(/\D/g, '');
+            if (val.length > 5) val = val.replace(/^(\d{5})(\d)/, '$1-$2');
+            if (val.length > 9) val = val.substring(0, 9);
+            e.target.value = val;
+        });
+    }
+
+    document.getElementById('tit_cedenteNome').addEventListener('input', atualizarAssinaturasTit);
+    document.getElementById('tit_cessionarioNome').addEventListener('input', atualizarAssinaturasTit);
+    document.getElementById('tit_servicoSCM').addEventListener('change', atualizarServicoHiddenTit);
+    document.getElementById('tit_servicoSTFC').addEventListener('change', atualizarServicoHiddenTit);
+    document.getElementById('tit_btnImprimir').addEventListener('click', imprimirTit);
+    document.getElementById('tit_btnLimpar').addEventListener('click', limparTit);
+
+    atualizarAssinaturasTit();
+    atualizarServicoHiddenTit();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicializa aba Pedido (precisa esperar planosDB/adicionaisDB já declarados)
+    initPedidoApp();
+
+    // Inicializa aba Titularidade (autocontida)
+    initTitularidadeApp();
+
+    // Inicializa aba PSCM
     popularPlanos();
     popularTestemunhas();
     popularAdicionais();
