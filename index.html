@@ -39,42 +39,66 @@
     .brand-bar {
         display: flex;
         align-items: center;
-        gap: 14px;
+        gap: 16px;
         padding: 10px 4px 18px 4px;
     }
-    .brand-mark {
-        font-family: var(--font-titulo);
-        font-weight: 800;
-        font-size: 22px;
-        color: var(--nedel-azul);
-        letter-spacing: -0.04em;
+    .brand-logo-box {
+        background: var(--nedel-azul);
+        border-radius: 14px;
+        padding: 14px 22px;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        justify-content: center;
+        box-shadow: 0 6px 18px rgba(0,102,255,.25);
+        transition: transform .2s, box-shadow .2s;
     }
-    .brand-mark::before {
-        content: '';
-        display: inline-block;
-        width: 10px; height: 10px;
-        background: var(--nedel-azul);
-        border-radius: 50%;
-        box-shadow: 0 0 0 4px rgba(0,102,255,.18);
+    .brand-logo-box:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(0,102,255,.32);
     }
-    .brand-mark small {
-        font-family: var(--font-corpo);
-        font-weight: 500;
+    .brand-logo-box svg {
+        height: 26px;
+        width: auto;
+        display: block;
+    }
+    .brand-logo-box svg path { fill: var(--nedel-branco); }
+    .brand-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .brand-text .brand-sub {
+        font-family: var(--font-titulo);
+        font-weight: 600;
         font-size: 13px;
         color: var(--nedel-azul-escuro);
-        letter-spacing: 0;
-        margin-left: 4px;
-        opacity: .85;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
     }
     .brand-tag {
+        font-size: 12px;
+        color: var(--nedel-azul-escuro);
+        opacity: .7;
+        font-style: italic;
+    }
+    .brand-spacer { margin-left: auto; }
+    .brand-slogan {
+        font-family: var(--font-titulo);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--nedel-azul);
+        text-align: right;
+        line-height: 1.3;
+    }
+    .brand-slogan small {
+        display: block;
+        font-family: var(--font-corpo);
+        font-weight: 400;
         font-size: 11px;
         color: var(--nedel-azul-escuro);
         opacity: .65;
-        margin-left: auto;
         font-style: italic;
+        margin-top: 2px;
     }
 
     /* Rodapé global Nedel */
@@ -651,6 +675,27 @@
             break-inside: avoid; page-break-inside: avoid;
         }
 
+        /* === MARCA NEDEL na impressão === */
+        .brand-bar {
+            padding: 0 0 6px 0 !important;
+            margin-bottom: 8px !important;
+            border-bottom: 2px solid #0066FF;
+            gap: 12px !important;
+            page-break-after: avoid;
+        }
+        .brand-logo-box {
+            padding: 6px 14px !important;
+            background: #0066FF !important;
+            box-shadow: none !important;
+            border-radius: 8px !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .brand-logo-box svg { height: 16px !important; }
+        .brand-text .brand-sub { font-size: 10pt !important; color: #002A3A !important; }
+        .brand-tag { font-size: 8pt !important; color: #002A3A !important; opacity: .8; }
+        .brand-slogan { display: none !important; } /* UI hint, fora do impresso */
+
         /* === PEDIDO em 1 página === */
         .tab-pedido { font-size: 9pt; }
         .tab-pedido .header-pedido {
@@ -743,9 +788,25 @@
 <div class="app-shell">
 
     <!-- MARCA NEDEL -->
-    <div class="brand-bar no-print">
-        <div class="brand-mark">NEDEL<small>Telecom</small></div>
-        <div class="brand-tag">A internet da nossa cidade!</div>
+    <div class="brand-bar">
+        <div class="brand-logo-box" title="Nedel Telecom">
+            <svg viewBox="0 0 570.12 100" xmlns="http://www.w3.org/2000/svg" aria-label="Nedel">
+                <path d="M358.32,11.11c-.79-1.05-1.65-2.04-2.58-2.97-.93-.93-1.92-1.79-2.97-2.58-.67-.5-1.36-.98-2.08-1.42C346.45,1.52,341.45,0,336.1,0h-72.22v100h72.22c5.35,0,10.35-1.51,14.58-4.14.72-.44,1.41-.91,2.08-1.42,1.05-.79,2.04-1.65,2.97-2.58.93-.93,1.79-1.92,2.58-2.97.5-.67.98-1.37,1.42-2.09,2.62-4.24,4.13-9.23,4.13-14.58V27.78c0-5.35-1.51-10.35-4.14-14.58-.44-.72-.91-1.41-1.42-2.08ZM350.68,74.3c0,3.45-1.4,6.58-3.66,8.84-2.26,2.26-5.39,3.66-8.84,3.66h-61.11V13.2h61.11c3.45,0,6.58,1.4,8.84,3.66,2.26,2.26,3.66,5.39,3.66,8.84v48.61Z"/>
+                <path d="M161.8,4.14c-.72.44-1.41.91-2.08,1.41-1.05.79-2.04,1.65-2.97,2.59-.93.93-1.79,1.92-2.58,2.97-.5.67-.98,1.37-1.42,2.09-2.62,4.24-4.13,9.23-4.13,14.58v44.44c0,5.36,1.52,10.35,4.14,14.58.44.72.91,1.41,1.41,2.08.79,1.05,1.65,2.04,2.58,2.98.93.93,1.92,1.79,2.97,2.58.67.5,1.36.98,2.08,1.42,4.24,2.62,9.24,4.13,14.58,4.13h72.22v-13.19h-74.3c-3.45,0-6.58-1.4-8.84-3.66-2.26-2.26-3.66-5.39-3.66-8.84v-17.71h73.61v-13.19h-73.61v-17.71c0-3.45,1.4-6.58,3.66-8.84,2.27-2.26,5.39-3.66,8.84-3.66h74.3V0h-72.22c-5.35,0-10.35,1.52-14.58,4.14Z"/>
+                <path d="M392.35,4.14c-.72.44-1.41.91-2.08,1.41-1.05.79-2.04,1.65-2.97,2.59-.93.93-1.79,1.92-2.58,2.97-.5.67-.98,1.37-1.42,2.09-2.62,4.24-4.13,9.23-4.13,14.58v44.44c0,5.36,1.52,10.35,4.14,14.58.44.72.91,1.41,1.41,2.08.79,1.05,1.65,2.04,2.58,2.98.93.93,1.92,1.79,2.97,2.58.67.5,1.36.98,2.08,1.42,4.24,2.62,9.24,4.13,14.58,4.13h72.22v-13.19h-74.3c-3.45,0-6.58-1.4-8.84-3.66-2.26-2.26-3.66-5.39-3.66-8.84v-17.71h73.61v-13.19h-73.61v-17.71c0-3.45,1.4-6.58,3.66-8.84,2.27-2.26,5.39-3.66,8.84-3.66h74.3V0h-72.22c-5.35,0-10.35,1.52-14.58,4.14Z"/>
+                <path d="M118.05,72.22c0,3.45-1.4,6.58-3.66,8.84-2.26,2.26-5.39,3.66-8.84,3.66-4.64,0-8.68-2.53-10.84-6.28h0s-13.27-20-13.27-20L52.76,15.28l-.93-1.4c-.56-.96-1.17-1.89-1.83-2.77-.79-1.05-1.65-2.04-2.58-2.97C42.39,3.11,35.45,0,27.78,0,23.28,0,19.03,1.07,15.28,2.97c-1.47.74-2.86,1.61-4.17,2.59-1.05.79-2.04,1.65-2.97,2.58-.93.93-1.79,1.92-2.58,2.97-.98,1.3-1.85,2.7-2.59,4.17-1.9,3.76-2.97,8-2.97,12.5v72.22h15.28V27.78c0-3.45,1.4-6.58,3.66-8.84,2.26-2.26,5.39-3.66,8.84-3.66s6.58,1.4,8.84,3.66c.77.77,1.44,1.64,1.99,2.59l13.3,20.03,28.67,43.17.93,1.4c.56.96,1.17,1.89,1.83,2.77,5.07,6.75,13.14,11.11,22.22,11.11,4.5,0,8.74-1.07,12.5-2.97,1.47-.74,2.86-1.61,4.17-2.59,1.05-.79,2.04-1.65,2.97-2.58.93-.93,1.79-1.92,2.58-2.97.98-1.3,1.85-2.7,2.59-4.17,1.9-3.76,2.97-8,2.97-12.5V0h-15.28v72.22Z"/>
+                <path d="M520.12,86.8c-6.9,0-12.5-5.6-12.5-12.5V0h-13.19v72.22c0,5.35,1.51,10.34,4.13,14.58.44.72.92,1.41,1.42,2.09,1.58,2.11,3.46,3.98,5.56,5.56.67.5,1.37.98,2.08,1.42,4.24,2.62,9.24,4.13,14.58,4.13h47.92v-13.2h-50Z"/>
+            </svg>
+        </div>
+        <div class="brand-text">
+            <div class="brand-sub">Telecom</div>
+            <div class="brand-tag">A internet da nossa cidade!</div>
+        </div>
+        <div class="brand-spacer"></div>
+        <div class="brand-slogan">
+            Pedidos · Contratos · Titularidade
+            <small>Sistema interno Nedel</small>
+        </div>
     </div>
 
     <!-- ABAS -->
@@ -2228,19 +2289,62 @@ function gerarPDF() {
         const d = coletarDados();
         const html = montarHTMLContrato(d);
         const tituloLimpo = `PSCM_${(d.numPSCM || 'contrato').replace(/[\\/:*?"<>|]/g, '_')}_${(d.cliente.nome || 'cliente').replace(/[\\/:*?"<>|\s]+/g, '_').substring(0, 40)}`;
+        // SVG inline do logo Nedel (paths em branco para o fundo azul)
+        const logoNedelSvg = `<svg viewBox="0 0 570.12 100" xmlns="http://www.w3.org/2000/svg" style="height:18px; width:auto; display:block;">
+            <path fill="#fff" d="M358.32,11.11c-.79-1.05-1.65-2.04-2.58-2.97-.93-.93-1.92-1.79-2.97-2.58-.67-.5-1.36-.98-2.08-1.42C346.45,1.52,341.45,0,336.1,0h-72.22v100h72.22c5.35,0,10.35-1.51,14.58-4.14.72-.44,1.41-.91,2.08-1.42,1.05-.79,2.04-1.65,2.97-2.58.93-.93,1.79-1.92,2.58-2.97.5-.67.98-1.37,1.42-2.09,2.62-4.24,4.13-9.23,4.13-14.58V27.78c0-5.35-1.51-10.35-4.14-14.58-.44-.72-.91-1.41-1.42-2.08ZM350.68,74.3c0,3.45-1.4,6.58-3.66,8.84-2.26,2.26-5.39,3.66-8.84,3.66h-61.11V13.2h61.11c3.45,0,6.58,1.4,8.84,3.66,2.26,2.26,3.66,5.39,3.66,8.84v48.61Z"/>
+            <path fill="#fff" d="M161.8,4.14c-.72.44-1.41.91-2.08,1.41-1.05.79-2.04,1.65-2.97,2.59-.93.93-1.79,1.92-2.58,2.97-.5.67-.98,1.37-1.42,2.09-2.62,4.24-4.13,9.23-4.13,14.58v44.44c0,5.36,1.52,10.35,4.14,14.58.44.72.91,1.41,1.41,2.08.79,1.05,1.65,2.04,2.58,2.98.93.93,1.92,1.79,2.97,2.58.67.5,1.36.98,2.08,1.42,4.24,2.62,9.24,4.13,14.58,4.13h72.22v-13.19h-74.3c-3.45,0-6.58-1.4-8.84-3.66-2.26-2.26-3.66-5.39-3.66-8.84v-17.71h73.61v-13.19h-73.61v-17.71c0-3.45,1.4-6.58,3.66-8.84,2.27-2.26,5.39-3.66,8.84-3.66h74.3V0h-72.22c-5.35,0-10.35,1.52-14.58,4.14Z"/>
+            <path fill="#fff" d="M392.35,4.14c-.72.44-1.41.91-2.08,1.41-1.05.79-2.04,1.65-2.97,2.59-.93.93-1.79,1.92-2.58,2.97-.5.67-.98,1.37-1.42,2.09-2.62,4.24-4.13,9.23-4.13,14.58v44.44c0,5.36,1.52,10.35,4.14,14.58.44.72.91,1.41,1.41,2.08.79,1.05,1.65,2.04,2.58,2.98.93.93,1.92,1.79,2.97,2.58.67.5,1.36.98,2.08,1.42,4.24,2.62,9.24,4.13,14.58,4.13h72.22v-13.19h-74.3c-3.45,0-6.58-1.4-8.84-3.66-2.26-2.26-3.66-5.39-3.66-8.84v-17.71h73.61v-13.19h-73.61v-17.71c0-3.45,1.4-6.58,3.66-8.84,2.27-2.26,5.39-3.66,8.84-3.66h74.3V0h-72.22c-5.35,0-10.35,1.52-14.58,4.14Z"/>
+            <path fill="#fff" d="M118.05,72.22c0,3.45-1.4,6.58-3.66,8.84-2.26,2.26-5.39,3.66-8.84,3.66-4.64,0-8.68-2.53-10.84-6.28h0s-13.27-20-13.27-20L52.76,15.28l-.93-1.4c-.56-.96-1.17-1.89-1.83-2.77-.79-1.05-1.65-2.04-2.58-2.97C42.39,3.11,35.45,0,27.78,0,23.28,0,19.03,1.07,15.28,2.97c-1.47.74-2.86,1.61-4.17,2.59-1.05.79-2.04,1.65-2.97,2.58-.93.93-1.79,1.92-2.58,2.97-.98,1.3-1.85,2.7-2.59,4.17-1.9,3.76-2.97,8-2.97,12.5v72.22h15.28V27.78c0-3.45,1.4-6.58,3.66-8.84,2.26-2.26,5.39-3.66,8.84-3.66s6.58,1.4,8.84,3.66c.77.77,1.44,1.64,1.99,2.59l13.3,20.03,28.67,43.17.93,1.4c.56.96,1.17,1.89,1.83,2.77,5.07,6.75,13.14,11.11,22.22,11.11,4.5,0,8.74-1.07,12.5-2.97,1.47-.74,2.86-1.61,4.17-2.59,1.05-.79,2.04-1.65,2.97-2.58.93-.93,1.79-1.92,2.58-2.97.98-1.3,1.85-2.7,2.59-4.17,1.9-3.76,2.97-8,2.97-12.5V0h-15.28v72.22Z"/>
+            <path fill="#fff" d="M520.12,86.8c-6.9,0-12.5-5.6-12.5-12.5V0h-13.19v72.22c0,5.35,1.51,10.34,4.13,14.58.44.72.92,1.41,1.42,2.09,1.58,2.11,3.46,3.98,5.56,5.56.67.5,1.37.98,2.08,1.42,4.24,2.62,9.24,4.13,14.58,4.13h47.92v-13.2h-50Z"/>
+        </svg>`;
+
         const paginaImpressao = `<!DOCTYPE html>
 <html lang="pt-br"><head><meta charset="UTF-8"><title>${escapeHtml(tituloLimpo)}</title>
 <style>
-    @page { size: A4; margin: 12mm; }
+    @page { size: A4; margin: 10mm 12mm; }
     * { box-sizing: border-box; }
     html, body { margin:0; padding:0; background:#fff; color:#000; font-family:'Times New Roman', Times, serif; }
     table { border-collapse: collapse; } p { margin: 6px 0; }
-    .barra-acoes { position: sticky; top:0; background:#004080; color:white; padding:10px 16px; display:flex; gap:10px; align-items:center; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,.2); font-family:Arial, sans-serif; }
+    .barra-acoes { position: sticky; top:0; background:#0066FF; color:white; padding:10px 16px; display:flex; gap:10px; align-items:center; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,.2); font-family:Arial, sans-serif; }
     .barra-acoes strong { flex:1; font-size:14px; }
     .barra-acoes .dica { font-size:12px; opacity:.9; }
-    .barra-acoes button { background:white; color:#004080; border:none; padding:8px 16px; font-weight:bold; border-radius:4px; cursor:pointer; font-size:13px; }
+    .barra-acoes button { background:white; color:#0066FF; border:none; padding:8px 16px; font-weight:bold; border-radius:6px; cursor:pointer; font-size:13px; }
     .barra-acoes button.sec { background:transparent; color:white; border:1px solid white; }
-    @media print { .barra-acoes { display:none !important; } body { background:white; } }
+    .marca-nedel-pdf {
+        display: flex; align-items: center; gap: 12px;
+        padding: 8px 0 10px 0;
+        border-bottom: 2px solid #0066FF;
+        margin-bottom: 10px;
+        page-break-after: avoid;
+    }
+    .marca-nedel-pdf .badge {
+        background: #0066FF;
+        padding: 6px 14px;
+        border-radius: 8px;
+        display: inline-flex; align-items: center;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .marca-nedel-pdf .info {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        color: #002A3A;
+    }
+    .marca-nedel-pdf .info .sub {
+        font-weight: 700; font-size: 11pt;
+        letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .marca-nedel-pdf .info .tag {
+        font-size: 9pt; opacity: .75; font-style: italic;
+    }
+    @media print {
+        .barra-acoes { display:none !important; }
+        body { background:white; }
+        .marca-nedel-pdf .badge {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            background: #0066FF !important;
+        }
+    }
     .conteudo { max-width: 210mm; margin: 0 auto; padding: 8px 0; }
 </style></head><body>
     <div class="barra-acoes">
@@ -2249,7 +2353,16 @@ function gerarPDF() {
         <button onclick="window.print()">Imprimir / Salvar PDF</button>
         <button class="sec" onclick="window.close()">Fechar</button>
     </div>
-    <div class="conteudo">${html}</div>
+    <div class="conteudo">
+        <div class="marca-nedel-pdf">
+            <div class="badge">${logoNedelSvg}</div>
+            <div class="info">
+                <div class="sub">Nedel Telecom</div>
+                <div class="tag">A internet da nossa cidade!</div>
+            </div>
+        </div>
+        ${html}
+    </div>
     <script>
         window.addEventListener('load', function() { setTimeout(function(){ try { window.focus(); window.print(); } catch(e) {} }, 400); });
     <\/script>
