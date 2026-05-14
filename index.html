@@ -1,116 +1,883 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Gerador PSCM - Nedel Telecom</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #e0e0e0;
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .form-container {
-            max-width: 1300px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .form-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
-        .form-group { flex: 1; min-width: 180px; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 12px; }
-        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
-        .btn-gerar { background: #004080; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; width: 100%; }
-        .btn-gerar:hover { background: #002050; }
-        
-        .tabela-adicionais { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .tabela-adicionais th, .tabela-adicionais td { border: 1px solid #ccc; padding: 6px; text-align: left; }
-        .tabela-adicionais th { background: #f0f0f0; }
-        .tabela-adicionais input { width: 60px; padding: 4px; text-align: center; }
-        
-        .info-plano { background: #e8f0fe; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
-        
-        .assinatura-area { margin-top: 25px; display: flex; justify-content: space-between; }
-        .assinatura { text-align: center; width: 45%; }
-        .linha-assinatura { border-top: 1px solid #000; margin-top: 35px; padding-top: 5px; }
-        .testemunhas-area { margin-top: 20px; display: flex; justify-content: space-between; gap: 20px; }
-        .testemunha { flex: 1; text-align: center; border-top: 1px solid #000; padding-top: 15px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nedel Telecom — Pedido e Contrato PSCM</title>
+<style>
+    /* ============ BASE ============ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        background: #e0e0e0;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        padding: 20px;
+        color: #222;
+    }
+    .app-shell {
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    /* ============ ABAS ============ */
+    .tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 0;
+    }
+    .tab-btn {
+        flex: 1;
+        max-width: 280px;
+        padding: 14px 20px;
+        background: #cfd8e3;
+        color: #1e2a3e;
+        border: none;
+        border-radius: 10px 10px 0 0;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background .15s;
+        font-family: inherit;
+    }
+    .tab-btn:hover { background: #b5c2d2; }
+    .tab-btn.active {
+        background: white;
+        color: #004080;
+        box-shadow: 0 -2px 8px rgba(0,0,0,.08);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ============ CARD GERAL ============ */
+    .form-container {
+        background: white;
+        border-radius: 0 10px 10px 10px;
+        padding: 22px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    /* ============ HEADER PEDIDO ============ */
+    .header-pedido {
+        text-align: center;
+        padding: 14px 10px;
+        background: linear-gradient(90deg, #003366, #0066b3);
+        color: white;
+        border-radius: 10px;
+        margin-bottom: 18px;
+    }
+    .header-pedido h1 { font-size: 22px; margin-bottom: 4px; }
+    .header-pedido p { font-size: 12px; opacity: .9; }
+
+    /* ============ TAB PEDIDO (form-field model) ============ */
+    .tab-pedido .form-row {
+        display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px;
+    }
+    .tab-pedido .form-field {
+        flex: 1 1 200px;
+        display: flex; flex-direction: column;
+    }
+    .tab-pedido .form-field label {
+        font-size: 11px; font-weight: 600; color: #1f4a6e;
+        margin-bottom: 4px; text-transform: uppercase;
+    }
+    .tab-pedido .form-field input,
+    .tab-pedido .form-field select,
+    .tab-pedido .form-field textarea {
+        padding: 7px 10px;
+        border: 1px solid #cbdbe2;
+        border-radius: 8px;
+        font-size: 13px;
+        background: #fefefe;
+        font-family: inherit;
+    }
+    .tab-pedido .form-field input:focus,
+    .tab-pedido .form-field select:focus,
+    .tab-pedido .form-field textarea:focus {
+        border-color: #0077b6; outline: none;
+    }
+    .tab-pedido .form-field-small { flex: 0 1 80px; }
+
+    .tab-pedido .section-card {
+        background: #f9fbfd;
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 16px;
+        border: 1px solid #e3eaf0;
+    }
+    .tab-pedido .section-title {
+        font-size: 15px; font-weight: 700;
+        color: #003366;
+        border-left: 4px solid #ff8c00;
+        padding-left: 12px;
+        margin-bottom: 12px;
+    }
+    .tab-pedido .plan-select-group {
+        display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;
+    }
+    .tab-pedido .plan-select-item { flex: 1; min-width: 200px; }
+    .tab-pedido .plan-select-item label {
+        font-size: 12px; font-weight: 600; color: #003366;
+        display: block; margin-bottom: 5px;
+    }
+    .tab-pedido .plan-select-item select {
+        width: 100%; padding: 8px 10px;
+        border-radius: 8px; border: 1px solid #cbdbe2;
+        background: white; font-size: 13px;
+    }
+    .tab-pedido .addon-table,
+    .tab-pedido .camera-table {
+        width: 100%; border-collapse: collapse; font-size: 13px;
+    }
+    .tab-pedido .addon-table th,
+    .tab-pedido .addon-table td,
+    .tab-pedido .camera-table th,
+    .tab-pedido .camera-table td {
+        text-align: left; padding: 6px 4px;
+        border-bottom: 1px solid #dee4ea;
+    }
+    .tab-pedido .qty-input,
+    .tab-pedido .cam-qty {
+        width: 70px; padding: 5px;
+        border-radius: 6px; border: 1px solid #ccc;
+        text-align: center;
+    }
+    .tab-pedido .qty-input:disabled { background: #f0f0f0; color: #999; }
+    .tab-pedido .la-carte-horizontal {
+        display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px; align-items: center;
+    }
+    .tab-pedido .la-carte-item {
+        display: flex; align-items: center; gap: 6px; font-size: 13px;
+    }
+    .tab-pedido .total-mensal {
+        background: #eef2fa;
+        border-radius: 20px; padding: 12px 22px;
+        display: flex; justify-content: space-between; align-items: center;
+        margin: 16px 0;
+    }
+    .tab-pedido .total-label { font-size: 17px; font-weight: 700; }
+    .tab-pedido .total-value { font-size: 26px; font-weight: 800; color: #006633; }
+    .tab-pedido .signature {
+        margin-top: 18px; border-top: 1px solid #ccc;
+        padding-top: 14px; font-size: 11px;
+        display: flex; justify-content: space-between;
+        flex-wrap: wrap; gap: 20px;
+    }
+    .tab-pedido footer {
+        font-size: 9px; text-align: center; margin-top: 12px; color: #6c86a3;
+    }
+    .tab-pedido .viabilidade {
+        font-size: 10px; color: #555; font-style: italic;
+        margin: 10px 0; text-align: center;
+        border-top: 1px dashed #ccc; padding-top: 8px;
+    }
+    .hidden-field { display: none; }
+
+    /* ============ TAB PSCM ============ */
+    .tab-pscm h2 { margin-bottom: 15px; color: #004080; }
+    .tab-pscm h3 {
+        margin: 18px 0 8px; color: #004080;
+        border-bottom: 2px solid #004080; padding-bottom: 4px;
+    }
+    .tab-pscm .form-row {
+        display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 12px;
+    }
+    .tab-pscm .form-group {
+        flex: 1; min-width: 180px; position: relative;
+    }
+    .tab-pscm .form-group label {
+        display: block; font-weight: bold; margin-bottom: 4px; font-size: 12px;
+    }
+    .tab-pscm .form-group label .obrig { color: #c00; }
+    .tab-pscm .form-group input,
+    .tab-pscm .form-group select {
+        width: 100%; padding: 8px;
+        border: 1px solid #ccc; border-radius: 5px;
+        font-size: 13px; font-family: inherit;
+    }
+    .tab-pscm .form-group input:focus,
+    .tab-pscm .form-group select:focus {
+        outline: none; border-color: #004080;
+        box-shadow: 0 0 0 2px rgba(0,64,128,.15);
+    }
+    .tab-pscm .form-group input.invalido { border-color: #c00; background: #fff4f4; }
+    .tab-pscm .erro-msg { font-size: 11px; color: #c00; margin-top: 2px; display: none; }
+    .tab-pscm .form-group input.invalido + .erro-msg { display: block; }
+    .tab-pscm .tabela-adicionais {
+        width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;
+    }
+    .tab-pscm .tabela-adicionais th,
+    .tab-pscm .tabela-adicionais td {
+        border: 1px solid #ccc; padding: 6px; text-align: left;
+    }
+    .tab-pscm .tabela-adicionais th { background: #f0f0f0; }
+    .tab-pscm .tabela-adicionais input {
+        width: 70px; padding: 4px; text-align: center;
+        border: 1px solid #ccc; border-radius: 4px;
+    }
+    .tab-pscm .info-plano {
+        background: #e8f0fe; padding: 12px;
+        border-radius: 5px; margin: 12px 0;
+        border-left: 4px solid #004080;
+    }
+
+    /* ============ BOTÕES ============ */
+    .botoes-acao {
+        display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;
+    }
+    .btn {
+        border: none; padding: 12px 24px;
+        font-size: 15px; font-weight: bold;
+        border-radius: 5px; cursor: pointer;
+        font-family: inherit; transition: opacity .15s;
+    }
+    .btn:hover { opacity: .9; }
+    .btn-primario { background: #004080; color: white; flex: 2; min-width: 200px; }
+    .btn-primario:disabled { background: #888; cursor: not-allowed; }
+    .btn-secundario { background: #6c757d; color: white; flex: 1; min-width: 140px; }
+    .btn-terciario { background: #28a745; color: white; flex: 1; min-width: 140px; }
+    .btn-print { background: #004e92; color: white; }
+    .btn-clear { background: #d9e2ec; color: #1e4668; }
+
+    /* ============ MODAL ============ */
+    .modal-bg {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,.6);
+        display: none; align-items: center; justify-content: center;
+        z-index: 8000;
+    }
+    .modal-bg.show { display: flex; }
+    .modal {
+        background: white; max-width: 850px; width: 95%;
+        max-height: 90vh; border-radius: 8px;
+        display: flex; flex-direction: column; overflow: hidden;
+    }
+    .modal-head {
+        padding: 12px 16px; background: #004080; color: white;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-body { padding: 16px; overflow-y: auto; }
+    .modal-foot {
+        padding: 12px 16px; border-top: 1px solid #ddd;
+        display: flex; gap: 10px; justify-content: flex-end;
+    }
+    .modal-close {
+        background: none; border: none; color: white;
+        font-size: 20px; cursor: pointer;
+    }
+
+    /* ============ TOAST ============ */
+    .toast {
+        position: fixed; top: 20px; right: 20px;
+        background: #28a745; color: white;
+        padding: 12px 18px; border-radius: 5px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.2);
+        z-index: 9999; opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity .3s, transform .3s;
+        font-size: 13px; max-width: 320px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.erro { background: #c00; }
+    .toast.info { background: #004080; }
+
+    /* ============ IMPRESSÃO ============ */
+    @media print {
+        body { background: white; padding: 0; margin: 0; }
+        .tabs, .no-print, .botoes-acao { display: none !important; }
+        .tab-panel:not(.active) { display: none !important; }
+        .form-container { box-shadow: none; border-radius: 0; padding: 10mm; }
+    }
+</style>
 </head>
 <body>
-<div class="form-container">
-    <h2>📄 Gerador de Contrato PSCM - Nedel Telecom</h2>
-    
-    <div class="form-row">
-        <div class="form-group"><label>Nº do PSCM:</label><input type="text" id="numPSCM" placeholder="Ex: 2025/0001"></div>
-        <div class="form-group"><label>Razão Social / Nome:</label><input type="text" id="clienteNome"></div>
+
+<div id="toast" class="toast"></div>
+
+<div class="app-shell">
+
+    <!-- ABAS -->
+    <div class="tabs no-print">
+        <button class="tab-btn active" data-tab="pedido">📋 Pedido de Serviços</button>
+        <button class="tab-btn" data-tab="pscm">📄 Contrato PSCM</button>
     </div>
-    <div class="form-row">
-        <div class="form-group"><label>CNPJ / CPF:</label><input type="text" id="clienteDoc"></div>
-        <div class="form-group"><label>IE / RG:</label><input type="text" id="clienteRg"></div>
-    </div>
-    <div class="form-row">
-        <div class="form-group"><label>Endereço:</label><input type="text" id="endereco"></div>
-        <div class="form-group"><label>Número:</label><input type="text" id="numero"></div>
-        <div class="form-group"><label>Bairro:</label><input type="text" id="bairro"></div>
-    </div>
-    <div class="form-row">
-        <div class="form-group"><label>Cidade:</label><input type="text" id="cidade" value="ITAPIRANGA"></div>
-        <div class="form-group"><label>UF:</label><input type="text" id="uf" value="SC"></div>
-        <div class="form-group"><label>Telefone:</label><input type="text" id="telefone"></div>
-        <div class="form-group"><label>E-mail:</label><input type="email" id="email"></div>
-    </div>
-    
-    <div class="form-row">
-        <div class="form-group"><label>Plano:</label>
-            <select id="planoSelect" onchange="carregarPlano()">
-                <option value="">-- Selecione --</option>
-            </select>
+
+    <!-- ============ TAB 1: PEDIDO ============ -->
+    <div class="form-container tab-panel tab-pedido active" id="tabPedido">
+        <div class="header-pedido">
+            <h1>NEDEL TELECOM — PEDIDO DE SERVIÇOS</h1>
+            <p>Itapiranga · Iporã do Oeste · Mondaí</p>
         </div>
-        <div class="form-group"><label>Prazo Ativação (dias):</label><input type="number" id="prazoAtivacao" value="10"></div>
-        <div class="form-group"><label>Taxa Visita (R$):</label><input type="number" id="taxaVisita" value="50"></div>
-        <div class="form-group"><label>Valor Pago (R$):</label><input type="number" id="valorPago" value="0" step="10"></div>
+
+        <!-- DADOS DO CLIENTE -->
+        <div class="form-row">
+            <div class="form-field" style="flex:2"><label>CLIENTE (NOME COMPLETO/RAZÃO SOCIAL)</label><input type="text" id="ped_nomeCliente" placeholder="Nome completo ou Razão Social"></div>
+        </div>
+        <div class="form-row">
+            <div class="form-field form-field-small"><label>TIPO</label>
+                <select id="ped_tipoDocumento">
+                    <option value="cpf">CPF</option>
+                    <option value="cnpj">CNPJ</option>
+                </select>
+            </div>
+            <div class="form-field"><label id="ped_docLabel">CPF</label><input type="text" id="ped_cpfCnpj" placeholder="000.000.000-00" maxlength="18"></div>
+            <div class="form-field"><label>RG / IE</label><input type="text" id="ped_rgIe" placeholder="RG ou IE"></div>
+        </div>
+        <div id="ped_camposCnpj" class="hidden-field">
+            <div class="form-row">
+                <div class="form-field"><label>NOME FANTASIA</label><input type="text" id="ped_nomeFantasia"></div>
+                <div class="form-field"><label>ENQUADRAMENTO FISCAL</label><input type="text" id="ped_enquadramentoFiscal" placeholder="Ex: MEI, Simples, Lucro Presumido"></div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-field"><label>ENDEREÇO</label><input type="text" id="ped_endereco" placeholder="Rua, número, bairro"></div>
+            <div class="form-field"><label>MUNICÍPIO</label><input type="text" id="ped_municipio" placeholder="Cidade"></div>
+        </div>
+        <div class="form-row">
+            <div class="form-field"><label>CONTATO TEL 1</label><input type="text" id="ped_tel1" placeholder="(00) 00000-0000" maxlength="16"></div>
+            <div class="form-field"><label>CONTATO TEL 2</label><input type="text" id="ped_tel2" placeholder="(00) 00000-0000" maxlength="16"></div>
+            <div class="form-field"><label>E-MAIL</label><input type="email" id="ped_email" placeholder="email@exemplo.com"></div>
+        </div>
+        <div id="ped_camposPessoaFisica">
+            <div class="form-row">
+                <div class="form-field"><label>NATURALIDADE</label><input type="text" id="ped_naturalidade"></div>
+                <div class="form-field"><label>DATA DE NASCIMENTO</label><input type="date" id="ped_nascimento"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-field"><label>FILIAÇÃO (PAI)</label><input type="text" id="ped_pai"></div>
+                <div class="form-field"><label>FILIAÇÃO (MÃE)</label><input type="text" id="ped_mae"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-field"><label>PROFISSÃO</label><input type="text" id="ped_profissao"></div>
+                <div class="form-field"><label>LOCAL DE TRABALHO</label><input type="text" id="ped_localTrabalho"></div>
+            </div>
+        </div>
+
+        <!-- PLANOS FIBRA -->
+        <div class="section-card">
+            <div class="section-title">🌐 PLANOS INTERNET VIA FIBRA</div>
+            <div class="plan-select-group">
+                <div class="plan-select-item">
+                    <label>500 Mb</label>
+                    <select id="ped_plano500" class="plano-select">
+                        <option value="">Selecione</option>
+                        <option value="500_scm"       data-preco="96.90"  data-bloq-apps="sim" data-bloq-carte="sim">SCM — R$96,90</option>
+                        <option value="500_basico"    data-preco="99.90"  data-bloq-apps="sim" data-bloq-carte="sim">Básico — R$99,90</option>
+                        <option value="500_mesh"      data-preco="119.90" data-bloq-apps="sim" data-bloq-carte="sim">Mesh ou Deco — R$119,90</option>
+                        <option value="500_deco"      data-preco="139.90" data-bloq-apps="sim" data-bloq-carte="sim">Deco Mesh — R$139,90</option>
+                        <option value="500_triplo"    data-preco="159.90" data-bloq-apps="sim" data-bloq-carte="sim">Deco Mesh Triplo — R$159,90</option>
+                        <option value="500_corp"      data-preco="149.90" data-bloq-apps="sim" data-bloq-carte="sim">Corporativo — R$149,90</option>
+                        <option value="500_corp_mesh" data-preco="169.90" data-bloq-apps="sim" data-bloq-carte="sim">Corporativo Mesh — R$169,90</option>
+                    </select>
+                </div>
+                <div class="plan-select-item">
+                    <label>600 Mb</label>
+                    <select id="ped_plano600" class="plano-select">
+                        <option value="">Selecione</option>
+                        <option value="600_basico" data-preco="100.00" data-bloq-apps="nao" data-bloq-carte="nao">Básico — R$100,00</option>
+                        <option value="600_mesh"   data-preco="120.00" data-bloq-apps="nao" data-bloq-carte="nao">Mesh ou Deco — R$120,00</option>
+                        <option value="600_deco"   data-preco="140.00" data-bloq-apps="nao" data-bloq-carte="nao">Deco Mesh — R$140,00</option>
+                        <option value="600_triplo" data-preco="160.00" data-bloq-apps="nao" data-bloq-carte="nao">Deco Mesh Triplo — R$160,00</option>
+                    </select>
+                </div>
+                <div class="plan-select-item">
+                    <label>800 Mb</label>
+                    <select id="ped_plano800" class="plano-select">
+                        <option value="">Selecione</option>
+                        <option value="800_basico"     data-preco="110.00" data-bloq-apps="nao" data-bloq-carte="nao">Básico — R$110,00</option>
+                        <option value="800_mesh"       data-preco="130.00" data-bloq-apps="nao" data-bloq-carte="nao">Mesh ou Deco — R$130,00</option>
+                        <option value="800_deco"       data-preco="150.00" data-bloq-apps="nao" data-bloq-carte="nao">Deco Mesh — R$150,00</option>
+                        <option value="800_triplo"     data-preco="170.00" data-bloq-apps="nao" data-bloq-carte="nao">Deco Mesh Triplo — R$170,00</option>
+                        <option value="800_combo"      data-preco="199.80" data-bloq-apps="sim" data-bloq-carte="nao">⭐ Combo Total — R$199,80</option>
+                        <option value="800_combo_mesh" data-preco="219.80" data-bloq-apps="sim" data-bloq-carte="nao">Combo Total Mesh/Deco — R$219,80</option>
+                        <option value="800_exitlag"    data-preco="129.90" data-bloq-apps="sim" data-bloq-carte="nao">Combo Exitlag — R$129,90</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLANOS RÁDIO -->
+        <div class="section-card">
+            <div class="section-title">📡 PLANOS INTERNET VIA RÁDIO</div>
+            <div class="plan-select-item" style="max-width:300px;">
+                <select id="ped_planoRadio" class="plano-select">
+                    <option value="">Selecione</option>
+                    <option value="radio_10"       data-preco="89.00"  data-bloq-apps="sim" data-bloq-carte="sim">10 Mb — R$89,00</option>
+                    <option value="radio_30"       data-preco="119.90" data-bloq-apps="nao" data-bloq-carte="nao">30 Mb — R$119,90</option>
+                    <option value="radio_30_combo" data-preco="209.70" data-bloq-apps="sim" data-bloq-carte="nao">30 Mb Combo Total — R$209,70</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- TAXA ADESÃO -->
+        <div class="form-row">
+            <div class="form-field"><label>Taxa Adesão — Área Rural</label>
+                <select id="ped_taxaFibra">
+                    <option value="0">Nenhuma</option>
+                    <option value="150">R$150,00</option>
+                    <option value="200">R$200,00</option>
+                    <option value="300">R$300,00</option>
+                    <option value="500">R$500,00</option>
+                    <option value="700">R$700,00</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ADICIONAIS APPS -->
+        <div class="section-card" id="ped_adicionaisSection">
+            <div class="section-title">📲 ADICIONAIS — APPS</div>
+            <table class="addon-table">
+                <thead><tr><th>APPS</th><th>VALOR UNIT</th><th>QTD.</th><th>TOTAL</th></tr></thead>
+                <tbody>
+                    <tr><td style="color:#0066cc; font-weight:500;">Standard</td><td>R$9,90</td><td><input type="number" min="0" max="99" value="0" class="qty-input" data-preco="9.90" data-addon="standard"></td><td class="total-standard">R$0,00</td></tr>
+                    <tr><td style="color:#0066cc; font-weight:500;">Advanced</td><td>R$14,90</td><td><input type="number" min="0" max="99" value="0" class="qty-input" data-preco="14.90" data-addon="advanced"></td><td class="total-advanced">R$0,00</td></tr>
+                    <tr><td style="color:#0066cc; font-weight:500;">Premium</td><td>R$29,90</td><td><input type="number" min="0" max="99" value="0" class="qty-input" data-preco="29.90" data-addon="premium"></td><td class="total-premium">R$0,00</td></tr>
+                </tbody>
+            </table>
+            <div style="margin-top:12px;"><strong>À LA CARTE</strong></div>
+            <div class="la-carte-horizontal" id="ped_laCarteGroup">
+                <label class="la-carte-item"><input type="checkbox" value="29.90"> Nosso Futebol — R$29,90</label>
+                <label class="la-carte-item"><input type="checkbox" value="34.90"> Combate — R$34,90</label>
+                <label class="la-carte-item"><input type="checkbox" value="29.90"> Telecine — R$29,90</label>
+                <label class="la-carte-item"><input type="checkbox" value="59.90"> Premiere — R$59,90</label>
+                <label class="la-carte-item"><input type="checkbox" value="99.90"> Sky+ Full — R$99,90</label>
+            </div>
+            <div id="ped_avisoAddBlock" style="color:#b91c1c; font-size:11px; margin-top:6px;"></div>
+        </div>
+
+        <!-- CÂMERAS -->
+        <div class="section-card">
+            <div class="section-title">🛡️ CÂMERAS (valor mensal por unidade)</div>
+            <table class="camera-table">
+                <tr><td>Externa ou Interna</td><td>R$30,00</td><td><input type="number" min="0" max="20" value="0" class="cam-qty" data-cam-preco="30.00" data-cam="mix"></td><td class="cam-mix-total">R$0,00</td></tr>
+                <tr><td>Interna</td><td>R$20,00</td><td><input type="number" min="0" max="20" value="0" class="cam-qty" data-cam-preco="20.00" data-cam="int"></td><td class="cam-int-total">R$0,00</td></tr>
+                <tr><td>Externa</td><td>R$27,50</td><td><input type="number" min="0" max="20" value="0" class="cam-qty" data-cam-preco="27.50" data-cam="ext"></td><td class="cam-ext-total">R$0,00</td></tr>
+            </table>
+        </div>
+
+        <!-- TELEFONIA -->
+        <div class="section-card">
+            <div class="section-title">☎️ TELEFONIA</div>
+            <div class="form-row">
+                <div class="form-field"><label>COM INTERNET</label>
+                    <select id="ped_telefoniaCombo">
+                        <option value="0">Nenhuma</option>
+                        <option value="15">R$15,00</option>
+                        <option value="20">R$20,00</option>
+                        <option value="30">R$30,00</option>
+                        <option value="70">R$70,00</option>
+                    </select>
+                </div>
+                <div class="form-field"><label>SOMENTE TELEFONIA</label>
+                    <select id="ped_telefoniaSolo">
+                        <option value="0">Nenhuma</option>
+                        <option value="25">R$25,00</option>
+                        <option value="30">R$30,00</option>
+                        <option value="40">R$40,00</option>
+                        <option value="80">R$80,00</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- IP FIXO -->
+        <div class="form-row">
+            <div class="form-field"><label><input type="checkbox" id="ped_ipFixo" value="15"> IP Fixo — Adicional Mensal R$15,00</label></div>
+        </div>
+
+        <!-- PAGAMENTO -->
+        <div class="form-row">
+            <div class="form-field"><label>FORMA DE PAGAMENTO</label>
+                <select id="ped_pagamento">
+                    <option value="">Selecione</option>
+                    <option>Loja</option><option>Pix</option><option>Boleto</option>
+                    <option>Sicoob SJO/Descanso</option><option>Com. Sta. Lucia</option><option>Débito</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- TOTAL -->
+        <div class="total-mensal">
+            <span class="total-label">📆 Total da Mensalidade:</span>
+            <span class="total-value" id="ped_totalMensalDisplay">R$ 0,00</span>
+        </div>
+
+        <!-- DATA / OBS -->
+        <div class="form-row">
+            <div class="form-field"><label>DATA</label><input type="date" id="ped_dataPedido"></div>
+            <div class="form-field" style="flex:2"><label>OBSERVAÇÕES</label><textarea rows="2" id="ped_observacoes" placeholder="Observações gerais..."></textarea></div>
+        </div>
+
+        <div class="viabilidade">* Todos os planos estão sujeitos à viabilidade técnica.</div>
+
+        <div class="signature">
+            <span>ASSINATURA DO VENDEDOR: ___________________________</span>
+            <span>ASSINATURA DO CLIENTE: ___________________________</span>
+        </div>
+        <footer>Itapiranga: Av. Beira Rio, 349 | Iporã do Oeste: Av. Gustavo Fetter, 935 | Mondaí: Av. Lajú, 538 — Sala 02</footer>
+
+        <div class="botoes-acao no-print">
+            <button class="btn btn-clear" id="ped_limparBtn">🗑️ LIMPAR TUDO</button>
+            <button class="btn btn-print" id="ped_printBtn">🖨️ IMPRIMIR / SALVAR PDF</button>
+        </div>
     </div>
-    
-    <div id="infoPlano" class="info-plano" style="display: none;"></div>
-    
-    <h3>📺 Adicionais</h3>
-    <table class="tabela-adicionais">
-        <thead><tr><th>Adicional</th><th>Valor</th><th>Qtd</th><th>Subtotal</th></tr></thead>
-        <tbody>
-            <tr><td id="nomePremium">PREMIUM</td><td id="valorPremium">R$ 29,90</td><td><input type="number" class="qtd-adicional" data-valor="29.90" data-nome="PREMIUM" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
-            <tr><td>STANDARD</td><td>R$ 9,90</td><td><input type="number" class="qtd-adicional" data-valor="9.90" data-nome="STANDARD" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
-            <tr><td>ADVANCED</td><td>R$ 19,90</td><td><input type="number" class="qtd-adicional" data-valor="19.90" data-nome="ADVANCED" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
-            <tr><td>DISNEY+ PREMIUM</td><td>R$ 69,90</td><td><input type="number" class="qtd-adicional" data-valor="69.90" data-nome="DISNEY+ PREMIUM" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
-            <tr><td>COMBATE</td><td>R$ 34,90</td><td><input type="number" class="qtd-adicional" data-valor="34.90" data-nome="COMBATE" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
-            <tr><td>TELECINE</td><td>R$ 29,90</td><td><input type="number" class="qtd-adicional" data-valor="29.90" data-nome="TELECINE" value="0" onchange="calcularTotalAdicionais()"></td><td class="subtotal-adicional">R$ 0,00</td></tr>
-        </tbody>
-        <tfoot>
-            <tr style="background-color: #e8f0fe;">
-                <td colspan="3"><strong>TOTAL ADICIONAIS</strong></td>
-                <td id="totalAdicionaisValor">R$ 0,00</td>
-            </tr>
-            <tr style="background-color: #d0e8ff; font-weight: bold;">
-                <td colspan="3"><strong>💰 TOTAL DO PLANO (BASE + ADICIONAIS)</strong></td>
-                <td id="totalPlanoPreview" style="font-size: 13px; color: #004080;">R$ 0,00</td>
-            </tr>
-        </tfoot>
-    </table>
-    
-    <h3>👥 Testemunhas</h3>
-    <div class="form-row">
-        <div class="form-group"><label>Testemunha 1:</label><select id="testemunha1"><option value="">-- Selecione --</option></select></div>
-        <div class="form-group"><label>Testemunha 2:</label><select id="testemunha2"><option value="">-- Selecione --</option></select></div>
+
+    <!-- ============ TAB 2: PSCM ============ -->
+    <div class="form-container tab-panel tab-pscm" id="tabPSCM">
+        <h2>Gerador de Contrato PSCM - Nedel Telecom</h2>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="numPSCM">Nº do PSCM: <span class="obrig">*</span></label>
+                <input type="text" id="numPSCM" placeholder="Ex: 2026/0001">
+                <span class="erro-msg">Informe o número do PSCM.</span>
+            </div>
+            <div class="form-group">
+                <label for="clienteNome">Razão Social / Nome: <span class="obrig">*</span></label>
+                <input type="text" id="clienteNome">
+                <span class="erro-msg">Informe o nome.</span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="clienteDoc">CNPJ / CPF: <span class="obrig">*</span></label>
+                <input type="text" id="clienteDoc" maxlength="18">
+                <span class="erro-msg">CPF/CNPJ inválido.</span>
+            </div>
+            <div class="form-group">
+                <label for="clienteRg">IE / RG:</label>
+                <input type="text" id="clienteRg">
+            </div>
+            <div class="form-group">
+                <label for="cep">CEP:</label>
+                <input type="text" id="cep" maxlength="9" placeholder="00000-000">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group" style="flex:3;">
+                <label for="endereco">Endereço: <span class="obrig">*</span></label>
+                <input type="text" id="endereco">
+                <span class="erro-msg">Informe o endereço.</span>
+            </div>
+            <div class="form-group">
+                <label for="numero">Número:</label>
+                <input type="text" id="numero">
+            </div>
+            <div class="form-group">
+                <label for="bairro">Bairro:</label>
+                <input type="text" id="bairro">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="cidade">Cidade:</label>
+                <input type="text" id="cidade" value="ITAPIRANGA">
+            </div>
+            <div class="form-group" style="max-width:80px;">
+                <label for="uf">UF:</label>
+                <input type="text" id="uf" value="SC" maxlength="2">
+            </div>
+            <div class="form-group">
+                <label for="telefone">Telefone: <span class="obrig">*</span></label>
+                <input type="text" id="telefone" maxlength="15" placeholder="(00) 00000-0000">
+                <span class="erro-msg">Telefone inválido.</span>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" placeholder="cliente@email.com">
+                <span class="erro-msg">E-mail inválido.</span>
+            </div>
+        </div>
+
+        <h3>Plano e condições</h3>
+        <div class="form-row">
+            <div class="form-group" style="flex:2;">
+                <label for="planoSelect">Plano: <span class="obrig">*</span></label>
+                <select id="planoSelect" onchange="carregarPlano()">
+                    <option value="">-- Selecione --</option>
+                </select>
+                <span class="erro-msg">Selecione um plano.</span>
+            </div>
+            <div class="form-group">
+                <label for="prazoAtivacao">Prazo Ativação (dias):</label>
+                <input type="number" id="prazoAtivacao" value="10" min="1">
+            </div>
+            <div class="form-group">
+                <label for="taxaVisita">Taxa Visita (R$):</label>
+                <input type="number" id="taxaVisita" value="50" min="0" step="1">
+            </div>
+            <div class="form-group">
+                <label for="valorPago">Valor Pago Adesão (R$):</label>
+                <input type="number" id="valorPago" value="0" min="0" step="10">
+            </div>
+        </div>
+
+        <div id="infoPlano" class="info-plano" style="display:none;"></div>
+
+        <h3>Adicionais</h3>
+        <table class="tabela-adicionais">
+            <thead>
+                <tr><th>Adicional</th><th>Valor</th><th>Qtd</th><th>Subtotal</th></tr>
+            </thead>
+            <tbody id="tbodyAdicionais"></tbody>
+            <tfoot>
+                <tr style="background:#e8f0fe;">
+                    <td colspan="3"><strong>TOTAL ADICIONAIS</strong></td>
+                    <td id="totalAdicionaisValor">R$ 0,00</td>
+                </tr>
+                <tr style="background:#d0e8ff; font-weight:bold;">
+                    <td colspan="3"><strong>TOTAL DO PLANO (BASE + ADICIONAIS)</strong></td>
+                    <td id="totalPlanoPreview" style="color:#004080;">R$ 0,00</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <h3>Testemunhas</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="testemunha1">Testemunha 1:</label>
+                <select id="testemunha1" onchange="checarTestemunhas()"><option value="">-- Selecione --</option></select>
+            </div>
+            <div class="form-group">
+                <label for="testemunha2">Testemunha 2:</label>
+                <select id="testemunha2" onchange="checarTestemunhas()"><option value="">-- Selecione --</option></select>
+            </div>
+        </div>
+
+        <div class="botoes-acao no-print">
+            <button type="button" class="btn btn-secundario" onclick="limparFormulario()">Limpar formulário</button>
+            <button type="button" class="btn btn-terciario" onclick="previewContrato()">Pré-visualizar</button>
+            <button type="button" class="btn btn-primario" id="btnGerar" onclick="gerarPDF()">Gerar Contrato PDF</button>
+            <button type="button" class="btn btn-print" onclick="importarDoPedido()" style="flex:1; min-width:140px;">↩ Importar dados do Pedido</button>
+        </div>
     </div>
-    
-    <button class="btn-gerar" onclick="gerarPDF()">📄 GERAR CONTRATO COMPLETO PDF</button>
+
+</div>
+
+<!-- Modal PSCM -->
+<div class="modal-bg" id="modalPreview">
+    <div class="modal">
+        <div class="modal-head">
+            <strong>Pré-visualização do contrato</strong>
+            <button class="modal-close" onclick="fecharPreview()">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-foot">
+            <button class="btn btn-secundario" onclick="fecharPreview()">Fechar</button>
+            <button class="btn btn-primario" onclick="fecharPreview(); gerarPDF();">Gerar PDF</button>
+        </div>
+    </div>
 </div>
 
 <script>
-// TESTEMUNHAS
+/* ============================================================
+   TAB SWITCHING
+   ============================================================ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab === 'pedido' ? 'tabPedido' : 'tabPSCM').classList.add('active');
+    });
+});
+
+/* ============================================================
+   ABA 1 — PEDIDO DE SERVIÇOS
+   ============================================================ */
+(function pedidoApp() {
+    function maskCPF(input) {
+        let v = input.value.replace(/\D/g, '');
+        if (v.length <= 11) {
+            v = v.replace(/(\d{3})(\d)/, '$1.$2')
+                 .replace(/(\d{3})(\d)/, '$1.$2')
+                 .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            input.value = v;
+        }
+    }
+    function maskCNPJ(input) {
+        let v = input.value.replace(/\D/g, '');
+        if (v.length <= 14) {
+            v = v.replace(/^(\d{2})(\d)/, '$1.$2')
+                 .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                 .replace(/\.(\d{3})(\d)/, '.$1/$2')
+                 .replace(/(\d{4})(\d)/, '$1-$2');
+            input.value = v;
+        }
+    }
+    function maskTel(input) {
+        let v = input.value.replace(/\D/g, '');
+        if (v.length <= 11) {
+            v = v.replace(/^(\d{2})(\d)/, '($1) $2')
+                 .replace(/(\d{5})(\d)/, '$1-$2');
+            input.value = v;
+        }
+    }
+
+    function togglePessoaTipo() {
+        const tipo = document.getElementById('ped_tipoDocumento').value;
+        const docLabel = document.getElementById('ped_docLabel');
+        const docInput = document.getElementById('ped_cpfCnpj');
+        const camposPF = document.getElementById('ped_camposPessoaFisica');
+        const camposCNPJ = document.getElementById('ped_camposCnpj');
+
+        if (tipo === 'cpf') {
+            docLabel.innerText = 'CPF';
+            docInput.placeholder = '000.000.000-00';
+            docInput.maxLength = 14;
+            docInput.value = '';
+            camposPF.classList.remove('hidden-field');
+            camposCNPJ.classList.add('hidden-field');
+            document.getElementById('ped_nomeFantasia').value = '';
+            document.getElementById('ped_enquadramentoFiscal').value = '';
+        } else {
+            docLabel.innerText = 'CNPJ';
+            docInput.placeholder = '00.000.000/0000-00';
+            docInput.maxLength = 18;
+            docInput.value = '';
+            camposPF.classList.add('hidden-field');
+            camposCNPJ.classList.remove('hidden-field');
+            ['ped_naturalidade','ped_nascimento','ped_pai','ped_mae','ped_profissao','ped_localTrabalho']
+                .forEach(id => document.getElementById(id).value = '');
+        }
+    }
+
+    function aplicarMascaraDocumento() {
+        const tipo = document.getElementById('ped_tipoDocumento').value;
+        const input = document.getElementById('ped_cpfCnpj');
+        if (input.value.length > 0) {
+            if (tipo === 'cpf') maskCPF(input);
+            else maskCNPJ(input);
+        }
+    }
+
+    document.getElementById('ped_tipoDocumento').addEventListener('change', togglePessoaTipo);
+    document.getElementById('ped_cpfCnpj').addEventListener('input', aplicarMascaraDocumento);
+    document.getElementById('ped_tel1').addEventListener('input', function(){ maskTel(this); });
+    document.getElementById('ped_tel2').addEventListener('input', function(){ maskTel(this); });
+
+    const selects = ['ped_plano500','ped_plano600','ped_plano800','ped_planoRadio'];
+    function limparOutros(selecionado) {
+        selects.forEach(id => { if (id !== selecionado) document.getElementById(id).value = ''; });
+    }
+    selects.forEach(id => {
+        document.getElementById(id).addEventListener('change', function() {
+            if (this.value) limparOutros(id);
+            atualizarTudo();
+        });
+    });
+
+    function getPlanoAtivo() {
+        for (let id of selects) {
+            const sel = document.getElementById(id);
+            if (sel && sel.value) {
+                const opt = sel.selectedOptions[0];
+                return {
+                    preco: parseFloat(opt.getAttribute('data-preco')),
+                    bloqApps: opt.getAttribute('data-bloq-apps') === 'sim',
+                    bloqCarte: opt.getAttribute('data-bloq-carte') === 'sim'
+                };
+            }
+        }
+        return null;
+    }
+
+    function atualizarTudo() {
+        const plano = getPlanoAtivo();
+        const bloqApps = plano ? plano.bloqApps : true;
+        const bloqCarte = plano ? plano.bloqCarte : true;
+
+        document.querySelectorAll('#tabPedido .qty-input').forEach(inp => {
+            inp.disabled = bloqApps;
+            if (bloqApps) inp.value = 0;
+        });
+        document.querySelectorAll('#ped_laCarteGroup input').forEach(ch => {
+            ch.disabled = bloqCarte;
+            if (bloqCarte) ch.checked = false;
+        });
+
+        let total = 0;
+        if (plano) total += plano.preco;
+
+        document.querySelectorAll('#tabPedido .qty-input').forEach(inp => {
+            const precoUnit = parseFloat(inp.getAttribute('data-preco'));
+            const qtd = (!bloqApps && plano) ? parseInt(inp.value) || 0 : 0;
+            const valor = precoUnit * qtd;
+            const addon = inp.getAttribute('data-addon');
+            const target = document.querySelector('#tabPedido .total-' + addon);
+            if (target) target.innerText = 'R$ ' + valor.toFixed(2);
+            if (!bloqApps && plano) total += valor;
+        });
+
+        let carteTotal = 0;
+        document.querySelectorAll('#ped_laCarteGroup input[type="checkbox"]').forEach(ch => {
+            if (!bloqCarte && ch.checked) carteTotal += parseFloat(ch.value);
+        });
+        total += carteTotal;
+
+        document.querySelectorAll('#tabPedido .cam-qty').forEach(cam => {
+            const preco = parseFloat(cam.getAttribute('data-cam-preco'));
+            const qtd = parseInt(cam.value) || 0;
+            const val = preco * qtd;
+            total += val;
+            const tipo = cam.getAttribute('data-cam');
+            const target = document.querySelector('#tabPedido .cam-' + tipo + '-total');
+            if (target) target.innerText = 'R$ ' + val.toFixed(2);
+        });
+
+        total += parseFloat(document.getElementById('ped_telefoniaCombo').value) || 0;
+        total += parseFloat(document.getElementById('ped_telefoniaSolo').value) || 0;
+        if (document.getElementById('ped_ipFixo').checked) total += 15;
+
+        const aviso = document.getElementById('ped_avisoAddBlock');
+        if (!plano) {
+            aviso.style.color = '#b91c1c';
+            aviso.innerText = 'Selecione um plano de internet.';
+        } else if (!bloqApps && !bloqCarte) {
+            aviso.style.color = '#166534';
+            aviso.innerText = '✅ APPS e À La Carte liberados para este plano.';
+        } else if (bloqApps && !bloqCarte) {
+            aviso.style.color = '#92400e';
+            aviso.innerText = '⭐ Plano Combo: APPS já inclusos — apenas À La Carte disponível.';
+        } else {
+            aviso.style.color = '#b91c1c';
+            aviso.innerText = '⚠️ Plano selecionado não permite adicionais (APPS e À La Carte bloqueados).';
+        }
+
+        document.getElementById('ped_totalMensalDisplay').innerText = 'R$ ' + total.toFixed(2);
+    }
+
+    document.getElementById('ped_telefoniaCombo').addEventListener('change', atualizarTudo);
+    document.getElementById('ped_telefoniaSolo').addEventListener('change', atualizarTudo);
+    document.querySelectorAll('#tabPedido .qty-input').forEach(i => i.addEventListener('input', atualizarTudo));
+    document.querySelectorAll('#ped_laCarteGroup input').forEach(c => c.addEventListener('change', atualizarTudo));
+    document.querySelectorAll('#tabPedido .cam-qty').forEach(c => c.addEventListener('input', atualizarTudo));
+    document.getElementById('ped_ipFixo').addEventListener('change', atualizarTudo);
+
+    document.getElementById('ped_limparBtn').addEventListener('click', () => {
+        document.querySelectorAll('#tabPedido input[type="text"], #tabPedido input[type="email"], #tabPedido textarea').forEach(el => el.value = '');
+        document.querySelectorAll('#tabPedido select').forEach(el => {
+            if (el.id !== 'ped_dataPedido') el.value = el.options[0].value;
+        });
+        document.querySelectorAll('#tabPedido input[type="number"]').forEach(el => el.value = 0);
+        document.querySelectorAll('#tabPedido input[type="checkbox"]').forEach(el => el.checked = false);
+        document.getElementById('ped_tipoDocumento').value = 'cpf';
+        togglePessoaTipo();
+        atualizarTudo();
+    });
+
+    document.getElementById('ped_printBtn').addEventListener('click', () => window.print());
+
+    // Inicialização
+    const hoje = new Date().toISOString().slice(0,10);
+    document.getElementById('ped_dataPedido').value = hoje;
+    atualizarTudo();
+})();
+
+/* ============================================================
+   ABA 2 — GERADOR PSCM
+   ============================================================ */
 const testemunhasLista = [
     { nome: "Anderson Nedel", cpf: "083.833.299-46", endereco: "Mondaí - SC" },
     { nome: "Anderson Luis Giehl", cpf: "107.159.949-64", endereco: "Itapiranga - SC" },
@@ -131,283 +898,603 @@ const testemunhasLista = [
     { nome: "Vanessa Helena Weiss", cpf: "091.312.159-20", endereco: "Mondaí - SC" }
 ];
 
-// PLANOS
 const planosDB = [
-    { nome: "BASICO FIBRA 500 MB", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 16.00, totalBase: 99.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
-    { nome: "BASICO 500 MB IP FIXO MESH", velDown: "550000", velUp: "256000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 36.00, totalBase: 134.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40", locado2: "ROTEADOR HUAWEI WS7001-40", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, beneficio: 1000 },
-    { nome: "BASICO 500 MB IP FIXO", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ebook: 16.90, locacao: 16.00, totalBase: 114.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
-    { nome: "COMBO 800 MB", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 110.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
-    { nome: "COMBO 800 MB IP FIXO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 125.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700 },
-    { nome: "COMBO 800 MB MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050 },
-    { nome: "COMBO 800 MB TOTAL", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 16.00, totalBase: 110.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, beneficio: 700, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
-    { nome: "COMBO 800 MB TOTAL MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, beneficio: 1050, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
-    { nome: "NITRO 30 MB", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950 },
-    { nome: "NITRO 30 MB TOTAL", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
-    { nome: "NITRO 10 MB", velDown: "10240", velUp: "2457", garantiaDown: "10240", garantiaUp: "1966", scm: 89.00, ebook: 0, locacao: 0, totalBase: 89.00, comodato: "POWERBEAM 300", locado1: "", valorComodato: 950, valorLocado1: 0, beneficio: 950 }
+    { nome: "BASICO FIBRA 500 MB", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ipFixo: 0, ebook: 16.90, locacao: 16.00, totalBase: 99.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 0, valorLocado3: 0, beneficio: 700 },
+    { nome: "BASICO 500 MB IP FIXO MESH", velDown: "550000", velUp: "256000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ipFixo: 15, ebook: 16.90, locacao: 36.00, totalBase: 134.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, valorLocado3: 0, beneficio: 1000 },
+    { nome: "BASICO 500 MB IP FIXO", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ipFixo: 15, ebook: 16.90, locacao: 16.00, totalBase: 114.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 0, valorLocado3: 0, beneficio: 700 },
+    { nome: "BASICO 500 MB DECO MESH", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ipFixo: 0, ebook: 16.90, locacao: 56.00, totalBase: 139.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "DECO M4", locado3: "", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 0, beneficio: 1250 },
+    { nome: "BASICO 500 MB DECO MESH 3", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ipFixo: 0, ebook: 16.90, locacao: 76.00, totalBase: 159.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "DECO M4", locado3: "DECO M4", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 450, beneficio: 1700 },
+    { nome: "BASICO 500 MB MESH", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ipFixo: 0, ebook: 16.90, locacao: 36.00, totalBase: 119.90, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, valorLocado3: 0, beneficio: 1000 },
+    { nome: "BASICO 500 MB DECO", velDown: "550000", velUp: "276000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ipFixo: 0, ebook: 16.90, locacao: 36.00, totalBase: 119.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 450, valorLocado2: 0, valorLocado3: 0, beneficio: 800 },
+    { nome: "CORPORATIVO FIBRA 500 MB", velDown: "550000", velUp: "256000", garantiaDown: "440000", garantiaUp: "204800", scm: 67.00, ipFixo: 15, ebook: 0, locacao: 67.90, totalBase: 149.90, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "MIKROTIK RB750G3 HEX 880MHZ 256MB L4", locado3: "", valorComodato: 350, valorLocado1: 450, valorLocado2: 800, valorLocado3: 0, beneficio: 1600 },
+    { nome: "COMBO 600 MB", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ipFixo: 0, ebook: 16.90, locacao: 16.00, totalBase: 100.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 0, valorLocado3: 0, beneficio: 700 },
+    { nome: "COMBO 600 MB MESH IP FIXO", velDown: "615000", velUp: "256000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ipFixo: 15, ebook: 16.90, locacao: 36.00, totalBase: 135.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, valorLocado3: 0, beneficio: 1050 },
+    { nome: "COMBO 600 MB IP FIXO", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ipFixo: 15, ebook: 16.90, locacao: 16.00, totalBase: 115.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 0, valorLocado3: 0, beneficio: 700 },
+    { nome: "COMBO 600 MB DECO MESH", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ipFixo: 0, ebook: 16.90, locacao: 56.00, totalBase: 140.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", locado3: "", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 0, beneficio: 1250 },
+    { nome: "COMBO 600 MB DECO MESH TRIPLO", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ipFixo: 0, ebook: 16.90, locacao: 76.00, totalBase: 160.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", locado3: "DECO X10", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 450, beneficio: 1700 },
+    { nome: "COMBO 600 MB MESH", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ipFixo: 0, ebook: 16.90, locacao: 36.00, totalBase: 120.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado2: "ROTEADOR HUAWEI WS7001-40 AX2 WIFI6", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 300, valorLocado3: 0, beneficio: 1000 },
+    { nome: "COMBO 600 MB DECO", velDown: "615000", velUp: "276000", garantiaDown: "492000", garantiaUp: "204800", scm: 67.10, ipFixo: 0, ebook: 16.90, locacao: 36.00, totalBase: 120.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 450, valorLocado2: 0, valorLocado3: 0, beneficio: 800 },
+    { nome: "COMBO 800 MB", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 0, ebook: 16.90, locacao: 16.00, totalBase: 110.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 0, valorLocado3: 0, beneficio: 700 },
+    { nome: "COMBO 800 MB MESH IP FIXO", velDown: "820000", velUp: "256000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 15, ebook: 16.90, locacao: 36.00, totalBase: 145.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, valorLocado3: 0, beneficio: 1050 },
+    { nome: "COMBO 800 MB IP FIXO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 15, ebook: 16.90, locacao: 16.00, totalBase: 125.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 0, valorLocado3: 0, beneficio: 700 },
+    { nome: "COMBO 800 MB DECO MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 0, ebook: 16.90, locacao: 56.00, totalBase: 150.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", locado3: "", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 0, beneficio: 1250 },
+    { nome: "COMBO 800 MB DECO MESH TRIPLO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 0, ebook: 16.90, locacao: 76.00, totalBase: 170.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO X10", locado2: "DECO X10", locado3: "DECO X10", valorComodato: 350, valorLocado1: 450, valorLocado2: 450, valorLocado3: 450, beneficio: 1700 },
+    { nome: "COMBO 800 MB MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 0, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, valorLocado3: 0, beneficio: 1050 },
+    { nome: "COMBO 800 MB DECO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 0, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 450, valorLocado2: 0, valorLocado3: 0, beneficio: 800 },
+    { nome: "COMBO 800 MB TOTAL", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 0, ebook: 16.90, locacao: 16.00, totalBase: 110.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 0, valorLocado3: 0, beneficio: 700, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
+    { nome: "COMBO 800 MB TOTAL DECO", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 0, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "DECO M4", locado2: "", locado3: "", valorComodato: 350, valorLocado1: 450, valorLocado2: 0, valorLocado3: 0, beneficio: 800, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
+    { nome: "COMBO 800 MB EXITLAG", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 0, ebook: 16.90, locacao: 26.00, totalBase: 120.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "15 METROS DE CABO DE REDE 100% COBRE", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 100, valorLocado3: 0, beneficio: 800, adicionaisPadrao: { "STANDARD": 1 } },
+    { nome: "COMBO 800 MB TOTAL MESH", velDown: "820000", velUp: "276000", garantiaDown: "656000", garantiaUp: "204800", scm: 77.10, ipFixo: 0, ebook: 16.90, locacao: 36.00, totalBase: 130.00, comodato: "ONU FIBERHOME B7G", locado1: "ROTEADOR HUAWEI AX3S", locado2: "ROTEADOR HUAWEI AX3S", locado3: "", valorComodato: 350, valorLocado1: 350, valorLocado2: 350, valorLocado3: 0, beneficio: 1050, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
+    { nome: "NITRO 30 MB", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ipFixo: 0, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300 M5-300 5GHZ 22DBI", locado1: "", locado2: "", locado3: "", valorComodato: 950, valorLocado1: 0, valorLocado2: 0, valorLocado3: 0, beneficio: 950 },
+    { nome: "NITRO 30 MB TOTAL", velDown: "30720", velUp: "2800", garantiaDown: "24576", garantiaUp: "1580", scm: 103.00, ipFixo: 0, ebook: 16.90, locacao: 0, totalBase: 119.90, comodato: "POWERBEAM 300 M5-300 5GHZ 22DBI", locado1: "", locado2: "", locado3: "", valorComodato: 950, valorLocado1: 0, valorLocado2: 0, valorLocado3: 0, beneficio: 950, premiumEspecial: true, adicionaisPadrao: { "PREMIUM": 3, "STANDARD": 1 } },
+    { nome: "NITRO 10 MB", velDown: "10240", velUp: "2457", garantiaDown: "10240", garantiaUp: "1966", scm: 89.00, ipFixo: 0, ebook: 0, locacao: 0, totalBase: 89.00, comodato: "POWERBEAM 300 M5-300 5GHZ 22DBI", locado1: "", locado2: "", locado3: "", valorComodato: 950, valorLocado1: 0, valorLocado2: 0, valorLocado3: 0, beneficio: 950 }
+];
+
+const adicionaisDB = [
+    { nome: "STANDARD",                  valor: 9.90  },
+    { nome: "ADVANCED",                  valor: 19.90 },
+    { nome: "PREMIUM",                   valor: 29.90 },
+    { nome: "À LA CARTE SKY FULL",       valor: 99.90 },
+    { nome: "À LA CARTE PREMIERE",       valor: 59.90 },
+    { nome: "À LA CARTE NOSSO FUTEBOL",  valor: 29.90 },
+    { nome: "À LA CARTE COMBATE",        valor: 34.90 },
+    { nome: "À LA CARTE TELECINE",       valor: 29.90 },
+    { nome: "À LA CARTE DISNEY+ PREMIUM", valor: 69.90 }
 ];
 
 let planoAtual = null;
+const STORAGE_KEY = 'pscm_rascunho_v2';
 
-function popularPlanos() {
-    const select = document.getElementById('planoSelect');
-    select.innerHTML = '<option value="">-- Selecione o plano --</option>';
-    planosDB.forEach((p, idx) => {
-        let opt = document.createElement('option');
-        opt.value = idx;
-        opt.textContent = p.nome;
-        select.appendChild(opt);
-    });
+const moeda = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const fmtR$ = v => moeda.format(Number(v) || 0);
+const kbpsParaMbps = k => `${Math.round(parseInt(k, 10)/1024)} Mbps`;
+
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
+function toast(msg, tipo='info') {
+    const t = document.getElementById('toast');
+    t.className = 'toast ' + tipo + ' show';
+    t.textContent = msg;
+    clearTimeout(t._tmr);
+    t._tmr = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function mascaraCpfCnpj(v) {
+    v = v.replace(/\D/g, '').slice(0, 14);
+    if (v.length <= 11) {
+        return v.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+    return v.replace(/^(\d{2})(\d)/, '$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3').replace(/\.(\d{3})(\d)/, '.$1/$2').replace(/(\d{4})(\d)/, '$1-$2');
+}
+function mascaraTelefone(v) {
+    v = v.replace(/\D/g, '').slice(0, 11);
+    if (v.length <= 10) return v.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d)/, '$1-$2');
+    return v.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2');
+}
+function mascaraCep(v) {
+    v = v.replace(/\D/g, '').slice(0, 8);
+    return v.replace(/(\d{5})(\d)/, '$1-$2');
+}
+
+function validarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, '');
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+    let s = 0;
+    for (let i = 0; i < 9; i++) s += +cpf[i] * (10 - i);
+    let d1 = 11 - (s % 11); if (d1 > 9) d1 = 0;
+    if (d1 !== +cpf[9]) return false;
+    s = 0;
+    for (let i = 0; i < 10; i++) s += +cpf[i] * (11 - i);
+    let d2 = 11 - (s % 11); if (d2 > 9) d2 = 0;
+    return d2 === +cpf[10];
+}
+function validarCNPJ(cnpj) {
+    cnpj = cnpj.replace(/\D/g, '');
+    if (cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) return false;
+    const calc = base => {
+        const pesos = base.length === 12 ? [5,4,3,2,9,8,7,6,5,4,3,2] : [6,5,4,3,2,9,8,7,6,5,4,3,2];
+        let s = 0;
+        for (let i = 0; i < base.length; i++) s += +base[i] * pesos[i];
+        const d = 11 - (s % 11);
+        return d > 9 ? 0 : d;
+    };
+    return calc(cnpj.slice(0,12)) === +cnpj[12] && calc(cnpj.slice(0,13)) === +cnpj[13];
+}
+function validarDoc(v) {
+    const limpo = v.replace(/\D/g, '');
+    if (limpo.length === 11) return validarCPF(v);
+    if (limpo.length === 14) return validarCNPJ(v);
+    return false;
+}
+function validarEmail(v) { if (!v) return true; return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+function validarTelefone(v) { const d = v.replace(/\D/g, ''); return d.length === 10 || d.length === 11; }
+function marcar(id, valido) { const el = document.getElementById(id); if (el) el.classList.toggle('invalido', !valido); }
+
+function validarFormulario() {
+    const ok = {
+        numPSCM: !!document.getElementById('numPSCM').value.trim(),
+        clienteNome: !!document.getElementById('clienteNome').value.trim(),
+        clienteDoc: validarDoc(document.getElementById('clienteDoc').value),
+        endereco: !!document.getElementById('endereco').value.trim(),
+        telefone: validarTelefone(document.getElementById('telefone').value),
+        email: validarEmail(document.getElementById('email').value),
+        planoSelect: document.getElementById('planoSelect').value !== ''
+    };
+    Object.entries(ok).forEach(([id, v]) => marcar(id, v));
+    const t1 = document.getElementById('testemunha1').value;
+    const t2 = document.getElementById('testemunha2').value;
+    if (t1 && t2 && t1 === t2) { toast('As duas testemunhas não podem ser iguais.', 'erro'); return false; }
+    if (!planoAtual) { toast('Selecione um plano.', 'erro'); return false; }
+    const falhas = Object.entries(ok).filter(([k, v]) => !v);
+    if (falhas.length) { toast('Verifique os campos destacados em vermelho.', 'erro'); return false; }
+    return true;
+}
+
+function checarTestemunhas() {
+    const s1 = document.getElementById('testemunha1');
+    const s2 = document.getElementById('testemunha2');
+    if (s1.value && s1.value === s2.value) { toast('Testemunha já selecionada.', 'erro'); s2.value = ''; }
+    salvarRascunho();
+}
+
+function popularPlanos() {
+    const sel = document.getElementById('planoSelect');
+    planosDB.forEach((p, i) => { const opt = document.createElement('option'); opt.value = i; opt.textContent = p.nome; sel.appendChild(opt); });
+}
 function popularTestemunhas() {
-    const select1 = document.getElementById('testemunha1');
-    const select2 = document.getElementById('testemunha2');
-    testemunhasLista.forEach(t => {
-        let opt1 = document.createElement('option');
-        opt1.value = JSON.stringify(t);
-        opt1.textContent = `${t.nome} - ${t.cpf}`;
-        select1.appendChild(opt1.cloneNode(true));
-        select2.appendChild(opt1);
+    const s1 = document.getElementById('testemunha1');
+    const s2 = document.getElementById('testemunha2');
+    testemunhasLista.forEach((t, i) => {
+        const opt = document.createElement('option');
+        opt.value = i; opt.textContent = `${t.nome} - ${t.cpf}`;
+        s1.appendChild(opt); s2.appendChild(opt.cloneNode(true));
+    });
+}
+function popularAdicionais() {
+    const tbody = document.getElementById('tbodyAdicionais');
+    tbody.innerHTML = '';
+    adicionaisDB.forEach(a => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${escapeHtml(a.nome)}</td>
+            <td class="valor-unit">${fmtR$(a.valor)}</td>
+            <td><input type="number" min="0" step="1" class="qtd-adicional" data-valor="${a.valor}" data-nome="${escapeHtml(a.nome)}" value="0" onchange="calcularTotalAdicionais()"></td>
+            <td class="subtotal-adicional">${fmtR$(0)}</td>`;
+        tbody.appendChild(tr);
     });
 }
 
 function carregarPlano() {
-    let idx = document.getElementById('planoSelect').value;
-    if (idx === "") { planoAtual = null; return; }
-    planoAtual = JSON.parse(JSON.stringify(planosDB[parseInt(idx)]));
-    
+    const idx = document.getElementById('planoSelect').value;
+    if (idx === '') { planoAtual = null; document.getElementById('infoPlano').style.display = 'none'; calcularTotalAdicionais(); return; }
+    planoAtual = JSON.parse(JSON.stringify(planosDB[parseInt(idx, 10)]));
     document.querySelectorAll('.qtd-adicional').forEach(i => i.value = 0);
-    
+    const inpPremium = document.querySelector('.qtd-adicional[data-nome="PREMIUM"]');
+    const tdPremiumValor = inpPremium ? inpPremium.closest('tr').querySelector('.valor-unit') : null;
     if (planoAtual.premiumEspecial) {
-        document.getElementById('valorPremium').innerText = "R$ 26,63";
-        document.querySelector('.qtd-adicional[data-nome="PREMIUM"]').dataset.valor = "26.63";
+        inpPremium.dataset.valor = '26.63';
+        if (tdPremiumValor) tdPremiumValor.textContent = fmtR$(26.63);
     } else {
-        document.getElementById('valorPremium').innerText = "R$ 29,90";
-        document.querySelector('.qtd-adicional[data-nome="PREMIUM"]').dataset.valor = "29.90";
+        inpPremium.dataset.valor = '29.90';
+        if (tdPremiumValor) tdPremiumValor.textContent = fmtR$(29.90);
     }
-    
     if (planoAtual.adicionaisPadrao) {
-        for (let [nome, qtd] of Object.entries(planoAtual.adicionaisPadrao)) {
-            let inp = document.querySelector(`.qtd-adicional[data-nome="${nome}"]`);
+        for (const [nome, qtd] of Object.entries(planoAtual.adicionaisPadrao)) {
+            const inp = document.querySelector(`.qtd-adicional[data-nome="${nome}"]`);
             if (inp) inp.value = qtd;
         }
     }
-    
-    document.getElementById('infoPlano').innerHTML = `<strong>📡 ${planoAtual.nome}</strong><br>💰 Mensal base: R$ ${planoAtual.totalBase.toFixed(2)} | 🎁 Benefício: R$ ${planoAtual.beneficio.toFixed(2)}`;
+    const info = document.getElementById('infoPlano');
+    info.style.display = 'block';
+    info.innerHTML = `<strong>${escapeHtml(planoAtual.nome)}</strong><br>
+        Velocidade: <strong>${kbpsParaMbps(planoAtual.velDown)}</strong> down / <strong>${kbpsParaMbps(planoAtual.velUp)}</strong> up<br>
+        Mensal base: <strong>${fmtR$(planoAtual.totalBase)}</strong> | Benefício total: <strong>${fmtR$(planoAtual.beneficio)}</strong>`;
     calcularTotalAdicionais();
+    salvarRascunho();
 }
 
 function calcularTotalAdicionais() {
-    let totalAdicionais = 0;
+    let total = 0;
     document.querySelectorAll('.qtd-adicional').forEach(inp => {
-        let qtd = parseInt(inp.value) || 0;
-        let val = parseFloat(inp.dataset.valor);
-        let sub = qtd * val;
-        totalAdicionais += sub;
-        let td = inp.closest('tr').querySelector('.subtotal-adicional');
-        if (td) td.innerText = `R$ ${sub.toFixed(2)}`;
+        let qtd = parseInt(inp.value, 10) || 0;
+        if (qtd < 0) { qtd = 0; inp.value = 0; }
+        const val = parseFloat(inp.dataset.valor) || 0;
+        const sub = qtd * val;
+        total += sub;
+        const td = inp.closest('tr').querySelector('.subtotal-adicional');
+        if (td) td.textContent = fmtR$(sub);
     });
-    document.getElementById('totalAdicionaisValor').innerHTML = `R$ ${totalAdicionais.toFixed(2)}`;
-    
-    if (planoAtual) {
-        let totalPlano = planoAtual.totalBase + totalAdicionais;
-        document.getElementById('totalPlanoPreview').innerHTML = `<strong>R$ ${totalPlano.toFixed(2)}</strong>`;
-    }
-    
-    return totalAdicionais;
+    document.getElementById('totalAdicionaisValor').textContent = fmtR$(total);
+    if (planoAtual) document.getElementById('totalPlanoPreview').innerHTML = `<strong>${fmtR$(planoAtual.totalBase + total)}</strong>`;
+    else document.getElementById('totalPlanoPreview').textContent = fmtR$(0);
+    salvarRascunho();
+    return total;
 }
 
 function getAdicionaisLista() {
-    let lista = [];
+    const lista = [];
     document.querySelectorAll('.qtd-adicional').forEach(inp => {
-        let qtd = parseInt(inp.value) || 0;
-        if (qtd > 0) {
-            lista.push({ 
-                nome: inp.dataset.nome, 
-                qtd: qtd, 
-                subtotal: qtd * parseFloat(inp.dataset.valor) 
-            });
-        }
+        const qtd = parseInt(inp.value, 10) || 0;
+        if (qtd > 0) lista.push({ nome: inp.dataset.nome, qtd, subtotal: qtd * (parseFloat(inp.dataset.valor) || 0) });
     });
     return lista;
 }
 
-function gerarPDF() {
-    if (!planoAtual) { alert("Selecione um plano!"); return; }
-    
-    let btn = document.querySelector('.btn-gerar');
-    let textoOriginal = btn.innerHTML;
-    btn.innerHTML = '⏳ GERANDO PDF, AGUARDE...';
-    btn.disabled = true;
-    
-    setTimeout(() => {
-        try {
-            let numPSCM = document.getElementById('numPSCM').value || "_______________";
-            let valorPago = parseFloat(document.getElementById('valorPago').value) || 0;
-            let prazoAtivacao = document.getElementById('prazoAtivacao').value || 10;
-            let taxaVisita = parseFloat(document.getElementById('taxaVisita').value) || 50;
-            let vigencia = 12;
-            
-            let test1 = JSON.parse(document.getElementById('testemunha1').value || '{}');
-            let test2 = JSON.parse(document.getElementById('testemunha2').value || '{}');
-            
-            let cliente = {
-                nome: document.getElementById('clienteNome').value || "_________________________",
-                doc: document.getElementById('clienteDoc').value || "_________________________",
-                rg: document.getElementById('clienteRg').value || "_________________________",
-                endereco: document.getElementById('endereco').value || "_________________________",
-                numero: document.getElementById('numero').value || "___",
-                bairro: document.getElementById('bairro').value || "_________",
-                cidade: document.getElementById('cidade').value || "ITAPIRANGA",
-                telefone: document.getElementById('telefone').value || "(00) 00000-0000",
-                email: document.getElementById('email').value || "_________________"
-            };
-            
-            let totalAdicionais = calcularTotalAdicionais();
-            let adicionaisLista = getAdicionaisLista();
-            let totalMensal = planoAtual.totalBase + totalAdicionais;
-            
-            let beneficioReal = valorPago >= planoAtual.beneficio ? 0 : planoAtual.beneficio - valorPago;
-            let multaMensalBase = beneficioReal / vigencia;
-            
-            let tabelaMultaHTML = '<table class="tabela-multa" style="width:100%; border-collapse:collapse; margin:8px 0;"><thead><tr><th style="border:1px solid #000; padding:4px;">Mês</th><th style="border:1px solid #000; padding:4px;">Fórmula</th><th style="border:1px solid #000; padding:4px;">Valor</th></tr></thead><tbody>';
-            for (let i = 1; i <= vigencia; i++) {
-                let valorMulta = multaMensalBase * (vigencia - i + 1);
-                tabelaMultaHTML += `<tr><td style="border:1px solid #000; padding:4px;">${i}° mês</td><td style="border:1px solid #000; padding:4px;">(BENEFÍCIO REAL / ${vigencia}) × ${vigencia - i + 1}</td><td style="border:1px solid #000; padding:4px;">R$ ${valorMulta.toFixed(2)}</td></tr>`;
+const camposRascunho = ['numPSCM','clienteNome','clienteDoc','clienteRg','cep','endereco','numero','bairro','cidade','uf','telefone','email','planoSelect','prazoAtivacao','taxaVisita','valorPago','testemunha1','testemunha2'];
+
+function salvarRascunho() {
+    const d = {};
+    camposRascunho.forEach(id => { const el = document.getElementById(id); if (el) d[id] = el.value; });
+    d._adicionais = {};
+    document.querySelectorAll('.qtd-adicional').forEach(inp => { d._adicionais[inp.dataset.nome] = inp.value; });
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch(e) {}
+}
+function carregarRascunho() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        camposRascunho.forEach(id => { const el = document.getElementById(id); if (el && d[id] !== undefined) el.value = d[id]; });
+        if (d.planoSelect) carregarPlano();
+        if (d._adicionais) {
+            for (const [nome, q] of Object.entries(d._adicionais)) {
+                const inp = document.querySelector(`.qtd-adicional[data-nome="${nome}"]`);
+                if (inp) inp.value = q;
             }
-            tabelaMultaHTML += '</tbody></table>';
-            
-            let equipamentosRows = `
-                <tr><td style="border:1px solid #000; padding:4px;">${planoAtual.comodato}</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">(X) COMODADO</td><td style="border:1px solid #000; padding:4px;">${planoAtual.valorComodato}</td></tr>
-                ${planoAtual.locado1 ? `<tr><td style="border:1px solid #000; padding:4px;">${planoAtual.locado1}</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">(X) LOCAÇÃO</td><td style="border:1px solid #000; padding:4px;">${planoAtual.valorLocado1}</td></tr>` : ''}
-                ${planoAtual.locado2 ? `<tr><td style="border:1px solid #000; padding:4px;">${planoAtual.locado2}</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">(X) LOCAÇÃO</td><td style="border:1px solid #000; padding:4px;">${planoAtual.valorLocado2}</td></tr>` : ''}
-            `;
-            
-            let servicosRows = `
-                <tr><td style="border:1px solid #000; padding:4px;">SCM</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">R$ ${planoAtual.scm.toFixed(2)}</td></tr>
-                <tr><td style="border:1px solid #000; padding:4px;">EBOOK</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">R$ ${planoAtual.ebook.toFixed(2)}</td></tr>
-                <tr><td style="border:1px solid #000; padding:4px;">LOCAÇÃO</td><td style="border:1px solid #000; padding:4px;">1</td><td style="border:1px solid #000; padding:4px;">R$ ${planoAtual.locacao.toFixed(2)}</td></tr>
-            `;
-            
-            adicionaisLista.forEach(ad => {
-                servicosRows += `<tr><td style="border:1px solid #000; padding:4px;">${ad.nome}</td><td style="border:1px solid #000; padding:4px;">${ad.qtd}</td><td style="border:1px solid #000; padding:4px;">R$ ${ad.subtotal.toFixed(2)}</td></tr>`;
-            });
-            servicosRows += `<tr style="font-weight:bold"><td colspan="2" style="border:1px solid #000; padding:4px;">TOTAL DO PLANO</td><td style="border:1px solid #000; padding:4px;">R$ ${totalMensal.toFixed(2)}</td></tr>`;
-            
-            let data = new Date().toLocaleDateString();
-            
-            let html = `
-                <div style="font-family: 'Times New Roman', Times, serif; font-size: 10pt; padding: 20px;">
-                    <div style="text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 5px;">PSCM - PLANO DE SERVIÇO DE COMUNICAÇÃO MULTIMÍDIA - NEDEL TELECOM</div>
-                    <div style="text-align: center; font-size: 11pt; margin-bottom: 15px; font-weight: bold;">Número do PSCM: ${numPSCM}</div>
-                    
-                    <div style="border: 1px solid #000; padding: 8px; margin-bottom: 10px;">
-                        <strong>DE UM LADO:</strong><br>
-                        INFORMATICA ITAPIRANGA LTDA - NEDEL TELECOM<br>
-                        CNPJ: 00.938.920/0001-55<br>
-                        Av. Beira Rio, 349 - Itapiranga/SC<br>
-                        Fone: (49) 3677-0521 | 0800.643.0582
-                    </div>
-                    
-                    <div style="border: 1px solid #000; padding: 8px; margin-bottom: 10px;">
-                        <strong>CLIENTE:</strong><br>
-                        ${cliente.nome}<br>
-                        ${cliente.doc} | ${cliente.rg}<br>
-                        ${cliente.endereco}, ${cliente.numero} - ${cliente.bairro}<br>
-                        ${cliente.cidade}/SC | Tel: ${cliente.telefone} | Email: ${cliente.email}
-                    </div>
-                    
-                    <div style="font-weight: bold; margin-top: 12px; background: #ddd; padding: 3px 8px;">CLÁUSULA SEGUNDA – EQUIPAMENTOS</div>
-                    <table style="width:100%; border-collapse:collapse; margin:8px 0;"><thead><tr><th style="border:1px solid #000; padding:4px;">Tipo</th><th style="border:1px solid #000; padding:4px;">Qtd</th><th style="border:1px solid #000; padding:4px;">Modalidade</th><th style="border:1px solid #000; padding:4px;">Benefícios</th></tr></thead><tbody>${equipamentosRows}</tbody></table>
-                    <p>TAXA DE ADESÃO: R$ ${valorPago.toFixed(2)}</p>
-                    <p><strong>TOTAL DE BENEFICIOS: R$ ${planoAtual.beneficio.toFixed(2)}</strong></p>
-                    
-                    <div style="font-weight: bold; margin-top: 12px; background: #ddd; padding: 3px 8px;">CLÁUSULA TERCEIRA – PLANO CONTRATADO</div>
-                    <p><strong>${planoAtual.nome}</strong><br>
-                    Download: ${planoAtual.velDown} Kbits | Upload: ${planoAtual.velUp} Kbits<br>
-                    Garantia: ${planoAtual.garantiaDown}/${planoAtual.garantiaUp} Kbits<br>
-                    Prazo Ativação: ${prazoAtivacao} dias | Fidelidade: ${vigencia} meses</p>
-                    <p>TAXA MINIMA DE VISITA TÉCNICA: R$ ${taxaVisita.toFixed(2)}</p>
-                    
-                    <table style="width:100%; border-collapse:collapse; margin:8px 0;"><thead><tr><th style="border:1px solid #000; padding:4px;">SERVIÇOS</th><th style="border:1px solid #000; padding:4px;">QTD</th><th style="border:1px solid #000; padding:4px;">VALOR MENSAL</th></tr></thead><tbody>${servicosRows}</tbody></table>
-                    
-                    <div style="font-weight: bold; margin-top: 12px; background: #ddd; padding: 3px 8px;">CLAUSULA QUARTA - TAXA DE INSTALAÇÃO</div>
-                    <p>Valor da taxa de instalação: R$ ${valorPago.toFixed(2)}<br>
-                    Desconto concedido ao cliente: R$ ${planoAtual.beneficio.toFixed(2)}<br>
-                    <strong>VALOR TOTAL DOS BENEFICIOS: R$ ${beneficioReal.toFixed(2)}</strong></p>
-                    
-                    <div style="font-weight: bold; margin-top: 12px; background: #ddd; padding: 3px 8px;">CLÁUSULA QUINTA – FIDELIDADE</div>
-                    ${tabelaMultaHTML}
-                    <p>Após ${vigencia} meses, renovação automática sem multa.</p>
-                    
-                    <div style="font-weight: bold; margin-top: 12px; background: #ddd; padding: 3px 8px;">CLÁUSULA SEXTA E SÉTIMA</div>
-                    <p>Foro eleito: Itapiranga/SC. Este contrato segue normas da ANATEL.</p>
-                    <p><em>Nos termos do art. 10, § 2º, da Medida Provisória nº 2.200-2, as Partes concordam com a validade jurídica deste documento eletrônico.</em></p>
-                    
-                    <div style="margin-top: 25px; display: flex; justify-content: space-between;">
-                        <div style="text-align: center; width: 45%;">
-                            Itapiranga/SC, ${data}<br><br>
-                            <div style="border-top: 1px solid #000; margin-top: 35px; padding-top: 5px;"></div>
-                            <strong>NEDEL TELECOM</strong><br>
-                            HENRIQUE NEDEL
-                        </div>
-                        <div style="text-align: center; width: 45%;">
-                            <div style="border-top: 1px solid #000; margin-top: 35px; padding-top: 5px;"></div>
-                            <strong>CLIENTE</strong><br>
-                            ${cliente.nome}
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 20px; display: flex; justify-content: space-between; gap: 20px;">
-                        <div style="flex: 1; text-align: center; border-top: 1px solid #000; padding-top: 15px;">
-                            Testemunha:<br>
-                            ${test1.nome || "_________________________"}<br>
-                            CPF: ${test1.cpf || "_________________________"}
-                        </div>
-                        <div style="flex: 1; text-align: center; border-top: 1px solid #000; padding-top: 15px;">
-                            Testemunha:<br>
-                            ${test2.nome || "_________________________"}<br>
-                            CPF: ${test2.cpf || "_________________________"}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            let tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            tempDiv.style.position = 'absolute';
-            tempDiv.style.left = '-9999px';
-            tempDiv.style.top = '-9999px';
-            document.body.appendChild(tempDiv);
-            
-            html2pdf().set({ 
-                margin: 0.3, 
-                filename: `PSCM_${numPSCM}.pdf`, 
-                image: { type: 'jpeg', quality: 0.95 }, 
-                html2canvas: { scale: 2, letterRendering: true },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
-            }).from(tempDiv).save().then(() => {
-                document.body.removeChild(tempDiv);
-                btn.innerHTML = textoOriginal;
-                btn.disabled = false;
-            }).catch(err => {
-                console.error("Erro:", err);
-                alert("Erro ao gerar PDF: " + err);
-                btn.innerHTML = textoOriginal;
-                btn.disabled = false;
-                if (document.body.contains(tempDiv)) document.body.removeChild(tempDiv);
-            });
-            
-        } catch(e) {
-            alert("Erro: " + e.message);
-            btn.innerHTML = textoOriginal;
-            btn.disabled = false;
         }
-    }, 100);
+        calcularTotalAdicionais();
+        toast('Rascunho recuperado.', 'info');
+    } catch(e) {}
+}
+function limparFormulario() {
+    if (!confirm('Limpar todos os campos? O rascunho também será apagado.')) return;
+    document.querySelectorAll('#tabPSCM input').forEach(i => {
+        if (i.type === 'number') {
+            const def = i.id === 'prazoAtivacao' ? '10' : i.id === 'taxaVisita' ? '50' : '0';
+            i.value = def;
+        } else i.value = '';
+        i.classList.remove('invalido');
+    });
+    document.getElementById('cidade').value = 'ITAPIRANGA';
+    document.getElementById('uf').value = 'SC';
+    document.querySelectorAll('#tabPSCM select').forEach(s => s.value = '');
+    planoAtual = null;
+    document.getElementById('infoPlano').style.display = 'none';
+    calcularTotalAdicionais();
+    localStorage.removeItem(STORAGE_KEY);
+    toast('Formulário limpo.', 'info');
 }
 
-popularPlanos();
-popularTestemunhas();
+/* Importar dados do Pedido para PSCM */
+function importarDoPedido() {
+    const nome = document.getElementById('ped_nomeCliente').value.trim();
+    const doc = document.getElementById('ped_cpfCnpj').value.trim();
+    const rg = document.getElementById('ped_rgIe').value.trim();
+    const end = document.getElementById('ped_endereco').value.trim();
+    const cidade = document.getElementById('ped_municipio').value.trim();
+    const tel = document.getElementById('ped_tel1').value.trim();
+    const email = document.getElementById('ped_email').value.trim();
+
+    if (!nome && !doc && !end) { toast('Nenhum dado no Pedido para importar.', 'erro'); return; }
+
+    if (nome) document.getElementById('clienteNome').value = nome;
+    if (doc) document.getElementById('clienteDoc').value = doc;
+    if (rg) document.getElementById('clienteRg').value = rg;
+    if (end) document.getElementById('endereco').value = end;
+    if (cidade) document.getElementById('cidade').value = cidade;
+    if (tel) document.getElementById('telefone').value = tel;
+    if (email) document.getElementById('email').value = email;
+    salvarRascunho();
+    toast('Dados do Pedido importados.', 'info');
+}
+
+function coletarDados() {
+    const valorPago = parseFloat(document.getElementById('valorPago').value) || 0;
+    const prazoAtivacao = parseInt(document.getElementById('prazoAtivacao').value, 10) || 10;
+    const taxaVisita = parseFloat(document.getElementById('taxaVisita').value) || 50;
+    const t1 = document.getElementById('testemunha1').value;
+    const t2 = document.getElementById('testemunha2').value;
+    const adicionais = getAdicionaisLista();
+    const totalAdicionais = adicionais.reduce((s, a) => s + a.subtotal, 0);
+    const totalMensal = planoAtual.totalBase + totalAdicionais;
+    const beneficioRestante = valorPago >= planoAtual.beneficio ? 0 : planoAtual.beneficio - valorPago;
+    const multaMensalBase = beneficioRestante / 12;
+    return {
+        numPSCM: document.getElementById('numPSCM').value.trim(),
+        valorPago, prazoAtivacao, taxaVisita, vigencia: 12,
+        test1: t1 !== '' ? testemunhasLista[parseInt(t1, 10)] : null,
+        test2: t2 !== '' ? testemunhasLista[parseInt(t2, 10)] : null,
+        cliente: {
+            nome: document.getElementById('clienteNome').value.trim(),
+            doc: document.getElementById('clienteDoc').value.trim(),
+            rg: document.getElementById('clienteRg').value.trim(),
+            cep: document.getElementById('cep').value.trim(),
+            endereco: document.getElementById('endereco').value.trim(),
+            numero: document.getElementById('numero').value.trim(),
+            bairro: document.getElementById('bairro').value.trim(),
+            cidade: document.getElementById('cidade').value.trim(),
+            uf: document.getElementById('uf').value.trim(),
+            telefone: document.getElementById('telefone').value.trim(),
+            email: document.getElementById('email').value.trim()
+        },
+        adicionais, totalAdicionais, totalMensal, beneficioRestante, multaMensalBase,
+        dataHoje: new Date().toLocaleDateString('pt-BR')
+    };
+}
+
+function montarHTMLContrato(d) {
+    const p = planoAtual;
+    const C = (v, fb='_________________________') => escapeHtml(v) || fb;
+    const tdB = 'border:1px solid #000; padding:4px;';
+    const thB = 'border:1px solid #000; padding:4px; background:#eee;';
+    const titulo = 'font-weight:bold; margin-top:12px; background:#ddd; padding:4px 8px; page-break-after:avoid;';
+
+    let equipRows = `<tr><td style="${tdB}">${escapeHtml(p.comodato)}</td><td style="${tdB}">1</td><td style="${tdB}">(X) COMODATO</td><td style="${tdB}">${fmtR$(p.valorComodato)}</td><td style="${tdB}">${fmtR$(d.valorPago)}</td></tr>`;
+    if (p.locado1) equipRows += `<tr><td style="${tdB}">${escapeHtml(p.locado1)}</td><td style="${tdB}">1</td><td style="${tdB}">(X) LOCAÇÃO</td><td style="${tdB}">${fmtR$(p.valorLocado1)}</td><td style="${tdB}">—</td></tr>`;
+    if (p.locado2) equipRows += `<tr><td style="${tdB}">${escapeHtml(p.locado2)}</td><td style="${tdB}">1</td><td style="${tdB}">(X) LOCAÇÃO</td><td style="${tdB}">${fmtR$(p.valorLocado2)}</td><td style="${tdB}">—</td></tr>`;
+    if (p.locado3) equipRows += `<tr><td style="${tdB}">${escapeHtml(p.locado3)}</td><td style="${tdB}">1</td><td style="${tdB}">(X) LOCAÇÃO</td><td style="${tdB}">${fmtR$(p.valorLocado3)}</td><td style="${tdB}">—</td></tr>`;
+
+    let servRows = `
+        <tr><td style="${tdB}">SCM</td><td style="${tdB}">1</td><td style="${tdB}">${fmtR$(p.scm)}</td></tr>
+        ${(p.ipFixo || 0) > 0 ? `<tr><td style="${tdB}">IP FIXO</td><td style="${tdB}">1</td><td style="${tdB}">${fmtR$(p.ipFixo)}</td></tr>` : ''}
+        <tr><td style="${tdB}">EBOOK</td><td style="${tdB}">1</td><td style="${tdB}">${fmtR$(p.ebook)}</td></tr>
+        <tr><td style="${tdB}">LOCAÇÃO</td><td style="${tdB}">1</td><td style="${tdB}">${fmtR$(p.locacao)}</td></tr>`;
+    d.adicionais.forEach(a => { servRows += `<tr><td style="${tdB}">${escapeHtml(a.nome)}</td><td style="${tdB}">${a.qtd}</td><td style="${tdB}">${fmtR$(a.subtotal)}</td></tr>`; });
+    servRows += `<tr style="font-weight:bold; background:#f0f0f0;"><td style="${tdB}" colspan="2">TOTAL DO PLANO</td><td style="${tdB}">${fmtR$(d.totalMensal)}</td></tr>`;
+
+    const multaBase = d.beneficioRestante / 12;
+    let multaRows = '';
+    for (let i = 1; i <= 12; i++) {
+        const mult = 13 - i;
+        const v = multaBase * mult;
+        multaRows += `<tr><td style="${tdB}">${i}° mês</td><td style="${tdB}">FÓRMULA</td><td style="${tdB}">MENSALIDADE = (VALOR TOTAL DOS BENEFÍCIOS / MESES FIDELIDADE) × ${mult}</td><td style="${tdB}">${fmtR$(v)}</td></tr>`;
+    }
+
+    const enderecoCompleto = [d.cliente.endereco, d.cliente.numero, d.cliente.bairro].filter(Boolean).join(', ');
+
+    return `
+    <div style="font-family:'Times New Roman', Times, serif; font-size:10pt; padding:15px; color:#000; line-height:1.35;">
+        <div style="text-align:center; font-weight:bold; font-size:13pt;">PSCM - PLANO DE SERVIÇO DE COMUNICAÇÃO MULTIMÍDIA - NEDEL TELECOM</div>
+        <div style="text-align:center; font-size:11pt; margin-bottom:12px; font-weight:bold;">Número do PSCM: ${C(d.numPSCM)}</div>
+
+        <div style="border:1px solid #000; padding:8px; margin-bottom:8px; page-break-inside:avoid;">
+            <p style="text-align:justify; margin:0;"><strong>DE UM LADO:</strong> INFORMATICA ITAPIRANGA LTDA, nome fantasia <strong>NEDEL TELECOM</strong>, pessoa jurídica de direito privado, inscrita no CNPJ sob o nº 00.938.920/0001-55, com sede na Avenida Beira Rio, nº 349, térreo, Centro, Itapiranga, Santa Catarina, CEP 89.896-000, neste ato representada por seu Representante Legal in fine assinado, doravante denominada simplesmente como CONTRATADA;</p>
+            <p style="margin:6px 0 0 0;">
+                <strong>Endereço:</strong> Av. Beira Rio, 349 &nbsp;|&nbsp; <strong>Bairro:</strong> Centro &nbsp;|&nbsp; <strong>Complemento:</strong> Sala A<br>
+                <strong>Cidade:</strong> Itapiranga &nbsp;|&nbsp; <strong>UF:</strong> Santa Catarina<br>
+                <strong>E-mails:</strong> financeiro@nedel.inf.br; contato@nedel.com.br; net@nedel.inf.br<br>
+                <strong>Site:</strong> www.nedel.com.br &nbsp;|&nbsp; <strong>Fone:</strong> (49) 3677-0521; (49) 3678-8200; 0800.643.0582<br>
+                <strong>Autorização na ANATEL (SCM):</strong> ATO n° 1.543/2009 de 06/09/2009; Termo de Autorização nº 173/2009; Processo nº 53500.027006/2008
+            </p>
+        </div>
+
+        <div style="border:1px solid #000; padding:8px; margin-bottom:8px; page-break-inside:avoid;">
+            <strong>E DO OUTRO LADO QUALIFICADO COMO CLIENTE:</strong><br>
+            <strong>Razão Social:</strong> ${C(d.cliente.nome)}<br>
+            <strong>CNPJ/CPF:</strong> ${C(d.cliente.doc)} &nbsp;|&nbsp; <strong>IE/RG:</strong> ${C(d.cliente.rg)}<br>
+            <strong>Endereço da Instalação:</strong> ${C(enderecoCompleto)}<br>
+            <strong>Cidade:</strong> ${C(d.cliente.cidade)} &nbsp;|&nbsp; <strong>UF:</strong> ${C(d.cliente.uf)} &nbsp;|&nbsp; BRASIL<br>
+            ${d.cliente.cep ? '<strong>CEP:</strong> ' + escapeHtml(d.cliente.cep) + ' &nbsp;|&nbsp; ' : ''}<strong>E-mail:</strong> ${C(d.cliente.email)} &nbsp;|&nbsp; <strong>TEL:</strong> ${C(d.cliente.telefone)}
+        </div>
+
+        <div style="${titulo}">CLÁUSULA PRIMEIRA – DAS CONSIDERAÇÕES PRELIMINARES</div>
+        <p style="text-align:justify;">1.1. Constitui-se objeto do presente instrumento a prestação, pela CONTRATADA em favor do CLIENTE, dos Serviços de Comunicação Multimidia e de outros Serviços, conforme opção da contratação da cláusula abaixo, a serem disponibilizados ao CLIENTE, de acordo com os termos e condições previstas no presente instrumento, no Contrato de Prestação de Serviços de Telecomunicações e/ou nos demais contratos, conforme opção selecionada pelo CLIENTE, que são parte integrante e essencial à celebração deste instrumento.</p>
+        <p style="text-align:justify;">1.2. Para a disponibilização dos Serviços de Comunicação Multimidia ao CLIENTE, a CONTRATADA obriga-se, ainda, à prestação dos Serviços de Valor Adicionado e/ou Locação de equipamentos, conforme Oferta escolhida pelo cliente, conforme Etiqueta Padrão correspondente, também objeto deste Contrato, de acordo com os termos e condições previstas no presente instrumento, partes integrantes e essenciais à celebração deste instrumento.</p>
+        <p style="text-align:justify;">1.3. O CLIENTE declara neste ato deter plena capacidade para celebrar o presente, haver recebido, lido, compreendido e concordado com os termos e condições do Contrato de Prestação de Serviços de Telecomunicações, do Contrato de Prestação de Serviços de Valor Adicionado e Contrato de Locação de Equipamentos, de acordo com a sua opção de contratação, todos disponíveis no endereço eletrônico: www.nedel.com.br.</p>
+
+        <table style="width:100%; border-collapse:collapse; margin:6px 0; page-break-inside:avoid;">
+            <thead><tr><th style="${thB}">Opções de Contratação</th><th style="${thB}">Disponível no link</th></tr></thead>
+            <tbody>
+                <tr><td style="${tdB}">Contrato de Prestação de Serviços de Telecomunicações</td><td style="${tdB}">www.nedel.com.br</td></tr>
+                <tr><td style="${tdB}">Contrato de Prestação de Serviço de Valor Adicionado – SVA</td><td style="${tdB}">Protocolo: 016818 — 15/03/2024 — Livro A-0014 Folha 095 / Registro 012870 — 19/03/2024 — Livro B-023 Folha 190</td></tr>
+                <tr><td style="${tdB}">Contrato de Locação de Equipamentos</td><td style="${tdB}">Protocolo: 016821 — 15/03/2024 — Livro A-0014 Folha 095 / Registro 012873 — 19/03/2024 — Livro B-023 Folha 193</td></tr>
+            </tbody>
+        </table>
+
+        <p style="text-align:justify;">1.4. Para tornar viável a prestação do Serviço de Comunicação Multimidia - SCM, a CONTRATADA poderá, de acordo com a necessidade do CLIENTE, ceder a título de COMODATO os equipamentos descritos abaixo, outorgando direito de uso e gozo devendo estes serem utilizados única e exclusivamente para a execução dos serviços ora contratados no Contrato de Prestação de Serviços de Comunicação Multimidia - SCM e, serão instalados no endereço acima informado pelo CLIENTE.</p>
+        <p style="text-align:justify;">1.5. A CONTRATADA poderá ceder a título de LOCAÇÃO os equipamentos adicionais a fim de aprimorar a prestação do Serviço de Comunicação Multimídia – SCM.</p>
+        <p style="text-align:justify;">1.6. O ASSINANTE declara ter ciência de que todos os equipamentos disponibilizados pela CONTRATADA para a fruição dos serviços, quando cedidos a título de comodato ou de locação, permanecem de propriedade exclusiva da CONTRATADA. Em caso de perda, roubo, furto, extravio, avarias, danos, bem como na hipótese de não devolução dos equipamentos ao final do contrato ou quando solicitado pela CONTRATADA, o ASSINANTE obriga-se a indenizar a CONTRATADA, pagando a esta o valor de mercado do equipamento, atualizado e apurado no momento da constatação do evento danoso, tomando-se como referência o valor base mínimo informado na Oferta, na data da contratação.</p>
+
+        <div style="${titulo}">CLÁUSULA SEGUNDA – DOS EQUIPAMENTOS</div>
+        <table style="width:100%; border-collapse:collapse; margin:8px 0; page-break-inside:avoid;">
+            <thead><tr>
+                <th style="${thB}">Tipo</th><th style="${thB}">Quantidade</th>
+                <th style="${thB}">Modalidade</th><th style="${thB}">Benefícios (R$)</th>
+                <th style="${thB}">Valores de Instalação</th>
+            </tr></thead>
+            <tbody>${equipRows}</tbody>
+            <tfoot>
+                <tr><td style="${tdB}" colspan="4"><strong>TAXA DE ADESÃO PLANO</strong></td><td style="${tdB}">${fmtR$(d.valorPago)}</td></tr>
+                <tr><td style="${tdB}" colspan="4"><strong>TOTAL VALORES DE INSTALAÇÃO</strong></td><td style="${tdB}">${fmtR$(d.valorPago)}</td></tr>
+                <tr style="background:#f0f0f0; font-weight:bold;"><td style="${tdB}" colspan="4">TOTAL DE BENEFÍCIOS</td><td style="${tdB}">${fmtR$(p.beneficio)}</td></tr>
+            </tfoot>
+        </table>
+
+        <div style="${titulo}">CLÁUSULA TERCEIRA – DAS CONDIÇÕES TÉCNICAS DOS PLANOS DE SERVIÇOS ESCOLHIDOS E VALORES MENSAIS</div>
+        <p>
+            <strong>Plano Contratado:</strong> ${escapeHtml(p.nome)}<br>
+            <strong>Velocidade de Download:</strong> ${escapeHtml(p.velDown)} Kbits (${kbpsParaMbps(p.velDown)}) &nbsp;|&nbsp; <strong>Velocidade de Upload:</strong> ${escapeHtml(p.velUp)} Kbits (${kbpsParaMbps(p.velUp)})<br>
+            <strong>Prazo de Ativação:</strong> ${d.prazoAtivacao} Dias &nbsp;|&nbsp; <strong>Garantia de banda (download):</strong> ${escapeHtml(p.garantiaDown)} Kbits &nbsp;|&nbsp; <strong>Garantia de banda (upload):</strong> ${escapeHtml(p.garantiaUp)} Kbits<br>
+            <strong>Vigência Contratual:</strong> 12 meses com renovação automática &nbsp;|&nbsp; <strong>Equipamentos:</strong> (X) COMODATO &nbsp;(X) LOCAÇÃO<br>
+            <strong>TAXA MÍNIMA DE VISITA TÉCNICA:</strong> ${fmtR$(d.taxaVisita)}
+        </p>
+
+        <p style="font-weight:bold; margin-top:8px;">PLANOS DE SERVIÇOS E VALORES MENSAIS</p>
+        <table style="width:100%; border-collapse:collapse; margin:6px 0; page-break-inside:avoid;">
+            <thead><tr><th style="${thB}">SERVIÇOS</th><th style="${thB}">QUANTIDADE</th><th style="${thB}">VALOR MENSAL</th></tr></thead>
+            <tbody>${servRows}</tbody>
+        </table>
+
+        <p style="text-align:justify; font-size:9pt;"><strong>Definição dos Serviços Digitais Adicionais:</strong><br>
+        <strong>Streaming de música:</strong> plataformas de serviços digitais que permitem ao usuário ouvir músicas sob demanda, criar playlists personalizadas e acessar conteúdos de áudio exclusivos.<br>
+        <strong>Leitura de E-book:</strong> plataformas que disponibilizam acesso a livros digitais, revistas e conteúdos editoriais em formato eletrônico. Aplicativos de E-book e Leitura.<br>
+        <strong>Streaming de Vídeo e TV:</strong> plataformas de serviços que oferecem acesso a conteúdos audiovisuais sob demanda, como filmes, séries, esportes e canais de TV.<br>
+        <strong>Telemedicina:</strong> plataforma de serviços que permitem ao usuário realizar consultas médicas e psicológicas de forma online, por meio de profissionais credenciados.</p>
+
+        <p>Ocorreu a contratação de outros serviços de telecomunicações de forma conjunta aos serviços previstos neste instrumento: (   ) SIM &nbsp; ( X ) NÃO</p>
+        <p style="text-align:justify;">3.1. O CLIENTE poderá ter acesso aos boletos mensais para impressão e pagamento através da Central do Cliente, devendo acessar o website e informar CPF/CNPJ e senha, através do site: assinante.nedel.com.br.</p>
+
+        <div style="${titulo}">CLÁUSULA QUARTA – TAXA DE INSTALAÇÃO</div>
+        <p style="text-align:justify;">4.1. Para ativação da prestação dos Serviços de Comunicação Multimidia – SCM, e Serviços de Valor Adicionado – SVA contratados, o CLIENTE deverá pagar à CONTRATADA o(s) valor(es) descrito a seguir:</p>
+        <table style="width:100%; border-collapse:collapse; margin:6px 0; page-break-inside:avoid;">
+            <thead><tr><th style="${thB}">Serviço</th><th style="${thB}">Valor</th></tr></thead>
+            <tbody>
+                <tr><td style="${tdB}">Valor da taxa de instalação</td><td style="${tdB}">${fmtR$(d.valorPago)}</td></tr>
+                <tr><td style="${tdB}">Desconto concedido ao cliente</td><td style="${tdB}">${fmtR$(p.beneficio)}</td></tr>
+                <tr style="font-weight:bold; background:#f0f0f0;"><td style="${tdB}">VALOR TOTAL DOS BENEFÍCIOS</td><td style="${tdB}">${fmtR$(d.beneficioRestante)}</td></tr>
+            </tbody>
+        </table>
+
+        <div style="${titulo}">CLÁUSULA QUINTA – DOS PRAZOS E FIDELIDADE CONTRATUAL</div>
+        <p style="text-align:justify;">5.1. A CONTRATADA poderá bloquear os serviços contratados em caso de inadimplência ou descumprimento contratual, mediante notificação prévia de 15 (quinze) dias, contendo os motivos, valores devidos e consequências da suspensão. Persistindo a inadimplência por mais de 60 (sessenta) dias, poderá ocorrer a rescisão contratual, com possibilidade de adoção de medidas legais e inclusão do débito em órgãos de proteção ao crédito.</p>
+        <p style="text-align:justify;">5.2. O restabelecimento dos serviços ocorrerá em até 48 (quarenta e oito) horas após a regularização integral dos débitos e obrigações contratuais. Durante o período de suspensão, o CLIENTE não fará jus a qualquer compensação, reparação ou indenização.</p>
+        <p style="text-align:justify;">5.3. O CLIENTE optou livremente pela percepção dos benefícios e, por conseguinte, pela contratação sob a condição de fidelidade contratual, tendo total e amplo conhecimento das consequências decorrentes da fidelização contratual, bem como das penalidades decorrentes da rescisão contratual antecipada.</p>
+        <p style="text-align:justify;">5.4. A CONTRATADA concedeu ao CLIENTE os seguintes benefícios, válidos exclusivamente durante o prazo de fidelidade contratual: <strong>${fmtR$(p.beneficio)}</strong> de desconto na taxa de instalação.</p>
+        <p style="text-align:justify;">5.5. Caso ocorra a rescisão contratual, a pedido do CLIENTE, antes de completado o período de fidelização descrito acima, o CLIENTE se compromete a pagar em favor da CONTRATADA uma multa penal, a ser apurada de acordo com a fórmula abaixo, bem como, e conforme a data do pedido de rescisão contratual antecipada:</p>
+
+        <p style="font-weight:bold; text-align:center;">TABELA DE PERCENTUAIS DE MULTA EQUIVALENTE</p>
+        <table style="width:100%; border-collapse:collapse; margin:6px 0; page-break-inside:avoid; font-size:9pt;">
+            <thead><tr><th style="${thB}">Mês</th><th style="${thB}">Tipo</th><th style="${thB}">Fórmula</th><th style="${thB}">Valor</th></tr></thead>
+            <tbody>${multaRows}</tbody>
+        </table>
+        <p style="text-align:justify;">5.6. Nos casos em que o CLIENTE já possuir um plano ativo junto à CONTRATADA e solicitar alteração ou migração de plano, será concedido o prazo de 30 (trinta) dias, contados da data da alteração, para avaliação do novo plano contratado. Durante este período, caso o CLIENTE não se adapte ao novo plano, poderá solicitar o retorno ao plano anteriormente contratado, sem aplicação de multa por fidelidade. O prazo mencionado neste item não se aplica a novas contratações com instalação de serviço, sendo válido exclusivamente para alterações de plano realizadas por CLIENTES que já possuam serviço ativo junto à CONTRATADA.</p>
+        <p>Após o 13º mês, o contrato será renovado automaticamente, sem incidência de multa.</p>
+        <p style="text-align:justify;"><strong>Obs:</strong> A solicitação de mudança de endereço pelo CLIENTE será considerada como alteração contratual unilateral. Caso não haja viabilidade técnica ou comercial para a continuidade da prestação dos serviços no novo endereço, a mudança será considerada hipótese de rescisão contratual por iniciativa do CLIENTE, sujeitando-o ao pagamento da multa de fidelidade prevista neste contrato, conforme regulamentação da Anatel.</p>
+
+        <div style="${titulo}">CLÁUSULA SEXTA – DAS DISPOSIÇÕES FINAIS</div>
+        <p style="text-align:justify;">6.1. O CLIENTE declara para todos os fins de direito, que a aceitação aos termos do Contrato de Prestação dos Serviços de Comunicação Multimidia - SCM, do Contrato de Prestação de Serviços de Valor Adicionado, Contrato de Comodato de Equipamentos, Contrato de Locação de Equipamentos, formalizados por este Termo de Contratação, é a expressão de sua vontade. Em face do expresso reconhecimento da legitimidade da presente contratação é que o CLIENTE não poderá escusar-se de cumprir as condições ora pactuadas.</p>
+        <p style="text-align:justify;">6.2. O CLIENTE poderá, a qualquer tempo, manifestar sua opção pelo não recebimento de chamadas publicitárias ou com o objetivo de ofertar serviços ou produtos da CONTRATADA. Caso o CLIENTE opte por receber tais chamadas, a CONTRATADA compromete-se a respeitar exclusivamente o horário comercial, evitar excessiva repetição de ligações e dar tratamento imediato e adequado a eventuais reclamações sobre chamadas indesejadas.</p>
+
+        <div style="${titulo}">CLÁUSULA SÉTIMA – DA SUCESSÃO E DO FORO</div>
+        <p style="text-align:justify;">7.1. O presente instrumento obriga herdeiros e/ou sucessores, a qualquer tempo, sendo neste ato eleito pelas PARTES o foro da Comarca de Itapiranga/SC, competente para dirimir quaisquer questões referentes ao presente, com renúncia expressa de qualquer outro, por mais privilegiado que seja.</p>
+        <p style="text-align:justify;">Nos termos do art. 10, § 2º, da Medida Provisória nº 2.200-2, as Partes expressamente concordam em utilizar e reconhecem como válida qualquer forma de comprovação de anuência aos termos ora acordados em formato eletrônico, se comprometendo pela veracidade das informações referentes aos seus representantes legais, sob pena de responsabilização nas formas da lei.</p>
+        <p style="text-align:justify;">E, por estar de acordo, o CLIENTE adere ao presente documento assinado em 02 (duas) vias de igual teor, ou via assinatura digital, por sua livre vontade, declarando ainda, não estar assinando e/ou aceitando o presente sob premente coação, estado de necessidade ou outra forma de vício de consentimento, tendo conhecimento de todo direito e obrigação que assume nesta data.</p>
+
+        <div style="margin-top:20px; page-break-inside:avoid;">
+            <p style="font-weight:bold;">ASSINATURA:</p>
+            <p>Itapiranga/SC, ${escapeHtml(d.dataHoje)}.</p>
+            <p style="margin-top:8px;">Assinatura das partes:</p>
+            <table style="width:100%; margin-top:30px;">
+                <tr>
+                    <td style="text-align:center; width:50%; padding:0 10px;">
+                        <div style="border-top:1px solid #000; padding-top:5px;">
+                            <strong>(CONTRATADA)</strong><br>
+                            INFORMATICA ITAPIRANGA LTDA<br>
+                            HENRIQUE NEDEL — ADMINISTRADOR
+                        </div>
+                    </td>
+                    <td style="text-align:center; width:50%; padding:0 10px;">
+                        <div style="border-top:1px solid #000; padding-top:5px;">
+                            <strong>(CLIENTE)</strong><br>
+                            ${C(d.cliente.nome)}<br>
+                            Contratante
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table style="width:100%; margin-top:35px;">
+                <tr>
+                    <td style="text-align:left; width:50%; padding:0 10px; vertical-align:top;">
+                        <div style="border-top:1px solid #000; padding-top:5px;">
+                            <strong>Testemunha:</strong><br>
+                            <strong>Nome:</strong> ${C(d.test1 ? d.test1.nome : '')}<br>
+                            <strong>CPF/CI:</strong> ${C(d.test1 ? d.test1.cpf : '')}<br>
+                            <strong>Endereço:</strong> ${C(d.test1 ? d.test1.endereco : '')}
+                        </div>
+                    </td>
+                    <td style="text-align:left; width:50%; padding:0 10px; vertical-align:top;">
+                        <div style="border-top:1px solid #000; padding-top:5px;">
+                            <strong>Testemunha:</strong><br>
+                            <strong>Nome:</strong> ${C(d.test2 ? d.test2.nome : '')}<br>
+                            <strong>CPF/CI:</strong> ${C(d.test2 ? d.test2.cpf : '')}<br>
+                            <strong>Endereço:</strong> ${C(d.test2 ? d.test2.endereco : '')}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>`;
+}
+
+function previewContrato() {
+    if (!validarFormulario()) return;
+    const d = coletarDados();
+    document.getElementById('modalBody').innerHTML = montarHTMLContrato(d);
+    document.getElementById('modalPreview').classList.add('show');
+}
+function fecharPreview() { document.getElementById('modalPreview').classList.remove('show'); }
+
+function gerarPDF() {
+    if (!validarFormulario()) return;
+    try {
+        const d = coletarDados();
+        const html = montarHTMLContrato(d);
+        const tituloLimpo = `PSCM_${(d.numPSCM || 'contrato').replace(/[\\/:*?"<>|]/g, '_')}_${(d.cliente.nome || 'cliente').replace(/[\\/:*?"<>|\s]+/g, '_').substring(0, 40)}`;
+        const paginaImpressao = `<!DOCTYPE html>
+<html lang="pt-br"><head><meta charset="UTF-8"><title>${escapeHtml(tituloLimpo)}</title>
+<style>
+    @page { size: A4; margin: 12mm; }
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background:#fff; color:#000; font-family:'Times New Roman', Times, serif; }
+    table { border-collapse: collapse; } p { margin: 6px 0; }
+    .barra-acoes { position: sticky; top:0; background:#004080; color:white; padding:10px 16px; display:flex; gap:10px; align-items:center; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,.2); font-family:Arial, sans-serif; }
+    .barra-acoes strong { flex:1; font-size:14px; }
+    .barra-acoes .dica { font-size:12px; opacity:.9; }
+    .barra-acoes button { background:white; color:#004080; border:none; padding:8px 16px; font-weight:bold; border-radius:4px; cursor:pointer; font-size:13px; }
+    .barra-acoes button.sec { background:transparent; color:white; border:1px solid white; }
+    @media print { .barra-acoes { display:none !important; } body { background:white; } }
+    .conteudo { max-width: 210mm; margin: 0 auto; padding: 8px 0; }
+</style></head><body>
+    <div class="barra-acoes">
+        <strong>${escapeHtml(tituloLimpo)}</strong>
+        <span class="dica">Em "Destino", selecione "Salvar como PDF".</span>
+        <button onclick="window.print()">Imprimir / Salvar PDF</button>
+        <button class="sec" onclick="window.close()">Fechar</button>
+    </div>
+    <div class="conteudo">${html}</div>
+    <script>
+        window.addEventListener('load', function() { setTimeout(function(){ try { window.focus(); window.print(); } catch(e) {} }, 400); });
+    <\/script>
+</body></html>`;
+        const w = window.open('', '_blank', 'width=900,height=1000,scrollbars=yes');
+        if (!w) { toast('Permita pop-ups para gerar o PDF.', 'erro'); return; }
+        w.document.open(); w.document.write(paginaImpressao); w.document.close();
+        toast('Janela de impressão aberta.');
+        const m = d.numPSCM.match(/\/(\d+)$/);
+        if (m) { const n = parseInt(m[1], 10); if (!isNaN(n)) localStorage.setItem('pscm_ultimo_numero', String(n)); }
+    } catch(e) { console.error(e); toast('Erro: ' + e.message, 'erro'); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    popularPlanos();
+    popularTestemunhas();
+    popularAdicionais();
+
+    document.getElementById('clienteDoc').addEventListener('input', e => { e.target.value = mascaraCpfCnpj(e.target.value); marcar('clienteDoc', validarDoc(e.target.value)); salvarRascunho(); });
+    document.getElementById('telefone').addEventListener('input', e => { e.target.value = mascaraTelefone(e.target.value); marcar('telefone', validarTelefone(e.target.value)); salvarRascunho(); });
+    document.getElementById('cep').addEventListener('input', e => { e.target.value = mascaraCep(e.target.value); salvarRascunho(); });
+    document.getElementById('email').addEventListener('input', e => { marcar('email', validarEmail(e.target.value)); salvarRascunho(); });
+
+    camposRascunho.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !['clienteDoc','telefone','cep','email'].includes(id)) {
+            el.addEventListener('change', salvarRascunho);
+            el.addEventListener('input', salvarRascunho);
+        }
+    });
+
+    const ano = new Date().getFullYear();
+    const ultNum = parseInt(localStorage.getItem('pscm_ultimo_numero') || '0', 10);
+    const proxNum = (ultNum + 1).toString().padStart(4, '0');
+    document.getElementById('numPSCM').placeholder = `Ex: ${ano}/${proxNum}`;
+
+    carregarRascunho();
+});
 </script>
 </body>
 </html>
