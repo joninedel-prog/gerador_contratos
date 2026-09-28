@@ -370,7 +370,7 @@ def build_roteiro():
     add_bullet(doc, "A luz de fibra está apagada. Onde está o problema?")
 
     add_heading(doc, "A tarefa", level=2)
-    add_para(doc, "\"Procurem um cabo de rede em casa e leiam o que está escrito na capa. Anotem a categoria, o fabricante e o número da metragem. Se não acharem cabo de rede, sirva qualquer cabo: o da TV, o de energia. Tragam anotado — a gente vai comparar as capas na aula.\"", italic=True)
+    add_para(doc, "\"Hoje vocês leram a etiqueta do roteador e a capa do cabo aqui na bancada. Em casa, façam o mesmo com o roteador de vocês: marca, modelo, velocidade do Wi-Fi e se é Dual Band. Senha não se anota nem se fotografa — se for tirar foto, tampem com o dedo. Tragam anotado que a gente compara os aparelhos da turma.\"", italic=True)
     add_para(doc, "\"E quem não achar nenhum, sem problema: vai ter cabo de sobra na mesa.\"", italic=True)
 
     add_heading(doc, "Anuncie a próxima", level=2)
@@ -799,14 +799,14 @@ def build_slides():
     s = add_slide(prs)
     add_title_block(s, "PARA A PRÓXIMA NOITE", "Por onde o sinal viaja")
     add_text(s, [
-        "Duas tarefas simples:",
+        "Uma tarefa simples:",
         "",
-        "•  Procurar um cabo de rede em casa e ler o que está escrito na capa",
-        "•  Anotar a categoria, o fabricante e o número da metragem",
-        "•  Se não achar cabo de rede, sirva qualquer cabo (TV, energia)",
-        "•  Trazer anotado — vamos comparar as capas na aula",
+        "•  Ler a etiqueta do roteador da sua casa",
+        "•  Anotar marca, modelo, velocidade do Wi-Fi e se é Dual Band (senha NÃO)",
+        "•  Senha não se anota nem se fotografa — tampe com o dedo",
+        "•  Trazer anotado — vamos comparar os aparelhos da turma",
         "",
-        "Quem não achar nenhum, sem problema — vai ter cabo de sobra na mesa.",
+        "Quem não tem roteador em casa: olhe o de um parente ou vizinho.",
     ], 0.7, 2.8, 11.9, 4.2, size=15, color=K)
     add_footer(s, FOOTER)
 
@@ -826,7 +826,7 @@ def build_folha():
     cabecalho_documento(
         doc,
         "COMO A INTERNET CHEGA + 5 EQUIPAMENTOS",
-        f"Redes de Computadores · {NOITE} · Curso FIC · CEJA Itapiranga · 1 de 3",
+        f"Redes de Computadores · {NOITE} · Curso FIC · CEJA Itapiranga · 1 de 5",
     )
 
     p = doc.add_paragraph()
@@ -902,7 +902,7 @@ def build_folha():
     cabecalho_documento(
         doc,
         "CHAMADOS PARA VOCÊ ATENDER",
-        f"Role-play cliente/técnico · {NOITE} · 2 de 3",
+        f"Role-play cliente/técnico · {NOITE} · 2 de 5",
     )
 
     add_para(doc, "Nesta atividade você faz o papel de técnico. Sua dupla recebe um cartão com o problema do cliente e vai te contar como se fosse um cliente de verdade. Sua missão: descobrir qual equipamento provavelmente está com problema, fazendo 3-4 perguntas.", italic=True, size=10, color=COR_CINZA)
@@ -938,69 +938,162 @@ def build_folha():
             r.font.size = Pt(11)
             r.font.color.rgb = COR_CINZA
 
-    # PÁGINA 3 — Ficha de identificação + tarefa
+    # PÁGINA 3 — Ficha de identificação do roteador
     doc.add_page_break()
     cabecalho_documento(
         doc,
-        "FICHA DE IDENTIFICAÇÃO",
-        f"Equipamento de rede · {NOITE} · 3 de 3",
+        "FICHA DE IDENTIFICAÇÃO · ROTEADOR",
+        f"Equipamento de rede · {NOITE} · 3 de 5",
     )
 
-    add_para(doc, "Como preencher: quase tudo está na etiqueta embaixo do aparelho. Não mexa em configuração nenhuma — hoje é só olhar, contar e anotar. NÃO anote senha de Wi-Fi nesta folha.", italic=True, size=10, color=COR_ALERTA, bold=True)
+    add_para(doc, "Como preencher: quase tudo está na etiqueta embaixo do aparelho. Não mexa em configuração nenhuma — hoje é só olhar, contar e anotar. NÃO anote a senha do Wi-Fi (Senha Wireless/PIN) nesta folha.", italic=True, size=10, color=COR_ALERTA, bold=True)
 
-    add_heading(doc, "1  O aparelho da bancada", level=2)
+    add_heading(doc, "1  Aprendendo a ler a etiqueta", level=2)
+    add_para(doc, "A etiqueta muda de lugar e de palavra conforme o modelo. Use esta tabela como dicionário.", italic=True, size=10, color=COR_CINZA)
+    add_table(doc, [
+        ["Na etiqueta está escrito…", "Quer dizer"],
+        ["Modelo / Model   ·   Ver: 4.1", "Nome do aparelho e a versão do hardware (importa na hora de baixar atualização)"],
+        ["S/N", "Número de série: a “identidade” daquele aparelho, único no mundo"],
+        ["MAC: 60-32-B1-…", "Endereço físico da placa de rede. Vamos usar na Noite 6"],
+        ["SSID: TP-Link_5249", "Nome da rede Wi-Fi que sai de fábrica. Se tem um “_5G”, o aparelho tem duas faixas"],
+        ["Acesso Padrão / Página de Configuração", "Endereço que se digita no navegador para configurar (ex.: tplinkwifi.net)"],
+        ["Energia / Alimentação: 12V ⎓ 1A", "Tensão e corrente da fonte. Fonte errada pode queimar o aparelho"],
+        ["N 300Mbps   ·   AC1200", "Velocidade máxima teórica do Wi-Fi somando as faixas"],
+        ["Dual Band", "Tem Wi-Fi em 2,4 GHz e em 5 GHz"],
+        ["Gigabit", "Portas de cabo de até 1000 Mbps. Sem essa palavra, em geral são de 100 Mbps"],
+    ], col_widths=[6.5, 11])
+
+    add_heading(doc, "2  Os aparelhos da bancada", level=2)
+    add_para(doc, "Preencha uma coluna para cada roteador que passar pela sua mão.", italic=True, size=10, color=COR_CINZA)
     tbl = add_table(doc, [
-        ["Item", "Sua resposta"],
-        ["Marca", ""],
-        ["Modelo", ""],
-        ["Nome de rede (SSID) de fábrica", ""],
-        ["Endereço de configuração", ""],
-        ["Quantas portas LAN?", ""],
-        ["A porta WAN tem outra cor? Qual?", ""],
-        ["Tem antena? Quantas?", ""],
-    ], col_widths=[7, 10.5])
+        ["Item", "Roteador A", "Roteador B"],
+        ["Marca", "", ""],
+        ["Modelo e versão (Ver)", "", ""],
+        ["Velocidade do Wi-Fi (N300, AC1200…)", "", ""],
+        ["Uma faixa ou Dual Band? Quantos SSID na etiqueta?", "", ""],
+        ["Nome de rede (SSID) de fábrica", "", ""],
+        ["Endereço de configuração", "", ""],
+        ["MAC", "", ""],
+        ["Alimentação (V e A)", "", ""],
+        ["Portas são Gigabit? (sim / não / não diz)", "", ""],
+        ["Quantas portas LAN?", "", ""],
+        ["A porta WAN tem outra cor? Qual?", "", ""],
+        ["Antenas: quantas?", "", ""],
+        ["Tem etiqueta do provedor? Qual o código?", "", ""],
+    ], col_widths=[7.5, 5, 5])
     for row in tbl.rows[1:]:
-        row.height = Cm(0.8)
+        row.height = Cm(0.7)
 
-    add_heading(doc, "2  As luzes do painel", level=2)
-    add_para(doc, "Ligue o aparelho e marque o que cada luz fez.", italic=True, size=10, color=COR_CINZA)
+    # PÁGINA 4 — Roteador na prática
+    doc.add_page_break()
+    cabecalho_documento(
+        doc,
+        "FICHA DE IDENTIFICAÇÃO · ROTEADOR NA PRÁTICA",
+        f"Equipamento de rede · {NOITE} · 4 de 5",
+    )
+
+    add_heading(doc, "3  As luzes do painel", level=2)
+    add_para(doc, "Ligue um dos aparelhos e marque o que cada luz fez.", italic=True, size=10, color=COR_CINZA)
     tbl = add_table(doc, [
         ["A luz", "Acesa fixa", "Piscando", "Apagada"],
-        ["Power", "☐", "☐", "☐"],
-        ["Fibra / Internet", "☐", "☐", "☐"],
-        ["WLAN / Wi-Fi", "☐", "☐", "☐"],
+        ["Power (energia)", "☐", "☐", "☐"],
+        ["Internet / WAN (globo)", "☐", "☐", "☐"],
+        ["Wi-Fi 2,4 GHz", "☐", "☐", "☐"],
+        ["Wi-Fi 5 GHz (se tiver)", "☐", "☐", "☐"],
         ["LAN 1 a 4", "☐", "☐", "☐"],
-    ], col_widths=[4, 4.5, 4.5, 4.5])
+    ], col_widths=[5, 4, 4, 4])
     for row in tbl.rows[1:]:
-        row.height = Cm(0.8)
+        row.height = Cm(0.7)
 
-    add_heading(doc, "3  Duas perguntas", level=2)
-    p = doc.add_paragraph()
-    r = p.add_run("1. Como você reconheceu a porta WAN sem ninguém falar?")
-    r.font.size = Pt(11)
-    r.bold = True
-    for _ in range(2):
+    add_heading(doc, "4  Pense como técnico", level=2)
+    perguntas = [
+        "1. Como você reconheceu a porta WAN sem ninguém falar?",
+        "2. A fonte de um roteador pode ser usada no outro? Olhe a alimentação dos dois e explique.",
+        "3. O cliente tem plano de 300 Mega e liga o computador no cabo. Qual dos dois roteadores você indicaria? Por quê?",
+    ]
+    for pergunta in perguntas:
         p = doc.add_paragraph()
-        p.paragraph_format.space_after = Pt(0)
-        r = p.add_run("_" * 100)
+        r = p.add_run(pergunta)
         r.font.size = Pt(11)
-        r.font.color.rgb = COR_CINZA
-    p = doc.add_paragraph()
-    r = p.add_run("2. A luz de fibra está apagada. Onde está o problema, e por quê?")
-    r.font.size = Pt(11)
-    r.bold = True
-    for _ in range(2):
-        p = doc.add_paragraph()
-        p.paragraph_format.space_after = Pt(0)
-        r = p.add_run("_" * 100)
-        r.font.size = Pt(11)
-        r.font.color.rgb = COR_CINZA
+        r.bold = True
+        for _ in range(3):
+            p = doc.add_paragraph()
+            p.paragraph_format.space_after = Pt(0)
+            r = p.add_run("_" * 100)
+            r.font.size = Pt(11)
+            r.font.color.rgb = COR_CINZA
 
     doc.add_paragraph()
     add_heading(doc, "TAREFA DA SEMANA", level=2, color=COR_DESTAQUE)
-    add_bullet(doc, "Procure um cabo de rede em casa (ou qualquer cabo, se não achar) e anote o que está escrito na capa")
-    add_bullet(doc, "Categoria, fabricante e a metragem (o número impresso a cada metro)")
-    add_bullet(doc, "Traga anotado — vamos comparar as capas na Noite 3")
+    add_bullet(doc, "Olhe a etiqueta do roteador da sua casa e anote marca, modelo, velocidade do Wi-Fi e se é Dual Band")
+    add_bullet(doc, "Não anote nem fotografe a senha — tampe com o dedo se for tirar foto")
+    add_bullet(doc, "Traga anotado — vamos comparar os aparelhos da turma na Noite 3")
+
+    # PÁGINA 5 — Ficha de identificação do cabo
+    doc.add_page_break()
+    cabecalho_documento(
+        doc,
+        "FICHA DE IDENTIFICAÇÃO · CABO",
+        f"Equipamento de rede · {NOITE} · 5 de 5",
+    )
+
+    add_para(doc, "O cabo não tem etiqueta embaixo: a etiqueta dele é a própria capa. O texto se repete ao longo do cabo — se estiver apagado num ponto, procure um metro adiante.", italic=True, size=10, color=COR_CINZA)
+
+    add_heading(doc, "1  Lendo a capa, pedaço por pedaço", level=2)
+    add_para(doc, "Exemplo real de um cabo da bancada:", italic=True, size=10, color=COR_CINZA)
+    add_para(doc, "115 m   MEGATRON   CABO LAN   U/UTP   CAT5e   4P×24AWG   NBR 14703   ANATEL", bold=True, size=12, color=COR_PRIMARIA)
+    add_table(doc, [
+        ["Pedaço", "Quer dizer"],
+        ["115 m", "Metragem: a posição naquele ponto do rolo. Muda a cada metro"],
+        ["MEGATRON", "Fabricante"],
+        ["U/UTP", "Sem blindagem (Unshielded). Blindado aparece como F/UTP, S/FTP…"],
+        ["CAT5e / CAT6", "Categoria: diz até quanto de velocidade o cabo aguenta com folga"],
+        ["4P", "4 pares de fios trançados = 8 fios"],
+        ["24AWG / 23AWG", "Espessura do fio de cobre. Quanto MENOR o número, MAIS GROSSO o fio"],
+        ["NBR 14703 · ANATEL", "Segue a norma brasileira e é homologado"],
+    ], col_widths=[4.5, 13])
+
+    add_heading(doc, "2  Os cabos da bancada", level=2)
+    add_para(doc, "Pegue um cabo Cat5e e um Cat6 e compare lado a lado.", italic=True, size=10, color=COR_CINZA)
+    tbl = add_table(doc, [
+        ["Item", "Cabo 1", "Cabo 2"],
+        ["Fabricante", "", ""],
+        ["Categoria (CAT…)", "", ""],
+        ["Blindagem (U/UTP, F/UTP…)", "", ""],
+        ["Quantos pares?", "", ""],
+        ["Bitola (AWG)", "", ""],
+        ["Norma / selo Anatel?", "", ""],
+        ["Cor da capa", "", ""],
+        ["Qual é mais grosso? (marque X)", "", ""],
+        ["Na ponta cortada: tem um plástico separando os pares?", "", ""],
+    ], col_widths=[7.5, 5, 5])
+    for row in tbl.rows[1:]:
+        row.height = Cm(0.75)
+
+    add_heading(doc, "3  Quanto cabo tem aqui?", level=2)
+    add_para(doc, "Leia a metragem perto de uma ponta e perto da outra. A diferença é o comprimento do pedaço.", italic=True, size=10, color=COR_CINZA)
+    tbl = add_table(doc, [
+        ["Metragem na ponta A", "Metragem na ponta B", "Comprimento (B − A)"],
+        ["              m", "              m", "              m"],
+    ], col_widths=[5.8, 5.8, 5.9])
+    tbl.rows[1].height = Cm(0.9)
+
+    add_heading(doc, "4  Pense como técnico", level=2)
+    perguntas = [
+        "1. O cliente vai contratar 1 Giga. O cabo Cat5e da parede serve, ou tem que trocar tudo? Por quê?",
+        "2. Por que vale a pena ler a capa do cabo ANTES de comprar ou instalar?",
+    ]
+    for pergunta in perguntas:
+        p = doc.add_paragraph()
+        r = p.add_run(pergunta)
+        r.font.size = Pt(11)
+        r.bold = True
+        for _ in range(2):
+            p = doc.add_paragraph()
+            p.paragraph_format.space_after = Pt(0)
+            r = p.add_run("_" * 100)
+            r.font.size = Pt(11)
+            r.font.color.rgb = COR_CINZA
 
     doc.add_paragraph()
     p = doc.add_paragraph()
