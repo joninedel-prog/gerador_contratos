@@ -68,6 +68,7 @@ def build_roteiro():
         ["Switch (se tiver)", "Comparar com o roteador e ver que não tem WAN"],
         ["Modem ou caixinha de fibra, se houver", "Mostrar a entrada da fibra"],
         ["Cabos de rede prontos", "Ligar e ver as luzes acenderem"],
+        ["Pedaço de cabo Cat5e e de Cat6 (com a capa legível)", "Ficha do cabo (página 5 da folha)"],
         ["Régua de tomadas", "Para ligar os equipamentos na bancada"],
         ["Cartões de chamado (do bloco 5)", "Papel A5 com um chamado escrito em cada"],
     ], col_widths=[6, 10.5])
@@ -80,9 +81,9 @@ def build_roteiro():
     add_bullet(doc, "Prepare os cartões de chamado do Bloco 5 (10 chamados, um por cartão) — modelos no fim deste roteiro")
 
     add_heading(doc, "Imprima", level=2)
-    add_bullet(doc, "A folha do aluno (3 páginas), uma por pessoa")
+    add_bullet(doc, "A folha do aluno (5 páginas), uma por pessoa")
     add_bullet(doc, "O resumo do aluno, uma por pessoa (pra levar pra casa)")
-    add_bullet(doc, "A ficha de identificação de equipamento faz parte da folha (página 3), uma por equipe")
+    add_bullet(doc, "As fichas de identificação fazem parte da folha: roteador (páginas 3 e 4) e cabo (página 5)")
 
     add_hr(doc)
 
@@ -209,6 +210,10 @@ def build_roteiro():
     ], col_widths=[5, 4, 7.5])
     add_para(doc, "\"Só um deles cria rede. Guardem isso.\"", italic=True, bold=True, color=COR_PRIMARIA)
 
+    add_heading(doc, "+1: o cabo de rede — 3 min", level=2)
+    add_para(doc, "Levante um cabo e passe pela turma:")
+    add_para(doc, "\"Este aqui não é equipamento: não cria rede, não tem Wi-Fi, não tem luz. Mas é ele que liga os cinco — e é o item que mais dá defeito no atendimento. A etiqueta dele está na própria capa. Daqui a pouco vocês vão ler.\"", italic=True)
+
     add_heading(doc, "E a caixinha do provedor", level=2)
     add_para(doc, "\"Hoje o provedor entrega uma caixa só, que faz três coisas juntas: recebe a fibra, distribui a rede e emite o Wi-Fi. É mais barato e o técnico instala mais rápido. O problema é que, se ela der defeito, para tudo de uma vez — e o Wi-Fi dela costuma ser fraco. Muita casa resolve colocando um roteador melhor depois dela.\"", italic=True)
 
@@ -223,7 +228,8 @@ def build_roteiro():
     add_bullet(doc, "Identificar cada equipamento na mesa e dizer em voz alta o que ele faz")
     add_bullet(doc, "Achar a porta WAN de cada roteador e explicar como reconheceu")
     add_bullet(doc, "Contar as portas LAN e anotar")
-    add_bullet(doc, "Ler a etiqueta e preencher a ficha (na página 3 da folha do aluno): nome de rede, endereço de configuração, modelo, série")
+    add_bullet(doc, "Ler a etiqueta de dois roteadores e preencher a ficha (páginas 3 e 4 da folha do aluno)")
+    add_bullet(doc, "Ler a capa de um cabo Cat5e e de um Cat6 e preencher a ficha do cabo (página 5)")
     add_bullet(doc, "Ligar o roteador e observar as luzes acendendo, uma por uma")
     add_bullet(doc, "Trocar de bancada com outra equipe e conferir o que o colega anotou")
     add_bullet(doc, "Ao fim: cada equipe apresenta 1 equipamento em 30 segundos pra turma toda")
@@ -236,15 +242,16 @@ def build_roteiro():
     add_para(doc, "\"Se você ligar o cabo do provedor numa porta LAN, tudo vai conectar na rede normalmente — e nada vai abrir. Parece defeito, e não é. É o erro mais comum de quem instala roteador.\"", italic=True, color=COR_ALERTA, bold=True)
 
     add_heading(doc, "A etiqueta embaixo", level=2)
-    add_table(doc, [
-        ["O que tem na etiqueta", "Para que serve"],
-        ["Nome da rede (SSID) de fábrica", "É o nome que aparece na lista antes de alguém trocar"],
-        ["Senha do Wi-Fi de fábrica", "Conectar na primeira vez"],
-        ["Usuário e senha de administração", "Entram na configuração. São outra senha"],
-        ["Endereço de configuração", "O número que se digita no navegador"],
-        ["Modelo e número de série", "O que o suporte do provedor vai pedir"],
-    ], col_widths=[6.5, 10])
+    add_para(doc, "Use o slide \"Aprendendo a ler a etiqueta\" — é a mesma tabela da página 3 da folha. Leia junto com a turma uma etiqueta real antes de soltar as equipes. Nos TP-Link da bancada não tem usuário e senha de administração na etiqueta: eles pedem pra criar uma senha no primeiro acesso.")
+    add_para(doc, "Em seguida, o slide da capa do cabo: leia o exemplo pedaço por pedaço.")
     add_para(doc, "\"Tire uma foto da etiqueta antes de pendurar o aparelho na parede. Quem já instalou sabe por quê.\"", italic=True, color=COR_PRIMARIA)
+
+    add_heading(doc, "Conferindo as fichas — últimos 10 min do bloco", level=2)
+    add_para(doc, "Três slides de correção. Pergunte às equipes antes de mostrar cada um:")
+    add_bullet(doc, "Os dois roteadores: TL-WR840N (N300, só 2,4 GHz, portas de 100 Mbps, 9V 0,6A) × Archer C5 (AC1200, Dual Band, Gigabit, 12V 1A)")
+    add_bullet(doc, "Pense como técnico: a fonte de um NÃO serve no outro; pra 300 Mega no cabo, só o Archer (as portas do 840N param em ~94 Mbps)")
+    add_bullet(doc, "Cat5e × Cat6: os dois vão até 100 m e 1 Gbps; o Cat6 tem mais folga, fio mais grosso e muitas vezes a cruzeta por dentro")
+    add_para(doc, "\"Mesma marca, mesmo endereço de configuração — e aparelhos bem diferentes. Por isso o técnico lê a etiqueta antes de prometer qualquer coisa ao cliente.\"", italic=True, color=COR_PRIMARIA)
 
     add_heading(doc, "As luzes", level=2)
     add_table(doc, [
@@ -529,13 +536,14 @@ def build_slides():
         ("SWITCH", "Aumenta o número de portas de cabo. Não cria rede"),
         ("PONTO DE ACESSO", "Leva o sinal sem fio onde o roteador não alcança"),
         ("PLACA DE REDE", "Onde o cabo entra no computador"),
+        ("+ CABO DE REDE", "O que liga todos eles. Não cria rede, mas é o que mais dá defeito"),
     ]
-    y = 2.7
+    y = 2.6
     for tit, desc in equip:
-        add_text(s, tit, 0.7, y, 3.5, 0.5, size=17, bold=True, color=P)
+        add_text(s, tit, 0.7, y, 3.5, 0.5, size=17, bold=True, color=D if tit.startswith("+") else P)
         add_text(s, desc, 4.3, y, 8.3, 0.5, size=15, color=K)
-        y += 0.75
-    add_text(s, "Cinco nomes. Nas próximas telas, um de cada vez.", 0.7, 6.6, 11.9, 0.4, size=14, italic=True, color=G, align=PP_ALIGN.CENTER)
+        y += 0.65
+    add_text(s, "Cinco equipamentos e o fio que liga todos eles. Um de cada vez.", 0.7, 6.6, 11.9, 0.4, size=14, italic=True, color=G, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
 
     # 7: MODEM
@@ -618,9 +626,25 @@ def build_slides():
     add_text(s, "A luzinha piscando na traseira é a primeira coisa a olhar num chamado.", 0.7, 6.6, 11.9, 0.4, size=14, bold=True, color=D, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
 
+    # 11b: + CABO DE REDE
+    s = add_slide(prs)
+    add_title_block(s, "E O QUE LIGA TUDO · +1", "CABO DE REDE", "Não é equipamento. É o caminho entre eles.")
+    add_text(s, [
+        "O que faz",
+        "  Leva o sinal de um aparelho a outro: modem → roteador → switch → computador",
+        "",
+        "Por dentro",
+        "  8 fios em 4 pares trançados, com conector RJ45 nas pontas",
+        "",
+        "Onde está escrito",
+        "  Na própria capa: fabricante, categoria (Cat5e, Cat6) e a metragem",
+    ], 0.7, 2.8, 11.9, 3.8, size=17, color=K)
+    add_text(s, "Não cria rede — mas é o item que mais dá defeito. Nas Noites 3, 4 e 5 ele é o assunto.", 0.7, 6.6, 11.9, 0.4, size=14, bold=True, color=D, align=PP_ALIGN.CENTER)
+    add_footer(s, FOOTER)
+
     # 12: O quadro dos 5
     s = add_slide(prs)
-    add_title_block(s, "DE UMA OLHADA", "O quadro dos cinco")
+    add_title_block(s, "DE UMA OLHADA", "O quadro dos cinco (+ o cabo)")
     rows = [
         ["Equipamento", "Cria rede?", "Tem Wi-Fi?", "Para que serve"],
         ["Modem", "Não", "Não", "Traduzir o sinal do provedor"],
@@ -628,8 +652,9 @@ def build_slides():
         ["Switch", "Não", "Não", "Aumentar o número de portas"],
         ["Ponto de acesso", "Não", "Sim", "Ampliar a cobertura sem fio"],
         ["Placa de rede", "Não", "Depende", "Conectar a máquina à rede"],
+        ["+ Cabo de rede", "Não", "Não", "Ligar os equipamentos entre si"],
     ]
-    add_table_slide(s, rows, top=2.8, height=3.8, col_widths=[3.2, 2.2, 2.5, 4.0], size=14)
+    add_table_slide(s, rows, top=2.6, height=3.9, col_widths=[3.2, 2.2, 2.5, 4.0], size=14)
     add_text(s, "Só um deles cria rede. Guardem isso.", 0.7, 6.7, 11.9, 0.4, size=18, bold=True, color=D, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
 
@@ -651,19 +676,40 @@ def build_slides():
     add_text(s, "Confundir essas duas é o erro mais comum de quem instala roteador.", 0.7, 6.6, 11.9, 0.4, size=14, bold=True, color=R, italic=True, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
 
-    # 14: Onde está escrito
+    # 14: Aprendendo a ler a etiqueta
     s = add_slide(prs)
-    add_title_block(s, "ONDE ESTÁ ESCRITO", "A etiqueta embaixo do aparelho")
+    add_title_block(s, "ONDE ESTÁ ESCRITO", "Aprendendo a ler a etiqueta")
     rows = [
-        ["O que tem", "Para que serve"],
-        ["Nome de rede (SSID) de fábrica", "Nome que aparece antes de alguém trocar"],
-        ["Senha do Wi-Fi de fábrica", "Conectar na primeira vez"],
-        ["Usuário e senha de administração", "Entram na configuração — OUTRA senha"],
-        ["Endereço de configuração", "Número que se digita no navegador"],
-        ["Modelo e número de série", "O que o suporte do provedor vai pedir"],
+        ["Na etiqueta está escrito…", "Quer dizer"],
+        ["Modelo · Ver: 4.1", "Nome do aparelho e versão do hardware"],
+        ["S/N", "Número de série — único no mundo"],
+        ["MAC", "Endereço físico da placa de rede (Noite 6)"],
+        ["SSID  ·  SSID _5G", "Nome da rede de fábrica. Com \"_5G\" = duas faixas"],
+        ["Acesso Padrão / Página de Configuração", "O que se digita no navegador"],
+        ["Energia: 12V ⎓ 1A", "Tensão e corrente da fonte"],
+        ["N 300Mbps · AC1200", "Velocidade máxima teórica do Wi-Fi"],
+        ["Dual Band", "Wi-Fi em 2,4 GHz e em 5 GHz"],
+        ["Gigabit", "Portas de cabo de 1000 Mbps (sem isso, em geral 100)"],
     ]
-    add_table_slide(s, rows, top=2.8, height=3.5, col_widths=[5, 6.9], size=14)
-    add_text(s, "Tire uma foto da etiqueta antes de pendurar o aparelho na parede.", 0.7, 6.6, 11.9, 0.4, size=15, bold=True, color=D, italic=True, align=PP_ALIGN.CENTER)
+    add_table_slide(s, rows, top=2.3, height=4.2, col_widths=[5, 6.9], size=13)
+    add_text(s, "Tire uma foto da etiqueta antes de pendurar o aparelho — tampando a senha.", 0.7, 6.65, 11.9, 0.4, size=15, bold=True, color=D, italic=True, align=PP_ALIGN.CENTER)
+    add_footer(s, FOOTER)
+
+    # 14b: A capa do cabo
+    s = add_slide(prs)
+    add_title_block(s, "E O CABO?", "A etiqueta do cabo é a própria capa")
+    add_text(s, "115 m   MEGATRON   CABO LAN   U/UTP   CAT5e   4P×24AWG   NBR 14703   ANATEL", 0.7, 2.3, 11.9, 0.5, size=18, bold=True, color=P, align=PP_ALIGN.CENTER)
+    rows = [
+        ["Pedaço", "Quer dizer"],
+        ["115 m", "Metragem naquele ponto do rolo — muda a cada metro"],
+        ["U/UTP", "Sem blindagem. Blindado: F/UTP, S/FTP…"],
+        ["CAT5e / CAT6", "Categoria: até quanto de velocidade aguenta com folga"],
+        ["4P", "4 pares = 8 fios"],
+        ["24AWG / 23AWG", "Espessura do cobre. Número MENOR = fio MAIS GROSSO"],
+        ["NBR 14703 · ANATEL", "Segue a norma brasileira e é homologado"],
+    ]
+    add_table_slide(s, rows, top=3.0, height=3.4, col_widths=[3.5, 8.4], size=14)
+    add_text(s, "Texto apagado? Ele se repete — procure um metro adiante.", 0.7, 6.6, 11.9, 0.4, size=15, bold=True, color=D, italic=True, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
 
     # 15: As luzes
@@ -672,12 +718,12 @@ def build_slides():
     rows = [
         ["A luz", "Acesa fixa", "Piscando", "Apagada"],
         ["Power", "Ligado", "—", "Sem energia"],
-        ["Fibra / Internet", "Sinal chegando", "Tentando conectar", "Sem sinal do provedor"],
-        ["WLAN / Wi-Fi", "Wi-Fi ligado", "Tráfego passando", "Wi-Fi desligado"],
+        ["Internet / WAN (globo)", "Internet chegando", "Tentando conectar", "Sem sinal do provedor"],
+        ["Wi-Fi 2,4 GHz / 5 GHz", "Wi-Fi ligado", "Tráfego passando", "Wi-Fi desligado"],
         ["LAN 1 a 4", "Cabo conectado", "Dados passando", "Nada ligado na porta"],
     ]
-    add_table_slide(s, rows, top=2.8, height=3.5, col_widths=[3, 3, 3, 2.9], size=13)
-    add_text(s, "Luz de fibra apagada: nem adianta mexer no computador. O problema está antes.", 0.7, 6.6, 11.9, 0.4, size=14, bold=True, color=R, italic=True, align=PP_ALIGN.CENTER)
+    add_table_slide(s, rows, top=2.8, height=3.5, col_widths=[3.2, 3, 3, 2.7], size=13)
+    add_text(s, "Luz de internet apagada: nem adianta mexer no computador. O problema está antes do roteador.", 0.7, 6.6, 11.9, 0.4, size=14, bold=True, color=R, italic=True, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
 
     # 16: PRÁTICA 1 - Identificação
@@ -687,12 +733,62 @@ def build_slides():
         "1.  Identificar cada equipamento e dizer o que faz",
         "2.  Achar a porta WAN de cada roteador (e explicar como reconheceu)",
         "3.  Contar as portas LAN e anotar",
-        "4.  Ler a etiqueta e preencher a ficha (página 3 da folha)",
+        "4.  Ler a etiqueta de dois roteadores e preencher a ficha (páginas 3 e 4)",
         "5.  Ligar o roteador e observar as luzes acendendo",
-        "6.  Trocar de bancada e conferir o que a outra equipe anotou",
-        "7.  Apresentar 1 equipamento em 30 segundos pra turma",
+        "6.  Ler a capa de um cabo Cat5e e de um Cat6 (página 5)",
+        "7.  Trocar de bancada e conferir o que a outra equipe anotou",
     ], 0.7, 2.8, 11.9, 4.0, size=16, color=K)
     add_text(s, "Hoje ninguém configura nada. Hoje é reconhecer, nomear e anotar.", 0.7, 6.7, 11.9, 0.4, size=15, italic=True, color=D, bold=True, align=PP_ALIGN.CENTER)
+    add_footer(s, FOOTER)
+
+    # 16b: Conferindo a ficha — roteadores
+    s = add_slide(prs)
+    add_title_block(s, "CONFERINDO A FICHA", "Os dois roteadores da bancada")
+    rows = [
+        ["Item", "TL-WR840N", "Archer C5"],
+        ["Velocidade do Wi-Fi", "N 300 Mbps", "AC1200"],
+        ["Faixas", "Só 2,4 GHz (1 SSID)", "Dual Band (SSID + _5G)"],
+        ["Portas de cabo", "100 Mbps", "Gigabit (1000 Mbps)"],
+        ["Alimentação", "9V ⎓ 0,6A", "12V ⎓ 1A"],
+        ["Endereço de configuração", "tplinkwifi.net", "tplinkwifi.net"],
+        ["Etiqueta do provedor", "Sim — código de patrimônio", "Sim — código de patrimônio"],
+    ]
+    add_table_slide(s, rows, top=2.4, height=3.9, col_widths=[4, 3.95, 3.95], size=15)
+    add_text(s, "Mesma marca, mesmo endereço — aparelhos bem diferentes.", 0.7, 6.6, 11.9, 0.4, size=15, bold=True, color=D, italic=True, align=PP_ALIGN.CENTER)
+    add_footer(s, FOOTER)
+
+    # 16c: Conferindo a ficha — pense como técnico
+    s = add_slide(prs)
+    add_title_block(s, "CONFERINDO A FICHA", "Pense como técnico")
+    add_text(s, [
+        "A fonte de um serve no outro?",
+        "  NÃO. Um pede 9V, o outro 12V. Fonte errada pode queimar o aparelho — ou não ligar.",
+        "",
+        "Plano de 300 Mega, computador no cabo: qual indicar?",
+        "  O Archer C5. As portas do 840N são de 100 Mbps: no cabo, o cliente nunca passa de ~94.",
+        "",
+        "Como reconhecer a WAN sem ninguém falar?",
+        "  Separada das outras, de outra cor, escrito WAN ou Internet (ou um globo).",
+    ], 0.7, 2.6, 11.9, 4.0, size=17, color=K)
+    add_text(s, "Ler a etiqueta antes evita troca de fonte errada e reclamação de velocidade.", 0.7, 6.6, 11.9, 0.4, size=14, bold=True, color=R, italic=True, align=PP_ALIGN.CENTER)
+    add_footer(s, FOOTER)
+
+    # 16d: Conferindo a ficha — cabo
+    s = add_slide(prs)
+    add_title_block(s, "CONFERINDO A FICHA", "Cat5e × Cat6")
+    rows = [
+        ["Item", "Cat5e", "Cat6"],
+        ["Velocidade", "Até 1 Gbps", "1 Gbps com mais folga (10 Gbps em trechos curtos)"],
+        ["Distância máxima", "100 m", "100 m"],
+        ["Bitola mais comum", "24AWG", "23AWG (fio mais grosso)"],
+        ["Por dentro", "Pares soltos", "Muitas vezes tem um separador plástico (cruzeta)"],
+        ["Espessura do cabo", "Mais fino", "Mais grosso e mais duro de dobrar"],
+    ]
+    add_table_slide(s, rows, top=2.4, height=3.5, col_widths=[3.2, 3, 5.7], size=14)
+    add_text(s, [
+        "Plano de 1 Giga com Cat5e na parede: bem instalado e até 100 m, serve. Cat6 é pra obra nova.",
+        "Metragem: ponta B − ponta A = comprimento do pedaço.",
+    ], 0.7, 6.1, 11.9, 0.8, size=14, bold=True, color=D, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
 
     # 17: PRÁTICA 2 - Role-play
@@ -857,7 +953,7 @@ def build_folha():
         r.font.size = Pt(11)
 
     add_heading(doc, "2  Os cinco equipamentos", level=2)
-    add_para(doc, "Preencha durante a aula. Só um deles cria rede.", italic=True, size=10, color=COR_CINZA)
+    add_para(doc, "Preencha durante a aula. Só um deles cria rede. O cabo entra como +1: é o que liga todos.", italic=True, size=10, color=COR_CINZA)
 
     tbl = add_table(doc, [
         ["Equipamento", "Cria rede?", "Tem Wi-Fi?", "Para que serve"],
@@ -866,6 +962,7 @@ def build_folha():
         ["Switch", "", "", ""],
         ["Ponto de acesso", "", "", ""],
         ["Placa de rede", "", "", ""],
+        ["+ Cabo de rede", "", "", ""],
     ], col_widths=[3.5, 2.5, 2.5, 8])
     for row in tbl.rows[1:]:
         row.height = Cm(1.1)
@@ -1144,6 +1241,7 @@ def build_resumo():
         ["Switch", "Não", "Não", "Aumenta o número de portas"],
         ["Ponto de acesso", "Não", "Sim", "Amplia a cobertura sem fio"],
         ["Placa de rede", "Não", "Depende", "Conecta a máquina à rede"],
+        ["+ Cabo de rede", "Não", "Não", "Liga os equipamentos entre si"],
     ], col_widths=[3.5, 2.5, 2.5, 7])
 
     add_heading(doc, "A porta WAN — o erro nº 1", level=2)
@@ -1152,9 +1250,12 @@ def build_resumo():
 
     add_heading(doc, "A etiqueta embaixo do roteador", level=2)
     add_bullet(doc, "Nome de rede (SSID) e senha do Wi-Fi de fábrica")
-    add_bullet(doc, "Usuário e senha de administração — SÃO OUTRAS senhas")
+    add_bullet(doc, "Em alguns modelos, usuário e senha de administração — SÃO OUTRAS senhas")
     add_bullet(doc, "Endereço de configuração (número pra digitar no navegador)")
     add_bullet(doc, "Modelo e número de série (o suporte vai pedir)")
+    add_bullet(doc, "Alimentação (ex.: 9V ou 12V): fonte de um roteador pode não servir no outro")
+    add_bullet(doc, "Velocidade do Wi-Fi (N300, AC1200), Dual Band e Gigabit: dizem do que o aparelho é capaz")
+    add_para(doc, "O cabo não tem etiqueta embaixo: ela está impressa na capa — fabricante, categoria (Cat5e, Cat6), bitola (AWG) e a metragem.", size=11)
     add_para(doc, "Tire uma foto da etiqueta antes de pendurar o aparelho na parede.", italic=True, color=COR_PRIMARIA, bold=True)
 
     add_heading(doc, "As luzes do painel", level=2)
