@@ -66,9 +66,9 @@ def build_roteiro():
         ["Item", "Para quê"],
         ["Roteador (quantos houver)", "Achar a porta WAN, contar as LAN, ler a etiqueta"],
         ["Switch (se tiver)", "Comparar com o roteador e ver que não tem WAN"],
-        ["Os 2 modems de fibra (ONU): FiberHome HG6143D e AN5506-02-B", "Mostrar a entrada da fibra e preencher a ficha do modem (página 5 da folha)"],
+        ["Os 2 modems de fibra (ONU): FiberHome HG6143D e AN5506-02-B", "Mostrar a entrada da fibra e preencher a ficha do modem (página 4 da folha)"],
         ["Cabos de rede prontos", "Ligar e ver as luzes acenderem"],
-        ["Pedaço de cabo Cat5e e de Cat6 (com a capa legível)", "Ficha do cabo (página 6 da folha)"],
+        ["Pedaço de cabo Cat5e e de Cat6 (com a capa legível)", "Ficha do cabo (página 5 da folha)"],
         ["Régua de tomadas", "Para ligar os equipamentos na bancada"],
         ["Cartões de chamado (do bloco 5)", "Papel A5 com um chamado escrito em cada"],
     ], col_widths=[6, 10.5])
@@ -83,7 +83,7 @@ def build_roteiro():
     add_heading(doc, "Imprima", level=2)
     add_bullet(doc, "A folha do aluno (6 páginas), uma por pessoa")
     add_bullet(doc, "O resumo do aluno, uma por pessoa (pra levar pra casa)")
-    add_bullet(doc, "As fichas de identificação fazem parte da folha: roteador (páginas 3 e 4), modem de fibra (página 5) e cabo (página 6)")
+    add_bullet(doc, "As fichas de identificação fazem parte da folha: roteador (páginas 2 e 3), modem de fibra (página 4) e cabo (página 5). O role-play fica na página 6. A folha segue a ordem da aula")
 
     add_hr(doc)
 
@@ -225,14 +225,15 @@ def build_roteiro():
     add_heading(doc, "BLOCO 4 — PRÁTICA · IDENTIFICAÇÃO E FICHA · 45 MIN")
 
     add_heading(doc, "O que cada equipe faz", level=2)
-    add_bullet(doc, "Identificar cada equipamento na mesa e dizer em voz alta o que ele faz")
-    add_bullet(doc, "Achar a porta WAN de cada roteador e explicar como reconheceu")
-    add_bullet(doc, "Contar as portas LAN e anotar")
-    add_bullet(doc, "Ler a etiqueta de dois roteadores e preencher a ficha (páginas 3 e 4 da folha do aluno)")
-    add_bullet(doc, "Ler a etiqueta dos dois modems de fibra (ONU) e preencher a ficha do modem (página 5)")
-    add_bullet(doc, "Ler a capa de um cabo Cat5e e de um Cat6 e preencher a ficha do cabo (página 6)")
-    add_bullet(doc, "Ligar o roteador e observar as luzes acendendo, uma por uma")
-    add_bullet(doc, "Trocar de bancada com outra equipe e conferir o que o colega anotou")
+    add_para(doc, "Mesma ordem do slide da prática. Entre parênteses, onde o aluno anota na folha:", italic=True, size=10, color=COR_CINZA)
+    add_bullet(doc, "1. Identificar cada equipamento na mesa e dizer em voz alta o que ele faz (conferir o quadro 2 da página 1)")
+    add_bullet(doc, "2. Achar a porta WAN de cada roteador e explicar como reconheceu (página 2, linha da WAN; página 3, pergunta 1)")
+    add_bullet(doc, "3. Contar as portas LAN e anotar (página 2, linha das portas LAN)")
+    add_bullet(doc, "4. Ler a etiqueta de dois roteadores e preencher a ficha (página 2)")
+    add_bullet(doc, "5. Ligar o roteador e observar as luzes acendendo, uma por uma (página 3, quadro das luzes)")
+    add_bullet(doc, "6. Ler a etiqueta dos dois modems de fibra (ONU) e preencher a ficha do modem (página 4)")
+    add_bullet(doc, "7. Ler a capa de um cabo Cat5e e de um Cat6 e preencher a ficha do cabo (página 5)")
+    add_bullet(doc, "8. Trocar de bancada com outra equipe e conferir o que o colega anotou (assinar a linha no fim da página 5)")
     add_bullet(doc, "Ao fim: cada equipe apresenta 1 equipamento em 30 segundos pra turma toda")
     add_para(doc, "\"Ninguém configura nada hoje. Hoje é reconhecer, nomear e anotar.\"", italic=True, color=COR_PRIMARIA)
 
@@ -243,7 +244,7 @@ def build_roteiro():
     add_para(doc, "\"Se você ligar o cabo do provedor numa porta LAN, tudo vai conectar na rede normalmente — e nada vai abrir. Parece defeito, e não é. É o erro mais comum de quem instala roteador.\"", italic=True, color=COR_ALERTA, bold=True)
 
     add_heading(doc, "A etiqueta embaixo", level=2)
-    add_para(doc, "Use o slide \"Aprendendo a ler a etiqueta\" — é a mesma tabela da página 3 da folha. Leia junto com a turma uma etiqueta real antes de soltar as equipes. Nos TP-Link da bancada não tem usuário e senha de administração na etiqueta: eles pedem pra criar uma senha no primeiro acesso.")
+    add_para(doc, "Use o slide \"Aprendendo a ler a etiqueta\" — é a mesma tabela da página 2 da folha. Leia junto com a turma uma etiqueta real antes de soltar as equipes. Nos TP-Link da bancada não tem usuário e senha de administração na etiqueta: eles pedem pra criar uma senha no primeiro acesso.")
     add_para(doc, "Nos modems de fibra é diferente: a etiqueta do HG6143D traz usuário e senha de acesso (user / user1234) e a senha do Wi-Fi. Aproveite: \"Senha de fábrica impressa na etiqueta é senha que qualquer visita lê. Na instalação, o técnico troca.\" O AN5506-02-B não tem SSID na etiqueta porque não tem Wi-Fi.")
     add_para(doc, "Mostre o conector verde da fibra (SC/APC) no HG6143D: não se dobra o cabo de fibra e nunca se olha pra ponta com o equipamento ligado.", color=COR_ALERTA, bold=True)
     add_para(doc, "Em seguida, o slide da capa do cabo: leia o exemplo pedaço por pedaço.")
@@ -279,6 +280,8 @@ def build_roteiro():
 
     add_heading(doc, "A ideia — 2 min", level=2)
     add_para(doc, "\"Vocês vão fazer duplas. Um faz o cliente, outro faz o técnico. Eu vou dar um cartão de chamado pra dupla. O técnico não pode ver o cartão. Ele tem que descobrir qual equipamento está com problema perguntando pro cliente.\"", italic=True)
+
+    add_para(doc, "Os cinco chamados estão na página 6 da folha do aluno, a última. O técnico anota lá as perguntas e o equipamento suspeito.")
 
     add_heading(doc, "Rodada 1 — 12 min", level=2)
     add_para(doc, "Cada dupla recebe 1 cartão. O cliente lê em silêncio, sem mostrar. Técnico faz 3-4 perguntas e responde: qual equipamento provavelmente está com problema? O que ele investigaria primeiro?")
@@ -735,14 +738,14 @@ def build_slides():
     s = add_slide(prs)
     add_title_block(s, "PRÁTICA · 45 MIN", "Identificação e ficha")
     add_text(s, [
-        "1.  Identificar cada equipamento e dizer o que faz",
-        "2.  Achar a porta WAN de cada roteador (e explicar como reconheceu)",
-        "3.  Contar as portas LAN e anotar",
-        "4.  Ler a etiqueta de dois roteadores e preencher a ficha (páginas 3 e 4)",
-        "5.  Ligar o roteador e observar as luzes acendendo",
-        "6.  Ler a etiqueta dos dois modems de fibra (página 5)",
-        "7.  Ler a capa de um cabo Cat5e e de um Cat6 (página 6)",
-        "8.  Trocar de bancada e conferir o que a outra equipe anotou",
+        "1.  Identificar cada equipamento e dizer o que faz  →  pág. 1, quadro 2",
+        "2.  Achar a porta WAN de cada roteador e explicar como reconheceu  →  pág. 2 e 3",
+        "3.  Contar as portas LAN e anotar  →  pág. 2",
+        "4.  Ler a etiqueta de dois roteadores e preencher a ficha  →  pág. 2",
+        "5.  Ligar o roteador e observar as luzes acendendo  →  pág. 3",
+        "6.  Ler a etiqueta dos dois modems de fibra  →  pág. 4",
+        "7.  Ler a capa de um cabo Cat5e e de um Cat6  →  pág. 5",
+        "8.  Trocar de bancada e conferir o que a outra equipe anotou  →  fim da pág. 5",
     ], 0.7, 2.8, 11.9, 4.0, size=16, color=K)
     add_text(s, "Hoje ninguém configura nada. Hoje é reconhecer, nomear e anotar.", 0.7, 6.7, 11.9, 0.4, size=15, italic=True, color=D, bold=True, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
@@ -1019,53 +1022,12 @@ def build_folha():
         r.font.size = Pt(11)
         r.font.color.rgb = COR_CINZA
 
-    # PÁGINA 2 — Role-play
-    doc.add_page_break()
-    cabecalho_documento(
-        doc,
-        "CHAMADOS PARA VOCÊ ATENDER",
-        f"Role-play cliente/técnico · {NOITE} · 2 de 6",
-    )
-
-    add_para(doc, "Nesta atividade você faz o papel de técnico. Sua dupla recebe um cartão com o problema do cliente e vai te contar como se fosse um cliente de verdade. Sua missão: descobrir qual equipamento provavelmente está com problema, fazendo 3-4 perguntas.", italic=True, size=10, color=COR_CINZA)
-
-    cenarios_folha = [
-        "\"Instalei um switch em casa mas nada conecta na internet.\"",
-        "\"O Wi-Fi tá aceso no meu celular mas nada abre.\"",
-        "\"Comprei um roteador novo. Não sei em que porta ligar o cabo que o técnico deixou.\"",
-        "\"A impressora do meu escritório não imprime, mas a internet funciona.\"",
-        "\"A luz de fibra do meu roteador tá apagada. Reiniciei três vezes.\"",
-    ]
-    for i, cen in enumerate(cenarios_folha, 1):
-        add_heading(doc, f"Chamado {i}", level=2)
-        add_para(doc, cen, italic=True, color=COR_PRIMARIA, size=11)
-        p = doc.add_paragraph()
-        r = p.add_run("Que perguntas você faria pro cliente?")
-        r.font.size = Pt(10)
-        r.bold = True
-        for _ in range(2):
-            p = doc.add_paragraph()
-            p.paragraph_format.space_after = Pt(0)
-            r = p.add_run("_" * 100)
-            r.font.size = Pt(11)
-            r.font.color.rgb = COR_CINZA
-        p = doc.add_paragraph()
-        r = p.add_run("Qual equipamento suspeito? Por quê?")
-        r.font.size = Pt(10)
-        r.bold = True
-        for _ in range(2):
-            p = doc.add_paragraph()
-            p.paragraph_format.space_after = Pt(0)
-            r = p.add_run("_" * 100)
-            r.font.size = Pt(11)
-            r.font.color.rgb = COR_CINZA
-
-    # PÁGINA 3 — Ficha de identificação do roteador
+    # PÁGINA 2 — Ficha de identificação do roteador
     doc.add_page_break()
     cabecalho_documento(
         doc,
         "FICHA DE IDENTIFICAÇÃO · ROTEADOR",
-        f"Equipamento de rede · {NOITE} · 3 de 6",
+        f"Equipamento de rede · {NOITE} · 2 de 6",
     )
 
     add_para(doc, "Como preencher: quase tudo está na etiqueta embaixo do aparelho. Não mexa em configuração nenhuma — hoje é só olhar, contar e anotar. NÃO anote a senha do Wi-Fi (Senha Wireless/PIN) nesta folha.", italic=True, size=10, color=COR_ALERTA, bold=True)
@@ -1106,12 +1068,12 @@ def build_folha():
     for row in tbl.rows[1:]:
         row.height = Cm(0.7)
 
-    # PÁGINA 4 — Roteador na prática
+    # PÁGINA 3 — Roteador na prática
     doc.add_page_break()
     cabecalho_documento(
         doc,
         "FICHA DE IDENTIFICAÇÃO · ROTEADOR NA PRÁTICA",
-        f"Equipamento de rede · {NOITE} · 4 de 6",
+        f"Equipamento de rede · {NOITE} · 3 de 6",
     )
 
     add_heading(doc, "3  As luzes do painel", level=2)
@@ -1151,12 +1113,12 @@ def build_folha():
     add_bullet(doc, "Não anote nem fotografe a senha — tampe com o dedo se for tirar foto")
     add_bullet(doc, "Traga anotado — vamos comparar os aparelhos da turma na Noite 3")
 
-    # PÁGINA 5 — Ficha de identificação do modem de fibra (ONU)
+    # PÁGINA 4 — Ficha de identificação do modem de fibra (ONU)
     doc.add_page_break()
     cabecalho_documento(
         doc,
         "FICHA DE IDENTIFICAÇÃO · MODEM DE FIBRA (ONU)",
-        f"Equipamento de rede · {NOITE} · 5 de 6",
+        f"Equipamento de rede · {NOITE} · 4 de 6",
     )
 
     add_para(doc, "Na fibra, o “modem” se chama ONU: é a caixinha onde o cabo de fibra do provedor termina e vira sinal de rede. Temos dois modelos na bancada. NÃO anote senhas nesta folha — nem a do Wi-Fi, nem a de acesso.", italic=True, size=10, color=COR_ALERTA, bold=True)
@@ -1207,12 +1169,12 @@ def build_folha():
             r.font.size = Pt(11)
             r.font.color.rgb = COR_CINZA
 
-    # PÁGINA 6 — Ficha de identificação do cabo
+    # PÁGINA 5 — Ficha de identificação do cabo
     doc.add_page_break()
     cabecalho_documento(
         doc,
         "FICHA DE IDENTIFICAÇÃO · CABO",
-        f"Equipamento de rede · {NOITE} · 6 de 6",
+        f"Equipamento de rede · {NOITE} · 5 de 6",
     )
 
     add_para(doc, "O cabo não tem etiqueta embaixo: a etiqueta dele é a própria capa. O texto se repete ao longo do cabo — se estiver apagado num ponto, procure um metro adiante.", italic=True, size=10, color=COR_CINZA)
@@ -1273,7 +1235,49 @@ def build_folha():
             r.font.size = Pt(11)
             r.font.color.rgb = COR_CINZA
 
-    doc.add_paragraph()
+    add_para(doc, "Troca de bancada — conferido pela equipe de: ______________________________   Corrigimos ___ itens.", bold=True, size=10, color=COR_PRIMARIA)
+
+    # PÁGINA 6 — Role-play
+    doc.add_page_break()
+    cabecalho_documento(
+        doc,
+        "CHAMADOS PARA VOCÊ ATENDER",
+        f"Role-play cliente/técnico · {NOITE} · 6 de 6",
+    )
+
+    add_para(doc, "Nesta atividade você faz o papel de técnico. Sua dupla recebe um cartão com o problema do cliente e vai te contar como se fosse um cliente de verdade. Sua missão: descobrir qual equipamento provavelmente está com problema, fazendo 3-4 perguntas.", italic=True, size=10, color=COR_CINZA)
+
+    cenarios_folha = [
+        "\"Instalei um switch em casa mas nada conecta na internet.\"",
+        "\"O Wi-Fi tá aceso no meu celular mas nada abre.\"",
+        "\"Comprei um roteador novo. Não sei em que porta ligar o cabo que o técnico deixou.\"",
+        "\"A impressora do meu escritório não imprime, mas a internet funciona.\"",
+        "\"A luz de fibra do meu roteador tá apagada. Reiniciei três vezes.\"",
+    ]
+    for i, cen in enumerate(cenarios_folha, 1):
+        add_heading(doc, f"Chamado {i}", level=2)
+        add_para(doc, cen, italic=True, color=COR_PRIMARIA, size=11)
+        p = doc.add_paragraph()
+        r = p.add_run("Que perguntas você faria pro cliente?")
+        r.font.size = Pt(10)
+        r.bold = True
+        for _ in range(2):
+            p = doc.add_paragraph()
+            p.paragraph_format.space_after = Pt(0)
+            r = p.add_run("_" * 100)
+            r.font.size = Pt(11)
+            r.font.color.rgb = COR_CINZA
+        p = doc.add_paragraph()
+        r = p.add_run("Qual equipamento suspeito? Por quê?")
+        r.font.size = Pt(10)
+        r.bold = True
+        for _ in range(2):
+            p = doc.add_paragraph()
+            p.paragraph_format.space_after = Pt(0)
+            r = p.add_run("_" * 100)
+            r.font.size = Pt(11)
+            r.font.color.rgb = COR_CINZA
+
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r = p.add_run("Traga esta folha preenchida · CEJA Itapiranga – SC")
