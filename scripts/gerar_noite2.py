@@ -251,11 +251,11 @@ def build_roteiro():
     add_para(doc, "\"Tire uma foto da etiqueta antes de pendurar o aparelho na parede. Quem já instalou sabe por quê.\"", italic=True, color=COR_PRIMARIA)
 
     add_heading(doc, "Conferindo as fichas — últimos 10 min do bloco", level=2)
-    add_para(doc, "Quatro slides de correção. Pergunte às equipes antes de mostrar cada um:")
+    add_para(doc, "Cinco slides de correção, na mesma ordem das perguntas da folha. Pergunte às equipes antes de mostrar cada um:")
     add_bullet(doc, "Os dois roteadores: TL-WR840N (N300, só 2,4 GHz, portas de 100 Mbps, 9V 0,6A) × Archer C5 (AC1200, Dual Band, Gigabit, 12V 1A)")
-    add_bullet(doc, "Pense como técnico: a fonte de um NÃO serve no outro; pra 300 Mega no cabo, só o Archer (as portas do 840N param em ~94 Mbps)")
+    add_bullet(doc, "Pense como técnico · roteador (pág. 3): 1) WAN = porta separada, outra cor, escrito WAN/Internet; 2) a fonte de um NÃO serve no outro (9V × 12V); 3) pra 300 Mega no cabo, só o Archer (as portas do 840N param em ~94 Mbps)")
     add_bullet(doc, "Os dois modems de fibra: HG6143D (tem Wi-Fi Dual Band, 12V 1,5A, acesso 192.168.1.1) × AN5506-02-B (sem Wi-Fi, 12V 1A — o cliente precisa de um roteador depois dele)")
-    add_bullet(doc, "Modem: a fonte de 12V 1,5A liga o AN5506 (mesma tensão, sobra corrente); a de 12V 1A no HG6143D NÃO serve (falta corrente). Trocou a ONU? O provedor precisa do novo GPON SN pra liberar")
+    add_bullet(doc, "Pense como técnico · modem (pág. 4): 1) falta um roteador, ligado da LAN da ONU para a WAN do roteador; 2) a fonte de 12V 1,5A liga o AN5506 (mesma tensão, sobra corrente), a de 12V 1A no HG6143D NÃO serve (falta corrente); 3) o provedor pede o GPON SN novo, é por ele que reconhece e libera o aparelho")
     add_bullet(doc, "Cat5e × Cat6: os dois vão até 100 m e 1 Gbps; o Cat6 tem mais folga, fio mais grosso e muitas vezes a cruzeta por dentro")
     add_para(doc, "\"Mesma marca, mesmo endereço de configuração — e aparelhos bem diferentes. Por isso o técnico lê a etiqueta antes de prometer qualquer coisa ao cliente.\"", italic=True, color=COR_PRIMARIA)
 
@@ -768,17 +768,17 @@ def build_slides():
 
     # 16c: Conferindo a ficha — pense como técnico
     s = add_slide(prs)
-    add_title_block(s, "CONFERINDO A FICHA", "Pense como técnico")
+    add_title_block(s, "CONFERINDO A FICHA · PÁG. 3", "Pense como técnico · roteador")
     add_text(s, [
-        "A fonte de um serve no outro?",
-        "  NÃO. Um pede 9V, o outro 12V. Fonte errada pode queimar o aparelho — ou não ligar.",
+        "1.  Como você reconheceu a porta WAN sem ninguém falar?",
+        "     Separada das outras, de outra cor, escrito WAN ou Internet (ou um globo).",
         "",
-        "Plano de 300 Mega, computador no cabo: qual indicar?",
-        "  O Archer C5. As portas do 840N são de 100 Mbps: no cabo, o cliente nunca passa de ~94.",
+        "2.  A fonte de um roteador pode ser usada no outro?",
+        "     NÃO. Um pede 9V, o outro 12V. Fonte errada pode queimar o aparelho — ou não ligar.",
         "",
-        "Como reconhecer a WAN sem ninguém falar?",
-        "  Separada das outras, de outra cor, escrito WAN ou Internet (ou um globo).",
-    ], 0.7, 2.6, 11.9, 4.0, size=17, color=K)
+        "3.  Plano de 300 Mega, computador no cabo: qual dos dois indicar?",
+        "     O Archer C5. As portas do 840N são de 100 Mbps: no cabo, o cliente nunca passa de ~94.",
+    ], 0.7, 2.4, 11.9, 4.1, size=17, color=K)
     add_text(s, "Ler a etiqueta antes evita troca de fonte errada e reclamação de velocidade.", 0.7, 6.6, 11.9, 0.4, size=14, bold=True, color=R, italic=True, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
 
@@ -793,12 +793,25 @@ def build_slides():
         ["Acesso de configuração", "192.168.1.1 · user / user1234", "Não traz na etiqueta"],
         ["Identidade pro provedor", "GPON SN: FHTT…", "S/N: FHTT…"],
     ]
-    add_table_slide(s, rows, top=2.3, height=3.3, col_widths=[3.6, 4.4, 3.9], size=14)
+    add_table_slide(s, rows, top=2.4, height=3.6, col_widths=[3.6, 4.4, 3.9], size=15)
+    add_text(s, "Mesma marca, mesma tensão — e só um deles tem Wi-Fi.", 0.7, 6.6, 11.9, 0.4, size=15, bold=True, color=D, italic=True, align=PP_ALIGN.CENTER)
+    add_footer(s, FOOTER)
+
+    # 16c3: Conferindo a ficha — pense como técnico (modem)
+    s = add_slide(prs)
+    add_title_block(s, "CONFERINDO A FICHA · PÁG. 4", "Pense como técnico · modem de fibra")
     add_text(s, [
-        "Sem Wi-Fi? O cliente precisa de um roteador ligado depois da ONU.",
-        "Fonte 12V 1,5A liga os dois. A de 1A no HG6143D: falta corrente.",
-        "Trocou a ONU? O provedor precisa do número de série novo pra liberar a internet.",
-    ], 0.7, 5.75, 11.9, 1.1, size=14, bold=True, color=D, align=PP_ALIGN.CENTER)
+        "1.  O cliente tem o AN5506-02-B e quer Wi-Fi. O que falta? Onde vai ligado?",
+        "     Um roteador. O cabo sai da porta LAN da ONU e entra na porta WAN do roteador.",
+        "",
+        "2.  A fonte de um modem serve no outro?",
+        "     Os dois são 12V. A de 1,5A liga o AN5506 (sobra corrente, ele só puxa o que precisa).",
+        "     A de 1A no HG6143D NÃO serve: falta corrente, ele reinicia ou esquenta a fonte.",
+        "",
+        "3.  A ONU queimou e você levou outra. O que o provedor vai pedir? Por quê?",
+        "     O número de série (GPON SN). É por ele que o provedor reconhece e libera o aparelho.",
+    ], 0.7, 2.4, 11.9, 4.1, size=16, color=K)
+    add_text(s, "Tensão tem que ser igual. Corrente da fonte: igual ou maior.", 0.7, 6.6, 11.9, 0.4, size=14, bold=True, color=R, italic=True, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
 
     # 16d: Conferindo a ficha — cabo
