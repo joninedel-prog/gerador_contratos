@@ -66,9 +66,9 @@ def build_roteiro():
         ["Item", "Para quê"],
         ["Roteador (quantos houver)", "Achar a porta WAN, contar as LAN, ler a etiqueta"],
         ["Switch (se tiver)", "Comparar com o roteador e ver que não tem WAN"],
-        ["Modem ou caixinha de fibra, se houver", "Mostrar a entrada da fibra"],
+        ["Os 2 modems de fibra (ONU): FiberHome HG6143D e AN5506-02-B", "Mostrar a entrada da fibra e preencher a ficha do modem (página 5 da folha)"],
         ["Cabos de rede prontos", "Ligar e ver as luzes acenderem"],
-        ["Pedaço de cabo Cat5e e de Cat6 (com a capa legível)", "Ficha do cabo (página 5 da folha)"],
+        ["Pedaço de cabo Cat5e e de Cat6 (com a capa legível)", "Ficha do cabo (página 6 da folha)"],
         ["Régua de tomadas", "Para ligar os equipamentos na bancada"],
         ["Cartões de chamado (do bloco 5)", "Papel A5 com um chamado escrito em cada"],
     ], col_widths=[6, 10.5])
@@ -81,9 +81,9 @@ def build_roteiro():
     add_bullet(doc, "Prepare os cartões de chamado do Bloco 5 (10 chamados, um por cartão) — modelos no fim deste roteiro")
 
     add_heading(doc, "Imprima", level=2)
-    add_bullet(doc, "A folha do aluno (5 páginas), uma por pessoa")
+    add_bullet(doc, "A folha do aluno (6 páginas), uma por pessoa")
     add_bullet(doc, "O resumo do aluno, uma por pessoa (pra levar pra casa)")
-    add_bullet(doc, "As fichas de identificação fazem parte da folha: roteador (páginas 3 e 4) e cabo (página 5)")
+    add_bullet(doc, "As fichas de identificação fazem parte da folha: roteador (páginas 3 e 4), modem de fibra (página 5) e cabo (página 6)")
 
     add_hr(doc)
 
@@ -229,7 +229,8 @@ def build_roteiro():
     add_bullet(doc, "Achar a porta WAN de cada roteador e explicar como reconheceu")
     add_bullet(doc, "Contar as portas LAN e anotar")
     add_bullet(doc, "Ler a etiqueta de dois roteadores e preencher a ficha (páginas 3 e 4 da folha do aluno)")
-    add_bullet(doc, "Ler a capa de um cabo Cat5e e de um Cat6 e preencher a ficha do cabo (página 5)")
+    add_bullet(doc, "Ler a etiqueta dos dois modems de fibra (ONU) e preencher a ficha do modem (página 5)")
+    add_bullet(doc, "Ler a capa de um cabo Cat5e e de um Cat6 e preencher a ficha do cabo (página 6)")
     add_bullet(doc, "Ligar o roteador e observar as luzes acendendo, uma por uma")
     add_bullet(doc, "Trocar de bancada com outra equipe e conferir o que o colega anotou")
     add_bullet(doc, "Ao fim: cada equipe apresenta 1 equipamento em 30 segundos pra turma toda")
@@ -243,13 +244,17 @@ def build_roteiro():
 
     add_heading(doc, "A etiqueta embaixo", level=2)
     add_para(doc, "Use o slide \"Aprendendo a ler a etiqueta\" — é a mesma tabela da página 3 da folha. Leia junto com a turma uma etiqueta real antes de soltar as equipes. Nos TP-Link da bancada não tem usuário e senha de administração na etiqueta: eles pedem pra criar uma senha no primeiro acesso.")
+    add_para(doc, "Nos modems de fibra é diferente: a etiqueta do HG6143D traz usuário e senha de acesso (user / user1234) e a senha do Wi-Fi. Aproveite: \"Senha de fábrica impressa na etiqueta é senha que qualquer visita lê. Na instalação, o técnico troca.\" O AN5506-02-B não tem SSID na etiqueta porque não tem Wi-Fi.")
+    add_para(doc, "Mostre o conector verde da fibra (SC/APC) no HG6143D: não se dobra o cabo de fibra e nunca se olha pra ponta com o equipamento ligado.", color=COR_ALERTA, bold=True)
     add_para(doc, "Em seguida, o slide da capa do cabo: leia o exemplo pedaço por pedaço.")
     add_para(doc, "\"Tire uma foto da etiqueta antes de pendurar o aparelho na parede. Quem já instalou sabe por quê.\"", italic=True, color=COR_PRIMARIA)
 
     add_heading(doc, "Conferindo as fichas — últimos 10 min do bloco", level=2)
-    add_para(doc, "Três slides de correção. Pergunte às equipes antes de mostrar cada um:")
+    add_para(doc, "Quatro slides de correção. Pergunte às equipes antes de mostrar cada um:")
     add_bullet(doc, "Os dois roteadores: TL-WR840N (N300, só 2,4 GHz, portas de 100 Mbps, 9V 0,6A) × Archer C5 (AC1200, Dual Band, Gigabit, 12V 1A)")
     add_bullet(doc, "Pense como técnico: a fonte de um NÃO serve no outro; pra 300 Mega no cabo, só o Archer (as portas do 840N param em ~94 Mbps)")
+    add_bullet(doc, "Os dois modems de fibra: HG6143D (tem Wi-Fi Dual Band, 12V 1,5A, acesso 192.168.1.1) × AN5506-02-B (sem Wi-Fi, 12V 1A — o cliente precisa de um roteador depois dele)")
+    add_bullet(doc, "Modem: a fonte de 12V 1,5A liga o AN5506 (mesma tensão, sobra corrente); a de 12V 1A no HG6143D NÃO serve (falta corrente). Trocou a ONU? O provedor precisa do novo GPON SN pra liberar")
     add_bullet(doc, "Cat5e × Cat6: os dois vão até 100 m e 1 Gbps; o Cat6 tem mais folga, fio mais grosso e muitas vezes a cruzeta por dentro")
     add_para(doc, "\"Mesma marca, mesmo endereço de configuração — e aparelhos bem diferentes. Por isso o técnico lê a etiqueta antes de prometer qualquer coisa ao cliente.\"", italic=True, color=COR_PRIMARIA)
 
@@ -735,8 +740,9 @@ def build_slides():
         "3.  Contar as portas LAN e anotar",
         "4.  Ler a etiqueta de dois roteadores e preencher a ficha (páginas 3 e 4)",
         "5.  Ligar o roteador e observar as luzes acendendo",
-        "6.  Ler a capa de um cabo Cat5e e de um Cat6 (página 5)",
-        "7.  Trocar de bancada e conferir o que a outra equipe anotou",
+        "6.  Ler a etiqueta dos dois modems de fibra (página 5)",
+        "7.  Ler a capa de um cabo Cat5e e de um Cat6 (página 6)",
+        "8.  Trocar de bancada e conferir o que a outra equipe anotou",
     ], 0.7, 2.8, 11.9, 4.0, size=16, color=K)
     add_text(s, "Hoje ninguém configura nada. Hoje é reconhecer, nomear e anotar.", 0.7, 6.7, 11.9, 0.4, size=15, italic=True, color=D, bold=True, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
@@ -771,6 +777,25 @@ def build_slides():
         "  Separada das outras, de outra cor, escrito WAN ou Internet (ou um globo).",
     ], 0.7, 2.6, 11.9, 4.0, size=17, color=K)
     add_text(s, "Ler a etiqueta antes evita troca de fonte errada e reclamação de velocidade.", 0.7, 6.6, 11.9, 0.4, size=14, bold=True, color=R, italic=True, align=PP_ALIGN.CENTER)
+    add_footer(s, FOOTER)
+
+    # 16c2: Conferindo a ficha — modems de fibra
+    s = add_slide(prs)
+    add_title_block(s, "CONFERINDO A FICHA", "Os dois modems de fibra (ONU)")
+    rows = [
+        ["Item", "HG6143D", "AN5506-02-B"],
+        ["Marca / tipo", "FiberHome · GPON ONU", "FiberHome · GPON ONU"],
+        ["Tem Wi-Fi?", "Sim, Dual Band (fh_… e fh_…_5G)", "Não — sem SSID na etiqueta"],
+        ["Alimentação", "12V ⎓ 1,5A", "12V ⎓ 1A"],
+        ["Acesso de configuração", "192.168.1.1 · user / user1234", "Não traz na etiqueta"],
+        ["Identidade pro provedor", "GPON SN: FHTT…", "S/N: FHTT…"],
+    ]
+    add_table_slide(s, rows, top=2.3, height=3.3, col_widths=[3.6, 4.4, 3.9], size=14)
+    add_text(s, [
+        "Sem Wi-Fi? O cliente precisa de um roteador ligado depois da ONU.",
+        "Fonte 12V 1,5A liga os dois. A de 1A no HG6143D: falta corrente.",
+        "Trocou a ONU? O provedor precisa do número de série novo pra liberar a internet.",
+    ], 0.7, 5.75, 11.9, 1.1, size=14, bold=True, color=D, align=PP_ALIGN.CENTER)
     add_footer(s, FOOTER)
 
     # 16d: Conferindo a ficha — cabo
@@ -922,7 +947,7 @@ def build_folha():
     cabecalho_documento(
         doc,
         "COMO A INTERNET CHEGA + 5 EQUIPAMENTOS",
-        f"Redes de Computadores · {NOITE} · Curso FIC · CEJA Itapiranga · 1 de 5",
+        f"Redes de Computadores · {NOITE} · Curso FIC · CEJA Itapiranga · 1 de 6",
     )
 
     p = doc.add_paragraph()
@@ -999,7 +1024,7 @@ def build_folha():
     cabecalho_documento(
         doc,
         "CHAMADOS PARA VOCÊ ATENDER",
-        f"Role-play cliente/técnico · {NOITE} · 2 de 5",
+        f"Role-play cliente/técnico · {NOITE} · 2 de 6",
     )
 
     add_para(doc, "Nesta atividade você faz o papel de técnico. Sua dupla recebe um cartão com o problema do cliente e vai te contar como se fosse um cliente de verdade. Sua missão: descobrir qual equipamento provavelmente está com problema, fazendo 3-4 perguntas.", italic=True, size=10, color=COR_CINZA)
@@ -1040,7 +1065,7 @@ def build_folha():
     cabecalho_documento(
         doc,
         "FICHA DE IDENTIFICAÇÃO · ROTEADOR",
-        f"Equipamento de rede · {NOITE} · 3 de 5",
+        f"Equipamento de rede · {NOITE} · 3 de 6",
     )
 
     add_para(doc, "Como preencher: quase tudo está na etiqueta embaixo do aparelho. Não mexa em configuração nenhuma — hoje é só olhar, contar e anotar. NÃO anote a senha do Wi-Fi (Senha Wireless/PIN) nesta folha.", italic=True, size=10, color=COR_ALERTA, bold=True)
@@ -1086,7 +1111,7 @@ def build_folha():
     cabecalho_documento(
         doc,
         "FICHA DE IDENTIFICAÇÃO · ROTEADOR NA PRÁTICA",
-        f"Equipamento de rede · {NOITE} · 4 de 5",
+        f"Equipamento de rede · {NOITE} · 4 de 6",
     )
 
     add_heading(doc, "3  As luzes do painel", level=2)
@@ -1126,12 +1151,68 @@ def build_folha():
     add_bullet(doc, "Não anote nem fotografe a senha — tampe com o dedo se for tirar foto")
     add_bullet(doc, "Traga anotado — vamos comparar os aparelhos da turma na Noite 3")
 
-    # PÁGINA 5 — Ficha de identificação do cabo
+    # PÁGINA 5 — Ficha de identificação do modem de fibra (ONU)
+    doc.add_page_break()
+    cabecalho_documento(
+        doc,
+        "FICHA DE IDENTIFICAÇÃO · MODEM DE FIBRA (ONU)",
+        f"Equipamento de rede · {NOITE} · 5 de 6",
+    )
+
+    add_para(doc, "Na fibra, o “modem” se chama ONU: é a caixinha onde o cabo de fibra do provedor termina e vira sinal de rede. Temos dois modelos na bancada. NÃO anote senhas nesta folha — nem a do Wi-Fi, nem a de acesso.", italic=True, size=10, color=COR_ALERTA, bold=True)
+
+    add_heading(doc, "1  O que muda na etiqueta da ONU", level=2)
+    add_table(doc, [
+        ["Na etiqueta está escrito…", "Quer dizer"],
+        ["GPON ONU", "Modem de fibra óptica (tecnologia GPON, a mais usada pelos provedores)"],
+        ["GPON SN / S/N: FHTT…", "Número de série. É por ele que o provedor reconhece e libera o aparelho"],
+        ["WLAN SSID / WLAN Security", "Nome e senha do Wi-Fi de fábrica. Se não aparece, o aparelho não tem Wi-Fi"],
+        ["Terminal WEB IP: 192.168.1.1", "Endereço que se digita no navegador para configurar"],
+        ["WEB user name / password", "Usuário e senha de acesso de fábrica. O técnico troca na instalação"],
+        ["Conector verde (SC/APC)", "Onde entra a fibra. Não dobre o cabo e nunca olhe na ponta"],
+    ], col_widths=[6.5, 11])
+
+    add_heading(doc, "2  Os dois modems da bancada", level=2)
+    tbl = add_table(doc, [
+        ["Item", "FiberHome HG6143D", "FiberHome AN5506-02-B"],
+        ["Cor e tamanho do aparelho", "", ""],
+        ["Tem Wi-Fi? (tem SSID na etiqueta?)", "", ""],
+        ["Uma faixa ou Dual Band?", "", ""],
+        ["Endereço de configuração (se tiver)", "", ""],
+        ["Número de série (só as 4 primeiras letras)", "", ""],
+        ["MAC", "", ""],
+        ["Alimentação (V e A)", "", ""],
+        ["Quantas portas de rede (LAN)?", "", ""],
+        ["Tem porta de telefone (TEL/POTS)?", "", ""],
+        ["Onde entra a fibra? Cor do conector", "", ""],
+    ], col_widths=[7.5, 5, 5])
+    for row in tbl.rows[1:]:
+        row.height = Cm(0.7)
+
+    add_heading(doc, "3  Pense como técnico", level=2)
+    perguntas = [
+        "1. Um cliente tem o AN5506-02-B e quer Wi-Fi em casa. O que falta instalar? Onde vai ligado?",
+        "2. A fonte de um modem serve no outro? Compare tensão (V) e corrente (A) dos dois e explique.",
+        "3. A ONU do cliente queimou e você levou outra. Que informação da etiqueta o provedor vai pedir? Por quê?",
+    ]
+    for pergunta in perguntas:
+        p = doc.add_paragraph()
+        r = p.add_run(pergunta)
+        r.font.size = Pt(11)
+        r.bold = True
+        for _ in range(2):
+            p = doc.add_paragraph()
+            p.paragraph_format.space_after = Pt(0)
+            r = p.add_run("_" * 100)
+            r.font.size = Pt(11)
+            r.font.color.rgb = COR_CINZA
+
+    # PÁGINA 6 — Ficha de identificação do cabo
     doc.add_page_break()
     cabecalho_documento(
         doc,
         "FICHA DE IDENTIFICAÇÃO · CABO",
-        f"Equipamento de rede · {NOITE} · 5 de 5",
+        f"Equipamento de rede · {NOITE} · 6 de 6",
     )
 
     add_para(doc, "O cabo não tem etiqueta embaixo: a etiqueta dele é a própria capa. O texto se repete ao longo do cabo — se estiver apagado num ponto, procure um metro adiante.", italic=True, size=10, color=COR_CINZA)
