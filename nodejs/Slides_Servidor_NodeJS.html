@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Servidor Web com Node.js — Aula 2</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --bg-2: #161d24;
+    --card: #1c252e;
+    --line: #2b3742;
+    --text: #e8edf2;
+    --muted: #9aa7b4;
+    --accent: #3ec5a8;      /* verde-água */
+    --accent-2: #f2a93b;    /* laranja */
+    --danger: #ef6b5b;
+    --code-bg: #0a0e12;
+    --code-text: #d7f5e9;
+    --prompt: #3ec5a8;
+    --comment: #6b7a88;
+    --string: #f2c37b;
+    --tag: #7fb6ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
+  body {
+    font-family: "Segoe UI", "Ubuntu", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Palco 16:9 que escala para qualquer tela/projetor */
+  #viewport { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+  #stage { width: 1280px; height: 720px; position: relative; transform-origin: center center; }
+
+  .slide {
+    position: absolute; inset: 0;
+    padding: 56px 72px 70px;
+    display: none; flex-direction: column;
+    background: var(--bg);
+  }
+  .slide.active { display: flex; animation: fade .25s ease; }
+  .slide.compact { padding: 30px 56px 52px; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* Tipografia */
+  .kicker { font-size: 18px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+  h1 { font-size: 64px; line-height: 1.08; font-weight: 800; }
+  h2 { font-size: 42px; line-height: 1.15; font-weight: 800; margin-bottom: 22px; }
+  h3 { font-size: 24px; font-weight: 700; margin-bottom: 10px; color: var(--accent-2); }
+  p, li { font-size: 25px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  ul { list-style: none; }
+  ul li { position: relative; padding-left: 30px; margin-bottom: 10px; }
+  ul li::before { content: ""; position: absolute; left: 4px; top: 15px; width: 10px; height: 10px; border-radius: 2px; background: var(--accent); }
+  strong { color: #fff; }
+  code.inline { font-family: "Ubuntu Mono", Consolas, "Courier New", monospace; background: var(--card); border: 1px solid var(--line); padding: 1px 8px; border-radius: 6px; font-size: .92em; color: var(--code-text); }
+
+  /* Layout */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; flex: 1; min-height: 0; }
+  .cols.wide-left { grid-template-columns: 1.25fr 1fr; }
+  .cols.code-left { grid-template-columns: 1.9fr 1fr; gap: 26px; }
+  .stack { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px 26px; }
+  .card p, .card li { font-size: 22px; }
+
+  /* Blocos de código */
+  pre.code {
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px 22px;
+    font-family: "Ubuntu Mono", Consolas, "Courier New", monospace;
+    font-size: 24px; line-height: 1.5;
+    color: var(--code-text);
+    white-space: pre-wrap; word-break: break-word;
+  }
+  pre.code.file { font-size: 14.5px; line-height: 1.32; padding: 12px 18px; white-space: pre; overflow: hidden; }
+  pre.code .p { color: var(--prompt); user-select: none; font-weight: 700; }
+  pre.code .c { color: var(--comment); font-style: italic; }
+  pre.code .s { color: var(--string); }
+  pre.code .t { color: var(--tag); }
+  pre.code .o { color: var(--muted); }
+  pre.code.out { border-left-color: var(--muted); font-size: 21px; }
+  .label { font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: -6px; font-weight: 700; }
+
+  /* Caixas */
+  .check, .warn, .tip { border-radius: 12px; padding: 14px 20px; font-size: 22px; line-height: 1.4; }
+  .check { background: rgba(62,197,168,.12); border: 1px solid rgba(62,197,168,.55); }
+  .check b:first-child { color: var(--accent); }
+  .warn  { background: rgba(242,169,59,.12); border: 1px solid rgba(242,169,59,.55); }
+  .warn b:first-child { color: var(--accent-2); }
+  .tip   { background: rgba(120,160,255,.10); border: 1px solid rgba(120,160,255,.45); }
+  .tip b:first-child { color: #9db8ff; }
+  .compact .check, .compact .warn, .compact .tip { font-size: 19px; padding: 12px 16px; }
+  .compact .card p, .compact .card li { font-size: 19px; }
+  .compact pre.code:not(.file) { font-size: 20px; padding: 10px 18px; }
+  .compact pre.code.out { font-size: 18px; }
+
+  /* Tabelas */
+  table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 22px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  th { background: #23303b; color: var(--accent); text-align: left; padding: 12px 18px; font-size: 18px; letter-spacing: .06em; text-transform: uppercase; }
+  td { padding: 11px 18px; border-top: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--bg-2); }
+  td code { font-family: "Ubuntu Mono", Consolas, monospace; color: var(--code-text); }
+  table.tight { font-size: 20px; }
+  table.tight td { padding: 8px 16px; }
+
+  /* Etapa: selo numerado */
+  .step-head { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+  .compact .step-head { margin-bottom: 14px; }
+  .step-num {
+    flex: none; width: 74px; height: 74px; border-radius: 18px;
+    background: var(--accent); color: #062a22;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; font-weight: 900;
+  }
+  .compact .step-num { width: 56px; height: 56px; font-size: 30px; border-radius: 14px; }
+  .compact .step-head h2 { font-size: 34px; }
+  .step-head h2 { margin: 0; }
+  .step-head .kicker { margin-bottom: 2px; }
+
+  /* Capa / encerramento */
+  .cover { justify-content: center; background:
+      radial-gradient(900px 500px at 85% 15%, rgba(62,197,168,.18), transparent 60%),
+      radial-gradient(700px 400px at 5% 95%, rgba(242,169,59,.10), transparent 60%),
+      var(--bg); }
+  .cover h1 span { color: var(--accent); }
+  .cover .sub { font-size: 30px; color: var(--muted); margin-top: 18px; }
+  .cover .meta { margin-top: 48px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .pill { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 8px 18px; font-size: 19px; color: var(--muted); }
+
+  /* Fluxo garçom */
+  .flow { display: flex; align-items: stretch; gap: 14px; margin: 8px 0 22px; }
+  .flow .box { flex: 1; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; text-align: center; }
+  .flow .box .big { font-size: 26px; font-weight: 800; color: #fff; }
+  .flow .box .small { font-size: 19px; color: var(--muted); margin-top: 6px; }
+  .flow .arrow { align-self: center; font-size: 34px; color: var(--accent); }
+
+  /* Navegador simulado */
+  .browser { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #0b5c5c; }
+  .browser .bar { background: #23303b; padding: 10px 14px; display: flex; gap: 8px; align-items: center; }
+  .browser .dot { width: 11px; height: 11px; border-radius: 50%; background: #4a5866; }
+  .browser .url { margin-left: 10px; flex: 1; background: var(--code-bg); border-radius: 6px; padding: 5px 12px; font-family: "Ubuntu Mono", Consolas, monospace; font-size: 19px; color: var(--code-text); }
+  .browser .page { padding: 26px; text-align: center; color: #fff; }
+  .browser .page .box { display: inline-block; background: rgba(0,0,0,.25); border-radius: 10px; padding: 16px 30px; }
+  .browser .page h4 { font-size: 24px; margin-bottom: 6px; }
+  .browser .page p { font-size: 17px; line-height: 1.5; }
+
+  /* Rodapé */
+  #footer { position: fixed; left: 0; right: 0; bottom: 0; height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 14px; color: var(--muted); z-index: 10; pointer-events: none; }
+  #progress { position: fixed; left: 0; bottom: 0; height: 5px; background: var(--accent); width: 0; transition: width .25s ease; z-index: 11; }
+  #counter { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 16px; color: var(--text); }
+  #hint { opacity: .8; }
+
+  @media print {
+    html, body { overflow: visible; height: auto; }
+    #viewport { position: static; display: block; }
+    #stage { transform: none !important; width: 1280px; height: auto; }
+    .slide { display: flex !important; position: relative; height: 720px; page-break-after: always; }
+    #footer, #progress { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="viewport">
+<div id="stage">
+
+  <!-- 1. CAPA -->
+  <section class="slide cover">
+    <div class="kicker">Redes de Computadores · Aula prática 2 de 2</div>
+    <h1>Seu primeiro<br><span>servidor web</span> com Node.js</h1>
+    <p class="sub">Parte 2 — Criando o site e colocando o servidor no ar</p>
+    <div class="meta">
+      <span class="pill">SSH</span>
+      <span class="pill">nano</span>
+      <span class="pill">index.html</span>
+      <span class="pill">server.js</span>
+      <span class="pill">PM2</span>
+      <span class="pill">60–90 min</span>
+    </div>
+  </section>
+
+  <!-- 2. ONDE PARAMOS + OBJETIVOS -->
+  <section class="slide">
+    <div class="kicker">Hoje</div>
+    <h2>Onde paramos e aonde vamos</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Aula 1 — ambiente pronto ✅</h3>
+        <ul>
+          <li>Ubuntu Server atualizado</li>
+          <li>Node.js 22, npm e PM2</li>
+          <li>Pasta <code class="inline">~/meu-servidor-web</code></li>
+          <li>Porta 3000 liberada no ufw</li>
+          <li>Ping funcionando</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Aula 2 — hoje</h3>
+        <ul>
+          <li>Acessar o servidor por <strong>SSH</strong></li>
+          <li>Criar o <strong>index.html</strong> (a página)</li>
+          <li>Criar o <strong>server.js</strong> (o servidor)</li>
+          <li>Abrir o site <strong>de outro computador</strong></li>
+          <li>Deixar no ar com o <strong>PM2</strong>, mesmo após reiniciar</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. OS DOIS ARQUIVOS -->
+  <section class="slide">
+    <div class="kicker">Conceito rápido</div>
+    <h2>Os dois arquivos de hoje</h2>
+    <div class="flow">
+      <div class="box"><div class="big">Navegador</div><div class="small">Cliente<br>(faz o pedido)</div></div>
+      <div class="arrow">→</div>
+      <div class="box"><div class="big">server.js</div><div class="small">O garçom<br>(recebe e entrega)</div></div>
+      <div class="arrow">→</div>
+      <div class="box"><div class="big">index.html</div><div class="small">O prato<br>(a página do site)</div></div>
+    </div>
+    <div class="cols">
+      <div class="card"><p><strong>index.html</strong> é escrito em <strong>HTML</strong>: diz o que aparece na tela — títulos, textos, cores.</p></div>
+      <div class="card"><p><strong>server.js</strong> é escrito em <strong>JavaScript</strong>: fica esperando pedidos na porta 3000 e entrega o index.html.</p></div>
+    </div>
+  </section>
+
+  <!-- 4. ETAPA 1 -->
+  <section class="slide">
+    <div class="step-head"><div class="step-num">1</div><div><div class="kicker">Etapa 1</div><h2>Conferir o ambiente</h2></div></div>
+    <div class="cols wide-left">
+      <div class="stack">
+        <div class="label">No servidor, depois do login</div>
+        <pre class="code"><span class="p">$ </span>hostname -I
+<span class="p">$ </span>node -v
+<span class="p">$ </span>pm2 -v
+<span class="p">$ </span>sudo ufw status</pre>
+      </div>
+      <div class="stack">
+        <div class="warn"><b>⚠️ O IP pode ter mudado</b> desde a última aula. Anote o IP de <b>hoje</b>.</div>
+        <div class="card"><p>Se algum comando falhar, volte na <strong>apostila da Aula 1</strong> e refaça aquela etapa.</p></div>
+        <div class="check"><b>✅ Checkpoint:</b> IP anotado, <b>v22</b> no Node, versão do PM2 e <b>3000/tcp ALLOW</b>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. ETAPA 2 -->
+  <section class="slide">
+    <div class="step-head"><div class="step-num">2</div><div><div class="kicker">Etapa 2</div><h2>Entrar no servidor por SSH</h2></div></div>
+    <div class="cols wide-left">
+      <div class="stack">
+        <div class="label">No PC do laboratório — Prompt de Comando (cmd)</div>
+        <pre class="code"><span class="p">&gt; </span>ssh aluno@192.168.1.50</pre>
+        <div class="label">Na primeira vez ele pergunta</div>
+        <pre class="code out"><span class="o">Are you sure you want to continue connecting (yes/no)?</span></pre>
+        <div class="label">Digite</div>
+        <pre class="code">yes</pre>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <p>Troque <strong>aluno</strong> pelo seu usuário e o IP pelo do <strong>seu</strong> servidor.</p>
+          <p style="margin-top:10px">Com SSH você controla o servidor <strong>pela rede</strong> — e pode <strong>colar</strong> código (botão direito).</p>
+        </div>
+        <div class="check"><b>✅ Checkpoint:</b> o prompt muda para <code class="inline">aluno@servidor:~$</code> dentro da janela do Windows.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. ETAPA 3: NANO + INDEX -->
+  <section class="slide">
+    <div class="step-head"><div class="step-num">3</div><div><div class="kicker">Etapa 3</div><h2>Criar o index.html com o nano</h2></div></div>
+    <div class="cols">
+      <div class="stack">
+        <div class="label">Entrar na pasta e abrir o editor</div>
+        <pre class="code"><span class="p">$ </span>cd ~/meu-servidor-web
+<span class="p">$ </span>nano index.html</pre>
+        <div class="tip"><b>💡</b> O <b>nano</b> é um editor de texto dentro do terminal. Os atalhos ficam no rodapé dele (<b>^</b> = Ctrl).</div>
+      </div>
+      <div class="stack">
+        <table>
+          <tr><th>Atalho no nano</th><th>Faz o quê</th></tr>
+          <tr><td><code>Ctrl + O</code> e <code>Enter</code></td><td>Salvar</td></tr>
+          <tr><td><code>Ctrl + X</code></td><td>Sair</td></tr>
+          <tr><td>Botão direito</td><td>Colar (no cmd do Windows)</td></tr>
+          <tr><td><code>Ctrl + K</code></td><td>Apagar a linha inteira</td></tr>
+        </table>
+        <div class="card"><p>Digite (ou cole) o código do <strong>próximo slide</strong>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. CÓDIGO INDEX.HTML -->
+  <section class="slide compact">
+    <h2 style="font-size:34px;margin-bottom:14px">index.html <span class="muted" style="font-size:20px;font-weight:600">· Etapa 3 · <code class="inline">nano index.html</code></span></h2>
+    <div class="cols code-left">
+<pre class="code file"><span class="t">&lt;!DOCTYPE html&gt;</span>
+<span class="t">&lt;html</span> lang=<span class="s">"pt-BR"</span><span class="t">&gt;</span>
+<span class="t">&lt;head&gt;</span>
+  <span class="t">&lt;meta</span> charset=<span class="s">"UTF-8"</span><span class="t">&gt;</span>
+  <span class="t">&lt;title&gt;</span>Meu Servidor Web<span class="t">&lt;/title&gt;</span>
+  <span class="t">&lt;style&gt;</span>
+    body { font-family: Arial, sans-serif; background: #0b5c5c; color: white;
+           text-align: center; padding-top: 80px; }
+    .caixa { background: rgba(0, 0, 0, 0.25); display: inline-block;
+             padding: 30px 50px; border-radius: 12px; }
+  <span class="t">&lt;/style&gt;</span>
+<span class="t">&lt;/head&gt;</span>
+<span class="t">&lt;body&gt;</span>
+  <span class="t">&lt;div</span> class=<span class="s">"caixa"</span><span class="t">&gt;</span>
+    <span class="t">&lt;h1&gt;</span>Meu primeiro servidor web<span class="t">&lt;/h1&gt;</span>
+    <span class="t">&lt;p&gt;</span>Feito por: <span class="t">&lt;strong&gt;</span><span class="s">SEU NOME</span><span class="t">&lt;/strong&gt;&lt;/p&gt;</span>
+    <span class="t">&lt;p&gt;</span>Curso de Redes de Computadores<span class="t">&lt;/p&gt;</span>
+    <span class="t">&lt;p&gt;</span>Esta página está vindo do meu servidor Ubuntu, na porta 3000.<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/body&gt;</span>
+<span class="t">&lt;/html&gt;</span></pre>
+      <div class="stack">
+        <div class="card"><p>Troque <strong>SEU NOME</strong> pelo seu nome.</p></div>
+        <div class="card"><p><code class="inline">&lt;h1&gt;</code> = título<br><code class="inline">&lt;p&gt;</code> = parágrafo<br><code class="inline">&lt;style&gt;</code> = cores e aparência</p></div>
+        <div class="check"><b>✅ Checkpoint:</b> salvou e saiu do nano; <code class="inline">cat index.html</code> mostra o código.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. CÓDIGO SERVER.JS -->
+  <section class="slide compact">
+    <h2 style="font-size:34px;margin-bottom:14px">server.js <span class="muted" style="font-size:20px;font-weight:600">· Etapa 4 · <code class="inline">nano server.js</code></span></h2>
+    <div class="cols code-left">
+<pre class="code file"><span class="c">// Módulos que já vêm com o Node.js</span>
+const http = require(<span class="s">'http'</span>);
+const fs = require(<span class="s">'fs'</span>);
+const path = require(<span class="s">'path'</span>);
+
+<span class="c">// Porta onde o servidor vai atender</span>
+const PORTA = 3000;
+
+<span class="c">// O "garçom": roda a cada pedido que chega</span>
+const servidor = http.createServer((pedido, resposta) =&gt; {
+  const hora = new Date().toLocaleTimeString(<span class="s">'pt-BR'</span>);
+  console.log(<span class="s">`${hora} - ${pedido.socket.remoteAddress} pediu ${pedido.url}`</span>);
+
+  const arquivo = path.join(__dirname, <span class="s">'index.html'</span>);
+  fs.readFile(arquivo, (erro, conteudo) =&gt; {
+    if (erro) {
+      resposta.writeHead(500, { <span class="s">'Content-Type'</span>: <span class="s">'text/plain; charset=utf-8'</span> });
+      resposta.end(<span class="s">'Erro: não consegui ler o index.html'</span>);
+      return;
+    }
+    resposta.writeHead(200, { <span class="s">'Content-Type'</span>: <span class="s">'text/html; charset=utf-8'</span> });
+    resposta.end(conteudo);
+  });
+});
+
+<span class="c">// Liga o servidor e espera pedidos de qualquer placa de rede</span>
+servidor.listen(PORTA, <span class="s">'0.0.0.0'</span>, () =&gt; {
+  console.log(<span class="s">`Servidor rodando na porta ${PORTA}`</span>);
+});</pre>
+      <div class="stack">
+        <div class="warn"><b>⚠️</b> Cada <b>( ) { } ' `</b> e <b>;</b> conta. Um caractere faltando e o servidor não liga.</div>
+        <div class="tip"><b>💡</b> As crases <b>`</b> ficam na tecla ao lado do <b>P</b> (com Shift no ABNT2), seguida de espaço.</div>
+        <div class="check"><b>✅ Checkpoint:</b> <code class="inline">ls</code> mostra <b>index.html</b> e <b>server.js</b>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. SERVER.JS EXPLICADO -->
+  <section class="slide">
+    <div class="kicker">Etapa 4 · entendendo</div>
+    <h2>O que o server.js faz</h2>
+    <table class="tight">
+      <tr><th>Trecho</th><th>Em português</th></tr>
+      <tr><td><code>require('http')</code></td><td>Pega a "ferramenta de servidor web" que vem no Node.js</td></tr>
+      <tr><td><code>const PORTA = 3000</code></td><td>A "mesa" onde o garçom atende</td></tr>
+      <tr><td><code>http.createServer(...)</code></td><td>Cria o garçom. O que está dentro roda <strong>a cada pedido</strong></td></tr>
+      <tr><td><code>console.log(...)</code></td><td>Escreve no terminal <strong>a hora, o IP de quem pediu</strong> e o que pediu</td></tr>
+      <tr><td><code>fs.readFile(...)</code></td><td>Lê o arquivo index.html do disco</td></tr>
+      <tr><td><code>resposta.end(conteudo)</code></td><td>Entrega a página para o navegador</td></tr>
+      <tr><td><code>listen(PORTA, '0.0.0.0')</code></td><td>Liga o servidor e aceita pedidos vindos <strong>da rede</strong></td></tr>
+    </table>
+  </section>
+
+  <!-- 10. ETAPA 5 -->
+  <section class="slide">
+    <div class="step-head"><div class="step-num">5</div><div><div class="kicker">Etapa 5</div><h2>Ligar o servidor pela primeira vez</h2></div></div>
+    <div class="cols wide-left">
+      <div class="stack">
+        <pre class="code"><span class="p">$ </span>node server.js</pre>
+        <div class="label">Resposta esperada</div>
+        <pre class="code out"><span class="o">Servidor rodando na porta 3000</span></pre>
+        <div class="tip"><b>💡</b> O terminal fica "parado". É assim mesmo: o servidor está <b>esperando pedidos</b>. Deixe essa janela aberta.</div>
+      </div>
+      <div class="stack">
+        <div class="card"><p>Se aparecer <strong>SyntaxError</strong>, a mensagem mostra o <strong>número da linha</strong> com erro. Abra o nano, corrija e tente de novo.</p></div>
+        <div class="check"><b>✅ Checkpoint:</b> apareceu <b>Servidor rodando na porta 3000</b>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. ETAPA 6 -->
+  <section class="slide">
+    <div class="step-head"><div class="step-num">6</div><div><div class="kicker">Etapa 6</div><h2>Abrir o site de outro computador</h2></div></div>
+    <div class="cols">
+      <div class="stack">
+        <div class="browser">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">http://192.168.1.50:3000</span></div>
+          <div class="page"><div class="box"><h4>Meu primeiro servidor web</h4><p>Feito por: <b>SEU NOME</b><br>Curso de Redes de Computadores</p></div></div>
+        </div>
+        <div class="label">E no terminal do servidor aparece</div>
+        <pre class="code out"><span class="o">19:42:10 - 192.168.1.61 pediu /
+19:42:10 - 192.168.1.61 pediu /favicon.ico</span></pre>
+      </div>
+      <div class="stack">
+        <div class="warn"><b>⚠️</b> Digite <b>http://</b> e o <b>:3000</b> no final. Sem a porta, o navegador procura na porta 80.</div>
+        <div class="card"><p>O log mostra o <strong>IP de quem acessou</strong>. Peça para um colega abrir o seu site e veja o IP dele aparecer!</p></div>
+        <div class="check"><b>✅ Checkpoint:</b> a página abre no navegador de <b>outro</b> PC.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. ETAPA 6b: O PROBLEMA -->
+  <section class="slide">
+    <div class="kicker">Etapa 6 · teste</div>
+    <h2>E se eu fechar o terminal?</h2>
+    <div class="cols">
+      <div class="stack">
+        <p>No terminal do servidor, aperte:</p>
+        <pre class="code">Ctrl + C</pre>
+        <p>Agora atualize o navegador (<strong>F5</strong>).</p>
+        <pre class="code out"><span class="o">Não é possível acessar esse site
+192.168.1.50 recusou a conexão.</span></pre>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h3>O garçom foi embora</h3>
+          <p>Com <code class="inline">node server.js</code>, o servidor só vive <strong>enquanto o terminal estiver aberto</strong>.</p>
+          <p style="margin-top:10px">Um servidor de verdade precisa ficar ligado <strong>sozinho</strong>. Para isso existe o <strong>PM2</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. ETAPA 7 -->
+  <section class="slide">
+    <div class="step-head"><div class="step-num">7</div><div><div class="kicker">Etapa 7</div><h2>Colocar no ar com o PM2</h2></div></div>
+    <div class="cols wide-left">
+      <div class="stack">
+        <div class="label">Iniciar com um nome</div>
+        <pre class="code"><span class="p">$ </span>pm2 start server.js --name meu-site</pre>
+        <div class="label">Ver o que está rodando</div>
+        <pre class="code"><span class="p">$ </span>pm2 list</pre>
+        <div class="label">Ver os acessos ao vivo (Ctrl + C para sair)</div>
+        <pre class="code"><span class="p">$ </span>pm2 logs meu-site</pre>
+      </div>
+      <div class="stack">
+        <div class="card"><p>Agora o terminal fica <strong>livre</strong> e o site continua no ar.</p></div>
+        <div class="tip"><b>💡</b> Sair dos logs com Ctrl + C <b>não</b> desliga o site. Só fecha a "janelinha" dos logs.</div>
+        <div class="check"><b>✅ Checkpoint:</b> <code class="inline">pm2 list</code> mostra <b>meu-site</b> com status <b>online</b> e o site abre no outro PC.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14. ETAPA 8 -->
+  <section class="slide">
+    <div class="step-head"><div class="step-num">8</div><div><div class="kicker">Etapa 8</div><h2>Alterar o site</h2></div></div>
+    <div class="cols">
+      <div class="stack">
+        <h3>Mudou o index.html?</h3>
+        <pre class="code"><span class="p">$ </span>nano index.html</pre>
+        <p>Salve e aperte <strong>F5</strong> no navegador. Pronto.</p>
+        <p class="muted" style="font-size:20px">O server.js lê o arquivo a cada pedido, então a mudança aparece na hora.</p>
+      </div>
+      <div class="stack">
+        <h3>Mudou o server.js?</h3>
+        <pre class="code"><span class="p">$ </span>nano server.js
+<span class="p">$ </span>pm2 restart meu-site</pre>
+        <p>O código do servidor só é lido quando ele <strong>liga</strong>. Por isso precisa reiniciar.</p>
+        <div class="check"><b>✅ Checkpoint:</b> mudou a cor de fundo (<code class="inline">background</code>) e a nova cor apareceu no outro PC.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15. ETAPA 9 -->
+  <section class="slide compact">
+    <div class="step-head"><div class="step-num">9</div><div><div class="kicker">Etapa 9</div><h2>Ligar junto com a máquina</h2></div></div>
+    <div class="cols wide-left">
+      <div class="stack">
+        <div class="label">1. Gerar o comando de inicialização</div>
+        <pre class="code"><span class="p">$ </span>pm2 startup</pre>
+        <div class="label">2. Ele mostra um comando começando com sudo — copie e rode</div>
+        <pre class="code out"><span class="o">sudo env PATH=$PATH:/usr/bin ... pm2 startup systemd -u aluno --hp /home/aluno</span></pre>
+        <div class="label">3. Salvar a lista de sites rodando</div>
+        <pre class="code"><span class="p">$ </span>pm2 save</pre>
+        <div class="label">4. Testar de verdade</div>
+        <pre class="code"><span class="p">$ </span>sudo reboot</pre>
+      </div>
+      <div class="stack">
+        <div class="tip"><b>💡</b> Depois do <code class="inline">reboot</code>, a conexão SSH cai. Espere 1 a 2 minutos.</div>
+        <div class="check"><b>✅ Checkpoint:</b> depois de reiniciar, <b>sem fazer login</b>, o site abre no navegador do outro PC.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16. COMANDOS PM2 -->
+  <section class="slide">
+    <div class="kicker">Cola</div>
+    <h2>Comandos do PM2</h2>
+    <table>
+      <tr><th>Comando</th><th>Para que serve</th></tr>
+      <tr><td><code>pm2 start server.js --name meu-site</code></td><td>Liga o site com um nome</td></tr>
+      <tr><td><code>pm2 list</code></td><td>Mostra o que está rodando e o status</td></tr>
+      <tr><td><code>pm2 logs meu-site</code></td><td>Mostra os acessos e erros ao vivo</td></tr>
+      <tr><td><code>pm2 restart meu-site</code></td><td>Reinicia (depois de mudar o server.js)</td></tr>
+      <tr><td><code>pm2 stop meu-site</code></td><td>Desliga o site</td></tr>
+      <tr><td><code>pm2 startup</code> + <code>pm2 save</code></td><td>Faz o site ligar junto com a máquina</td></tr>
+    </table>
+  </section>
+
+  <!-- 17. DESAFIOS -->
+  <section class="slide">
+    <div class="kicker">Terminou antes?</div>
+    <h2>Desafios extras</h2>
+    <div class="cols">
+      <div class="stack">
+        <div class="card"><h3>1. Volta na turma</h3><p>Abra o site de 3 colegas e anote nome e IP de cada um na apostila.</p></div>
+        <div class="card"><h3>2. Detetive de IP</h3><p>Rode <code class="inline">pm2 logs meu-site</code> e descubra quem acessou o seu site.</p></div>
+      </div>
+      <div class="stack">
+        <div class="card"><h3>3. Deixe o site com a sua cara</h3><p>Mude a cor, adicione um parágrafo sobre você e uma lista com 3 comandos que aprendeu.</p></div>
+        <div class="card"><h3>4. Quebre de propósito</h3><p>Pare o site com <code class="inline">pm2 stop</code> e veja a mensagem no navegador. Depois ligue de novo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18. ENCERRAMENTO -->
+  <section class="slide cover">
+    <div class="kicker">Fim do projeto</div>
+    <h1>Seu servidor está <span>no ar</span>.</h1>
+    <p class="sub">Do pendrive ao site acessado pela rede — feito por vocês, no terminal.</p>
+    <div class="meta">
+      <span class="pill">Ubuntu Server</span>
+      <span class="pill">Node.js</span>
+      <span class="pill">HTML</span>
+      <span class="pill">PM2</span>
+      <span class="pill">Firewall</span>
+      <span class="pill">Dúvidas?</span>
+    </div>
+  </section>
+
+</div>
+</div>
+
+<div id="progress"></div>
+<div id="footer">
+  <span id="hint">← → navegar · F tela cheia</span>
+  <span id="counter">1 / 1</span>
+</div>
+
+<script>
+(function () {
+  var slides = document.querySelectorAll('.slide');
+  var stage = document.getElementById('stage');
+  var counter = document.getElementById('counter');
+  var progress = document.getElementById('progress');
+  var total = slides.length;
+  var current = 0;
+
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, (window.innerHeight - 8) / 720);
+    stage.style.transform = 'scale(' + s + ')';
+  }
+
+  function show(i) {
+    current = Math.max(0, Math.min(total - 1, i));
+    slides.forEach(function (el, idx) { el.classList.toggle('active', idx === current); });
+    counter.textContent = (current + 1) + ' / ' + total;
+    progress.style.width = ((current + 1) / total * 100) + '%';
+    if (history.replaceState) history.replaceState(null, '', '#' + (current + 1));
+  }
+
+  function toggleFull() {
+    if (!document.fullscreenElement) {
+      (document.documentElement.requestFullscreen || function () {}).call(document.documentElement);
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+
+  document.addEventListener('keydown', function (e) {
+    switch (e.key) {
+      case 'ArrowRight': case 'PageDown': case ' ': case 'Enter':
+        e.preventDefault(); show(current + 1); break;
+      case 'ArrowLeft': case 'PageUp': case 'Backspace':
+        e.preventDefault(); show(current - 1); break;
+      case 'Home': e.preventDefault(); show(0); break;
+      case 'End': e.preventDefault(); show(total - 1); break;
+      case 'f': case 'F': toggleFull(); break;
+    }
+  });
+
+  // Clique: metade direita avança, metade esquerda volta
+  document.addEventListener('click', function (e) {
+    if (window.getSelection && String(window.getSelection())) return;
+    if (e.clientX > window.innerWidth / 2) show(current + 1); else show(current - 1);
+  });
+
+  // Toque (celular/tablet)
+  var x0 = null;
+  document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+    x0 = null;
+  });
+
+  window.addEventListener('resize', fit);
+  fit();
+  var start = parseInt((location.hash || '').replace('#', ''), 10);
+  show(isNaN(start) ? 0 : start - 1);
+})();
+</script>
+</body>
+</html>
