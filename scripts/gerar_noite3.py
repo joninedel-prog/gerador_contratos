@@ -706,6 +706,45 @@ def build_slides():
     ], 0.7, 2.8, 11.9, 4.0, size=19, color=K)
     add_footer(s, FOOTER)
 
+    # 20a: PRÁTICA 4 — Orçamento
+    s = add_slide(prs)
+    add_title_block(s, "PRÁTICA · 50 MIN", "Agora vocês são a empresa: monte o orçamento")
+    add_text(s, [
+        "•  Cada equipe orça 2 cenários (sorteio)",
+        "•  Abram o modelo de planilha no LibreOffice Calc",
+        "•  Pesquisem preços reais na internet",
+        "",
+        "No final, cada equipe apresenta:",
+        "     a solução  ·  o valor total  ·  o porquê",
+    ], 0.7, 2.8, 11.9, 4.0, size=19, color=K)
+    add_footer(s, FOOTER)
+
+    # 20b: Regras do orçamento
+    s = add_slide(prs)
+    add_title_block(s, "REGRAS DO ORÇAMENTO", "O que não pode faltar")
+    add_text(s, [
+        "✔  Link de cada item — de onde veio o preço",
+        "✔  Quantidade pensada — quantos metros? quantos conectores?",
+        "✔  Frete — ou \"retirada na loja\"",
+        "✔  Mão de obra — técnico não trabalha de graça",
+        "✔  Justificativa — por que essa solução e não outra?",
+    ], 0.7, 2.8, 11.9, 3.2, size=19, color=K)
+    add_text(s, "Orçamento sem link e sem justificativa não vale ponto.", 0.7, 6.2, 11.9, 0.5, size=17, bold=True, color=R, align=PP_ALIGN.CENTER, italic=True)
+    add_footer(s, FOOTER)
+
+    # 20c: Debate dos orçamentos
+    s = add_slide(prs)
+    add_title_block(s, "DEBATE", "Mesmo problema, preços diferentes. Por quê?")
+    add_text(s, [
+        "•  Metragem diferente?",
+        "•  Cat5e ou Cat6?",
+        "•  Loja diferente?",
+        "•  Equipamento mais caro do que precisava?",
+        "•  Alguém esqueceu algum item?",
+    ], 0.7, 2.8, 11.9, 3.2, size=19, color=K)
+    add_text(s, "Se você fosse o cliente, contrataria qual equipe?", 0.7, 6.2, 11.9, 0.5, size=20, bold=True, color=P, align=PP_ALIGN.CENTER)
+    add_footer(s, FOOTER)
+
     # 21: Duelo relâmpago
     s = add_slide(prs)
     add_title_block(s, "DUELO RELÂMPAGO · 15 MIN", "Time A × Time B")
