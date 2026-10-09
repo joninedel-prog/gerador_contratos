@@ -95,17 +95,19 @@ def build_roteiro():
 
     add_heading(doc, "Material da mesa", level=2)
     add_bullet(doc, "Um roteador por equipe de 3 ou 4 (os da bancada), cada um na tomada. NÃO precisa de internet")
-    add_bullet(doc, "Um roteador extra, \"sabotado\", para a Estação B do Bloco 7 (ver abaixo)")
+    add_bullet(doc, "Um roteador extra, \"sabotado\", para a Estação B do Bloco 8 (ver abaixo)")
     add_bullet(doc, "1 ou 2 computadores/notebooks com porta de rede + cabos testados da Noite 5")
     add_bullet(doc, "Celular do professor (vai ser o \"intruso\")")
     add_bullet(doc, "Fita crepe e caneta pra etiquetar os roteadores: EQUIPE 1, EQUIPE 2…")
     add_bullet(doc, "Régua de tomadas")
+    add_bullet(doc, "Pro porteiro vivo (Bloco 5): uma prancheta ou caderno pro porteiro, fita crepe pra fazer crachás")
+    add_bullet(doc, "Pro cartaz (Bloco 9): uma folha de papel pardo ou cartolina por equipe, canetões de 3 cores (preto, vermelho, verde)")
 
     add_heading(doc, "Prepare os roteadores das equipes (antes da aula)", level=2)
     add_para(doc, "Os roteadores ficam como vêm de fábrica. Ninguém configura nada antes — é justamente isso que a noite mostra: o aparelho sai da caixa e já distribui endereço sozinho. Configurar de verdade é a Noite 9.")
     add_bullet(doc, "Restaure cada um para o padrão de fábrica (botão Reset, ~10 segundos com o aparelho ligado). Assim nenhum guarda senha ou configuração de aula anterior")
     add_bullet(doc, "Numere com fita crepe: EQUIPE 1, EQUIPE 2… O nome e a senha do Wi-Fi a turma acha na etiqueta embaixo do aparelho, como na Noite 2")
-    add_bullet(doc, "Escolha uma senha de administrador igual pra todos (ex.: redes2026). Os alunos vão criá-la no primeiro acesso ao painel, no Bloco 5")
+    add_bullet(doc, "Escolha uma senha de administrador igual pra todos (ex.: redes2026). Os alunos vão criá-la no primeiro acesso ao painel, no Bloco 6")
     add_bullet(doc, "Faça o primeiro acesso em UM roteador de cada modelo em casa, pra conhecer as telas, e depois dê Reset de novo. TP-Link mais novo (Archer C5, 840N com firmware novo): pede pra criar a senha de administrador e depois abre um assistente de configuração rápida — dá pra pular. 840N com firmware antigo: entra com admin / admin")
     add_bullet(doc, "Nesse teste, descubra onde fica a lista de aparelhos conectados. O nome muda: \"Clientes DHCP\", \"Lista de clientes DHCP\", \"Dispositivos conectados\", \"Mapa da rede → Clientes\" ou \"Estatísticas wireless\". Anote o caminho na fita do roteador")
     add_para(doc, "Os roteadores vão ficar sem internet e o celular vai reclamar (\"Wi-Fi sem internet\"). É de propósito. Diga à turma: \"Lembram da Noite 1? Rede não é internet. A rede funciona sem ela.\"", italic=True, color=COR_PRIMARIA)
@@ -125,6 +127,7 @@ def build_roteiro():
     add_heading(doc, "Imprima", level=2)
     add_bullet(doc, "Folha do aluno (3 páginas), uma por pessoa")
     add_bullet(doc, "Resumo do aluno, uma por pessoa (pra levar pra casa)")
+    add_bullet(doc, "O ANEXO no fim deste roteiro: o Livro da portaria (1 cópia) e os cartões de MAC (recorte, 1 por aluno)")
 
     add_hr(doc)
 
@@ -133,18 +136,18 @@ def build_roteiro():
     add_table(doc, [
         ["Bloco", "Tempo", "O que acontece"],
         ["1. Retomada + censo dos endereços", "15 min", "Cada um escreve no quadro o IP da tarefa. A turma acha o padrão"],
-        ["2. Dois documentos: MAC e IP", "20 min", "Analogia do condomínio"],
+        ["2. Dois documentos: MAC e IP", "15 min", "Analogia do condomínio"],
         ["3. PRÁTICA — Ache seus endereços", "20 min", "Celular na rede da equipe + ipconfig no computador"],
-        ["4. Quem dá o endereço + IP de dentro e de fora", "15 min", "DHCP, gateway, IP público"],
+        ["4. Quem dá o endereço + IP de dentro e de fora", "10 min", "DHCP, gateway, IP público"],
+        ["5. PRÁTICA — O porteiro vivo", "25 min", "A turma encena o DHCP: chegada, volta, lotação, porteiro de folga, conflito"],
         ["INTERVALO", "15 min", ""],
-        ["5. PRÁTICA — Quem está na rede?", "35 min", "Equipes entram no painel do roteador e identificam cada aparelho"],
-        ["6. PRÁTICA — Caça ao intruso", "15 min", "O professor entra escondido numa rede. A equipe tem que achar"],
-        ["7. PRÁTICA — Ping e o sem-endereço", "25 min", "Estação A: ping. Estação B: o 169.254. Fila: ler telas de ipconfig"],
-        ["8. Chamados em role-play", "20 min", "Conectado sem internet, impressora sumida, vizinho no Wi-Fi"],
-        ["9. Duelo relâmpago", "15 min", "Time A × Time B"],
-        ["10. Fechamento + tarefa", "15 min", "Quiz de saída e anúncio da Noite 7"],
+        ["6. PRÁTICA — Quem está na rede?", "35 min", "Equipes entram no painel do roteador e identificam cada aparelho"],
+        ["7. PRÁTICA — Caça ao intruso", "15 min", "O professor entra escondido numa rede. A equipe tem que achar"],
+        ["8. PRÁTICA — Ping e o sem-endereço", "25 min", "Estação A: ping. Estação B: o 169.254. Fila: ler telas de ipconfig"],
+        ["9. PRÁTICA — O cartaz da rede", "25 min", "Cada equipe desenha a própria rede e apresenta pra turma"],
+        ["10. Fechamento + tarefa", "10 min", "Quiz de saída e anúncio da Noite 7"],
     ], col_widths=[6.5, 2, 8])
-    add_para(doc, "Blocos 3, 5, 6, 7, 8 e 9: 130 min de atividade do aluno (62% do total), mais o censo do Bloco 1. A exposição está em dois blocos curtos (35 min somados), separados por prática.", italic=True, color=COR_CINZA)
+    add_para(doc, "Blocos 3, 5, 6, 7, 8 e 9: 145 min de atividade do aluno (69% do total), mais o censo do Bloco 1. A exposição está em dois blocos curtos (25 min somados), cada um seguido de prática.", italic=True, color=COR_CINZA)
 
     add_hr(doc)
 
@@ -168,11 +171,11 @@ def build_roteiro():
     add_hr(doc)
 
     # BLOCO 2
-    add_heading(doc, "BLOCO 2 — DOIS DOCUMENTOS: MAC E IP · 20 MIN")
+    add_heading(doc, "BLOCO 2 — DOIS DOCUMENTOS: MAC E IP · 15 MIN")
     add_heading(doc, "A pergunta — 3 min", level=2)
     add_para(doc, "\"Tem vinte celulares no mesmo Wi-Fi. Chega um vídeo da internet. Como o roteador sabe que é pro celular do Pedro e não pro da Ana?\" Deixe a turma chutar. Aceite tudo. A resposta é: endereço.", italic=True)
 
-    add_heading(doc, "O condomínio — 12 min", level=2)
+    add_heading(doc, "O condomínio — 8 min", level=2)
     add_para(doc, "Desenhe no quadro um prédio com portaria e apartamentos. Construa a tabela com a turma:")
     add_table(doc, [["No condomínio…", "Na rede…"]] + [list(r) for r in CONDOMINIO], col_widths=[6, 10.5])
     add_para(doc, "Os pontos que a turma precisa sair falando:")
@@ -182,7 +185,7 @@ def build_roteiro():
     add_bullet(doc, "Como se lê um IP: são 4 números de 0 a 255 com ponto. Em casa, os três primeiros dizem a rua (a rede) e o último diz a casa (o aparelho). 192.168.0.104 e 192.168.0.105 são vizinhos. 192.168.1.104 é outra rua")
     add_bullet(doc, "Como se lê um MAC: 6 pares de letras e números (de 0 a 9 e de A a F), separados por traço ou dois pontos. Ex.: 3C-52-82-1A-7F-09")
 
-    add_heading(doc, "O aviso de campo — 5 min", level=2)
+    add_heading(doc, "O aviso de campo — 4 min", level=2)
     add_para(doc, "\"Agora uma pegadinha da vida real: celular novo NÃO mostra o CPF verdadeiro. Ele inventa um MAC diferente pra cada Wi-Fi, por privacidade. Chama MAC aleatório (Android) ou endereço privado (iPhone). Então o MAC que vocês anotaram em casa pode não ser o mesmo que o roteador da escola vai ver hoje. Vamos conferir daqui a pouco.\"", italic=True, color=COR_ALERTA)
     add_para(doc, "Onde dilatar: pergunte \"por que o celular faria isso?\" e deixe a turma descobrir (pra loja, shopping e aeroporto não ficarem rastreando por onde você passa).", italic=True, color=COR_DESTAQUE)
 
@@ -208,24 +211,49 @@ def build_roteiro():
     add_hr(doc)
 
     # BLOCO 4
-    add_heading(doc, "BLOCO 4 — QUEM DÁ O ENDEREÇO + IP DE DENTRO E DE FORA · 15 MIN")
+    add_heading(doc, "BLOCO 4 — QUEM DÁ O ENDEREÇO + IP DE DENTRO E DE FORA · 10 MIN")
     add_heading(doc, "DHCP: o porteiro — 5 min", level=2)
     add_bullet(doc, "Quando o celular chega, ele grita: \"alguém me dá um endereço?\" O roteador responde com: um IP, quem é a portaria (gateway) e por quanto tempo vale")
     add_bullet(doc, "Essa função do roteador se chama DHCP. Ninguém precisa digitar nada. Por isso conectar no Wi-Fi \"só funciona\"")
+    add_bullet(doc, "Não se demore aqui: no Bloco 5 a turma vai ENCENAR o porteiro. O entendimento vem de lá")
     add_bullet(doc, "Se o porteiro não responde, o aparelho fica sem endereço. O Windows, aí, inventa um número que começa com 169.254. \"Quando vocês virem 169.254, já sabem: ninguém deu endereço pra esse aparelho\"")
-    add_heading(doc, "IP de dentro e IP de fora — 10 min", level=2)
+    add_heading(doc, "IP de dentro e IP de fora — 5 min", level=2)
     add_bullet(doc, "O 192.168… só vale dentro de casa. Lá fora, na internet, a casa inteira aparece com um endereço só: o do roteador do lado de fora, que o provedor dá")
     add_bullet(doc, "É o endereço do condomínio na rua. O carteiro não sabe o número do apartamento — ele entrega na portaria, e a portaria distribui")
     add_bullet(doc, "Demonstração (se a escola tiver Wi-Fi com internet): dois alunos no Wi-Fi da escola pesquisam \"qual meu ip\" no Google. Aparece o MESMO número pros dois. Agora um passa pro 4G: número totalmente diferente")
     add_para(doc, "Ligue com a Noite 2: \"O provedor que dá esse IP de fora. Às vezes ele dá um IP compartilhado com outros clientes — isso vai importar quando a gente falar de câmera, na Noite 13.\"", italic=True, color=COR_CINZA)
 
     add_hr(doc)
+
+    # BLOCO 5
+    add_heading(doc, "BLOCO 5 — PRÁTICA · O PORTEIRO VIVO · 25 MIN")
+    add_para(doc, "A turma encena o DHCP. Ninguém fica sentado. Use o Livro da portaria e os cartões de MAC do ANEXO.")
+    add_heading(doc, "Montagem — 3 min", level=2)
+    add_bullet(doc, "Um aluno é o PORTEIRO (o roteador). Fica numa mesa na porta da sala, com o Livro da portaria")
+    add_bullet(doc, "Cada outro aluno recebe um cartão de MAC — é o \"CPF\" do aparelho dele. Todos saem pro corredor (ou pro fundo da sala)")
+    add_bullet(doc, "No Livro, deixe 2 apartamentos a MENOS que o número de alunos. Risque as linhas que sobrarem. É de propósito (rodada 3)")
+    add_heading(doc, "As rodadas", level=2)
+    add_para(doc, "Troque o porteiro a cada rodada. Depois de cada uma, pare e pergunte: \"isso acontece de verdade quando?\"", italic=True, color=COR_CINZA)
+    add_table(doc, [
+        ["Rodada", "O que acontece", "A lição"],
+        ["1. Chegada", "Cada um chega e diz: \"Meu MAC é ___. Alguém me dá um endereço?\" O porteiro anota o MAC ao lado do primeiro apartamento livre e escreve no crachá (fita crepe): o IP e \"portaria 192.168.0.1\"", "O DHCP dá IP, gateway e anota quem recebeu"],
+        ["2. Sai e volta", "Três alunos saem da sala e voltam. O porteiro procura o MAC no Livro e devolve o MESMO apartamento", "O roteador lembra do aparelho pelo MAC"],
+        ["3. Lotação", "Os últimos a chegar não acham apartamento livre. Escrevem no crachá: 169.254", "Sem endereço disponível = sem rede"],
+        ["4. MAC aleatório", "Dois alunos trocam de cartão de MAC entre si e voltam. O porteiro não reconhece e dá outro apartamento (ou nenhum, se lotado)", "Celular com MAC aleatório pode ganhar IP novo"],
+        ["5. Porteiro de folga", "O porteiro sai da mesa. Quem chegar agora fica com 169.254", "É a Estação B que vocês vão ver depois do intervalo"],
+        ["6. A encomenda", "Você entrega ao porteiro um papel: \"Vídeo para 192.168.0.104\". Ele olha o Livro e leva até o apartamento certo", "É assim que o vídeo acha o celular certo — a pergunta do Bloco 2"],
+        ["7. O espertinho", "Um aluno, sem passar na portaria, escreve no crachá um IP que JÁ É de outro colega. Chega outra encomenda pra esse número: o porteiro não sabe pra qual dos dois entregar", "Conflito de IP: acontece quando alguém digita IP fixo na mão"],
+    ], col_widths=[2.6, 8.4, 5.5])
+    add_para(doc, "Onde dilatar: depois da rodada 7, peça pra turma inventar uma rodada nova que represente algum problema real. Deixe que encenem. Depois, pergunte: \"o que o técnico faria pra resolver?\" (aumentar os apartamentos, reiniciar o porteiro, apagar o IP fixo).", italic=True, color=COR_DESTAQUE)
+    add_para(doc, "Guarde o Livro preenchido da rodada 1. Ele é a \"lista de clientes DHCP\" de papel — logo depois do intervalo, eles veem a mesma lista na tela do roteador.", italic=True, color=COR_PRIMARIA)
+
+    add_hr(doc)
     add_heading(doc, "INTERVALO · 15 MIN", color=COR_CINZA)
     add_hr(doc)
 
     # BLOCO 5
-    add_heading(doc, "BLOCO 5 — PRÁTICA · QUEM ESTÁ NA REDE? · 35 MIN")
-    add_para(doc, "A atividade principal da noite. Cada equipe entra no painel do SEU roteador e descobre quem é cada aparelho conectado. Página 2 da folha.")
+    add_heading(doc, "BLOCO 6 — PRÁTICA · QUEM ESTÁ NA REDE? · 35 MIN")
+    add_para(doc, "A atividade principal da noite. Cada equipe entra no painel do SEU roteador e descobre quem é cada aparelho conectado. Página 2 da folha. Abra com: \"Lembram do Livro da portaria? O roteador tem um igual. Vamos ver.\"")
     add_heading(doc, "Passo a passo (escreva no quadro)", level=2)
     add_bullet(doc, "Celular conectado no Wi-Fi da equipe. Abra o navegador e digite: 192.168.0.1 (é o gateway que vocês anotaram!) ou o endereço da etiqueta (tplinkwifi.net)")
     add_bullet(doc, "Primeiro acesso: o roteador pede pra criar a senha de administrador. Você dita a mesma senha pra todas as equipes. Nos 840N antigos, entra com admin / admin")
@@ -246,8 +274,8 @@ def build_roteiro():
     add_hr(doc)
 
     # BLOCO 6
-    add_heading(doc, "BLOCO 6 — PRÁTICA · CAÇA AO INTRUSO · 15 MIN")
-    add_para(doc, "Durante o Bloco 5, sem ninguém ver, conecte o seu celular (o \"intruso\") no Wi-Fi de uma equipe — a senha está na etiqueta embaixo do roteador. Se der, conecte também um aparelho de outra equipe noutra rede.")
+    add_heading(doc, "BLOCO 7 — PRÁTICA · CAÇA AO INTRUSO · 15 MIN")
+    add_para(doc, "Durante o Bloco 6, sem ninguém ver, conecte o seu celular (o \"intruso\") no Wi-Fi de uma equipe — a senha está na etiqueta embaixo do roteador. Se der, conecte também um aparelho de outra equipe noutra rede.")
     add_bullet(doc, "Anuncie: \"Uma das redes foi invadida. Cada equipe confere a sua lista e diz se tem intruso.\"")
     add_bullet(doc, "A equipe tem que dizer: qual aparelho é o intruso, o IP e o MAC dele, e como chegou nessa conclusão")
     add_bullet(doc, "A conclusão certa é por eliminação: contaram os aparelhos da equipe, identificaram cada um, sobrou um")
@@ -257,7 +285,7 @@ def build_roteiro():
     add_hr(doc)
 
     # BLOCO 7
-    add_heading(doc, "BLOCO 7 — PRÁTICA · PING E O SEM-ENDEREÇO · 25 MIN")
+    add_heading(doc, "BLOCO 8 — PRÁTICA · PING E O SEM-ENDEREÇO · 25 MIN")
     add_para(doc, "Duas estações e uma atividade de papel. As equipes rodam: ~8 min por estação, e quem espera faz a leitura de telas (página 3 da folha).")
 
     add_heading(doc, "Estação A — Quem responde? (computador no roteador de uma equipe)", level=2)
@@ -271,7 +299,7 @@ def build_roteiro():
     add_bullet(doc, "Liga o computador por cabo no roteador da Estação B. Luz da porta acende. O Windows mostra \"Sem internet\" ou \"Rede não identificada\"")
     add_bullet(doc, "ipconfig → aparece 169.254.x.x e Gateway Padrão vazio")
     add_bullet(doc, "Tenta conectar o celular no Wi-Fi dele: fica em \"Obtendo endereço IP…\" e depois \"Falha ao obter endereço IP\"")
-    add_bullet(doc, "A equipe escreve o diagnóstico. Depois você conta o segredo: o porteiro (DHCP) estava de folga")
+    add_bullet(doc, "A equipe escreve o diagnóstico. Depois você conta o segredo: o porteiro (DHCP) estava de folga — igual à rodada 5")
     add_para(doc, "\"Cabo bom, luz acesa, e não funciona. Se vocês só soubessem testar cabo, iam trocar o cabo à toa. Agora vocês sabem olhar o endereço.\"", italic=True, color=COR_PRIMARIA)
 
     add_heading(doc, "Fila — Lendo telas de ipconfig (papel)", level=2)
@@ -281,48 +309,24 @@ def build_roteiro():
 
     add_hr(doc)
 
-    # BLOCO 8
-    add_heading(doc, "BLOCO 8 — CHAMADOS EM ROLE-PLAY · 20 MIN")
-    add_para(doc, "Duplas: um cliente, um técnico. O técnico diz o que faria, passo a passo, usando o que viu hoje. Troca os papéis a cada chamado. Chamados na página 3 da folha:")
-    chamados = [
-        ("\"O computador diz 'conectado, sem internet'. O cabo é novo, a luz acende.\"",
-         "ipconfig. Se 169.254: ninguém deu endereço — reinicia o roteador, confere se o cabo está numa porta LAN (não na WAN). Se IP normal: ping no gateway e segue o diagnóstico."),
-        ("\"Faltou luz ontem e agora a impressora sumiu do computador.\"",
-         "O roteador reiniciou e a impressora ganhou outro IP; o computador procura no endereço antigo. Achar o IP novo no painel (pelo MAC). Solução definitiva: reserva de IP (Noite 9)."),
-        ("\"Acho que o vizinho está usando meu Wi-Fi. A internet anda lenta à noite.\"",
-         "Painel do roteador → lista de aparelhos. Contar os aparelhos da casa com o cliente, identificar cada um. Sobrou? Trocar a senha do Wi-Fi (Noite 11)."),
-        ("\"Meu filho disse que o IP dele 'vazou' no jogo. É perigoso?\"",
-         "O que aparece no jogo é o IP de fora (do condomínio), não o da casa. Muda quando o roteador reinicia na maioria dos provedores. Calma, não é senha."),
-    ]
-    for ch, resp in chamados:
-        add_para(doc, ch, bold=True)
-        add_para(doc, "> " + resp, italic=True, color=COR_CINZA)
-
-    add_hr(doc)
-
     # BLOCO 9
-    add_heading(doc, "BLOCO 9 — DUELO RELÂMPAGO · 15 MIN")
-    add_para(doc, "Turma em dois times. Resposta em 5 segundos. Alterna.")
-    add_heading(doc, "14 perguntas de reserva", level=2)
-    add_bullet(doc, "Qual dos dois vem de fábrica: IP ou MAC? — MAC")
-    add_bullet(doc, "Quem dá o IP pro celular em casa? — O roteador (DHCP)")
-    add_bullet(doc, "Na analogia, o MAC é o quê? — O CPF")
-    add_bullet(doc, "E o IP? — O número do apartamento")
-    add_bullet(doc, "E o gateway? — A portaria (o roteador)")
-    add_bullet(doc, "192.168.0.10 e 192.168.0.200 estão na mesma rede? — Sim (mesmos três primeiros)")
-    add_bullet(doc, "192.168.0.10 e 192.168.1.10? — Não, na maioria das casas")
-    add_bullet(doc, "Computador com 169.254 quer dizer o quê? — Ninguém deu endereço pra ele")
-    add_bullet(doc, "\"Mídia desconectada\" no ipconfig. Problema de quê? — Físico: cabo ou porta")
-    add_bullet(doc, "Dois aparelhos na mesma casa podem ter o mesmo IP? — Não (dá conflito)")
-    add_bullet(doc, "E em casas diferentes? — Pode")
-    add_bullet(doc, "Pra que serve o ping? — Saber se um aparelho responde")
-    add_bullet(doc, "Por que o celular usa MAC aleatório? — Privacidade, pra não ser rastreado")
-    add_bullet(doc, "Onde o técnico vê quem está no Wi-Fi do cliente? — No painel do roteador")
+    add_heading(doc, "BLOCO 9 — PRÁTICA · O CARTAZ DA REDE · 25 MIN")
+    add_para(doc, "Cada equipe desenha, num papel pardo ou cartolina, o \"condomínio\" da rede que ela investigou hoje. Depois cola na parede e apresenta.")
+    add_heading(doc, "O que o cartaz precisa ter — 12 min pra fazer", level=2)
+    add_bullet(doc, "No meio, o roteador: modelo, MAC da etiqueta e o número da portaria (gateway)")
+    add_bullet(doc, "Em volta, cada aparelho da equipe: dono, nome que aparecia na lista, IP e MAC. Marque com um ★ quem estava com MAC aleatório")
+    add_bullet(doc, "Em VERMELHO: o intruso, se a rede da equipe foi invadida. Se não foi, um aparelho que poderia ter entrado e como")
+    add_bullet(doc, "Em VERDE, fora do prédio: a rua, com o IP de fora (\"o provedor dá\") e uma seta até a portaria")
+    add_bullet(doc, "Num canto: \"O que seria 169.254 aqui?\" — a equipe escreve em uma frase quando essa rede ficaria sem endereço")
+    add_heading(doc, "Apresentação — ~3 min por equipe", level=2)
+    add_bullet(doc, "Cada membro da equipe fala uma parte do cartaz — ninguém apresenta sozinho")
+    add_bullet(doc, "Depois de cada apresentação, a turma faz UMA pergunta pra equipe. Se ninguém perguntar, você pergunta: \"se faltar luz agora e o roteador reiniciar, o celular do fulano continua com o mesmo IP?\" ou \"como vocês provariam que esse aparelho é mesmo do fulano?\"")
+    add_para(doc, "Onde dilatar: a turma vota o cartaz mais claro — \"se um técnico novo chegasse amanhã, com qual cartaz ele entenderia a rede mais rápido?\". Guarde os cartazes: na Noite 8 eles são o ponto de partida da planta de instalação.", italic=True, color=COR_DESTAQUE)
 
     add_hr(doc)
 
     # BLOCO 10
-    add_heading(doc, "BLOCO 10 — FECHAMENTO E TAREFA · 15 MIN")
+    add_heading(doc, "BLOCO 10 — FECHAMENTO E TAREFA · 10 MIN")
     add_heading(doc, "Quiz de saída", level=2)
     add_bullet(doc, "Diferença entre IP e MAC, numa frase cada")
     add_bullet(doc, "O que é o gateway e qual o número dele na rede de hoje?")
@@ -341,6 +345,10 @@ def build_roteiro():
     add_heading(doc, "SE PERGUNTAREM")
     add_para(doc, "\"Dá pra descobrir onde a pessoa mora pelo IP?\"", bold=True)
     add_para(doc, "> \"Pelo IP de fora dá pra saber o provedor e, mais ou menos, a cidade. A rua e a casa, só o provedor sabe — e só entrega com ordem da Justiça.\"", italic=True)
+    add_para(doc, "\"Meu filho disse que o IP dele 'vazou' no jogo. É perigoso?\"", bold=True)
+    add_para(doc, "> \"O que aparece no jogo é o IP de fora (o da rua), não o da casa. Na maioria dos provedores ele muda quando o roteador reinicia. Não é senha.\"", italic=True)
+    add_para(doc, "\"Por que a impressora some do computador depois que falta luz?\"", bold=True)
+    add_para(doc, "> \"O roteador reinicia e a impressora pode ganhar outro apartamento; o computador continua procurando no número antigo. A solução é reservar o IP dela no roteador — Noite 9.\"", italic=True)
     add_para(doc, "\"Posso bloquear o vizinho pelo MAC?\"", bold=True)
     add_para(doc, "> \"O roteador deixa, mas é fraco: MAC se troca fácil, e celular novo já troca sozinho. O que resolve é senha forte. Noite 11.\"", italic=True)
     add_para(doc, "\"E se dois aparelhos ficarem com o mesmo IP na mesma casa?\"", bold=True)
@@ -364,7 +372,7 @@ def build_roteiro():
 
     # DESCRITIVO
     add_heading(doc, "DESCRITIVO PARA O DIÁRIO")
-    add_para(doc, "Desenvolvi atividade sobre endereçamento em redes locais. Apresentei o endereço físico (MAC) e o endereço lógico (IPv4) por meio de analogia com um condomínio, relacionando gateway padrão, atribuição automática de endereços pelo serviço DHCP do roteador e a diferença entre endereço privado (rede interna) e endereço público atribuído pelo provedor, incluindo o uso de MAC aleatório pelos dispositivos móveis. Os estudantes identificaram os endereços IP e MAC de celulares e computadores (ipconfig), acessaram a interface de administração dos roteadores da bancada em equipes e identificaram os dispositivos conectados pela lista de clientes, incluindo a localização de um dispositivo não autorizado. Realizaram testes de conectividade com o comando ping e diagnosticaram uma falha de atribuição de endereço (endereço de configuração automática 169.254) em roteador com DHCP desativado, aplicando os conceitos em simulações de atendimento ao cliente.")
+    add_para(doc, "Desenvolvi atividade sobre endereçamento em redes locais. Apresentei o endereço físico (MAC) e o endereço lógico (IPv4) por meio de analogia com um condomínio, relacionando gateway padrão, atribuição automática de endereços pelo serviço DHCP do roteador e a diferença entre endereço privado (rede interna) e endereço público atribuído pelo provedor, incluindo o uso de MAC aleatório pelos dispositivos móveis. Os estudantes encenaram o funcionamento do DHCP (atribuição, renovação, esgotamento de endereços, ausência do servidor e conflito de IP), identificaram os endereços IP e MAC de celulares e computadores (ipconfig), acessaram a interface de administração dos roteadores da bancada em equipes e identificaram os dispositivos conectados pela lista de clientes, incluindo a localização de um dispositivo não autorizado. Realizaram testes de conectividade com o comando ping e diagnosticaram uma falha de atribuição de endereço (endereço de configuração automática 169.254) em roteador com DHCP desativado. Ao final, cada equipe produziu e apresentou um diagrama da rede analisada.")
 
     add_hr(doc)
 
@@ -374,14 +382,42 @@ def build_roteiro():
 
     add_para(doc, "1. Quem fabricou esse MAC?", bold=True)
     add_para(doc, "Os 3 primeiros pares do MAC dizem o fabricante. No celular, pesquisar \"mac vendor lookup\" e digitar o MAC do roteador (da etiqueta) e do computador: aparece TP-Link, Intel, Realtek… Depois tente com um MAC aleatório de celular: não acha ninguém. Prova que é inventado. 10 min.")
-    add_para(doc, "2. O porteiro vivo", bold=True)
-    add_para(doc, "Encenação: um aluno é o roteador com uma folha de \"apartamentos\" (192.168.0.100 a .110). Os outros chegam um por um dizendo seu \"MAC\" (o nome). O roteador anota e entrega um número. Depois um sai e volta: recebe o mesmo número? Um chega sem o porteiro estar lá: fica com 169.254. 15 min.")
+    add_para(doc, "2. Conflito de IP de verdade", bold=True)
+    add_para(doc, "No computador, configure na mão (Propriedades do IPv4) o MESMO IP que o celular de um aluno recebeu. O Windows avisa o conflito e um dos dois para de funcionar. Volte pra \"Obter endereço automaticamente\". É a rodada 7 do porteiro, ao vivo. 15 min.")
     add_para(doc, "3. Detetive da rede de casa", bold=True)
     add_para(doc, "Pra fazer em casa, com celular: entrar no painel do próprio roteador (o endereço é o gateway) e contar os aparelhos conectados. Quem não souber a senha do painel, só anota quantos aparelhos a família tem com Wi-Fi. Traz o número na próxima aula. 5 min pra explicar.")
     add_para(doc, "4. Cabo direto entre dois computadores", bold=True)
     add_para(doc, "Sem roteador no meio, os dois pegam 169.254. E mesmo assim conseguem se pingar! Mostra que 169.254 é \"rede improvisada\" — funciona entre os dois, mas não tem portaria pra sair. 10 min.")
-    add_para(doc, "5. Mapa da turma", bold=True)
-    add_para(doc, "Cada equipe desenha no papel o \"condomínio\" da sua rede: o roteador no meio com o gateway, e cada aparelho com IP, MAC e dono. Cola na parede. Na Noite 8 esse desenho vira o ponto de partida da planta de instalação. 15 min.")
+    add_para(doc, "5. Etiqueta × painel", bold=True)
+    add_para(doc, "No painel, na tela de Status, o roteador mostra o MAC da LAN e o da WAN (Internet). Compare com a etiqueta: costumam diferir só no último par. Mostra que o roteador tem uma placa de rede pra cada lado — a da rua e a do condomínio. 10 min.")
+
+    # ANEXO — material do porteiro vivo
+    doc.add_page_break()
+    add_heading(doc, "ANEXO — LIVRO DA PORTARIA (imprimir 1)")
+    add_para(doc, "Portaria (gateway): 192.168.0.1   ·   Risque as linhas que sobrarem: 2 apartamentos a menos que o número de alunos.", italic=True, size=10, color=COR_CINZA)
+    tbl = add_table(doc, [["Apartamento (IP)", "MAC de quem recebeu", "Rodada"]] +
+                    [[f"192.168.0.{100 + i}", "", ""] for i in range(20)],
+                    col_widths=[4.5, 9, 3])
+    for row in tbl.rows[1:]:
+        row.height = Cm(0.95)
+
+    doc.add_page_break()
+    add_heading(doc, "ANEXO — CARTÕES DE MAC (imprimir e recortar)")
+    add_para(doc, "Um por aluno. Os cartões A e B são quase iguais de propósito: o porteiro precisa ler o MAC inteiro.", italic=True, size=10, color=COR_CINZA)
+    macs = ["3C-52-82-1A-7F-09", "3C-52-82-1A-7F-90", "60-32-B1-4D-22-E5", "A4-C3-F0-11-8B-6D",
+            "D8-07-B6-9E-03-71", "F0-9F-C2-5A-BB-14", "00-1E-58-C7-6A-2F", "B8-27-EB-30-D4-88",
+            "74-DA-38-E1-0C-5B", "C8-3A-35-77-F2-A6", "50-C7-BF-02-9D-3E", "AC-84-C6-6B-41-D0",
+            "E4-5F-01-8A-27-C9", "18-D6-C7-F3-5E-12", "9C-5C-8E-B4-60-7A", "28-EE-52-0F-A9-C3",
+            "84-16-F9-D2-3B-58", "1C-3B-F3-6E-95-0D", "68-FF-7B-29-C1-E4", "CC-32-E5-A0-74-1B"]
+    rotulos = ["A", "B"] + [str(i) for i in range(3, 21)]
+    tbl = add_table(doc, [[f"{rotulos[i]} · MAC\n{macs[i]}" for i in range(r, r + 4)]
+                          for r in range(0, 20, 4)], header=False, col_widths=[4.3] * 4)
+    for row in tbl.rows:
+        row.height = Cm(2.2)
+        for cell in row.cells:
+            for run in cell.paragraphs[0].runs:
+                run.font.size = Pt(13)
+                run.bold = True
 
     path = os.path.join(OUTDIR, "Roteiro - Redes 6 - Endereco na rede.docx")
     doc.save(path)
@@ -530,10 +566,32 @@ def build_slides():
         "Teste: pesquise \"qual meu ip\" no Wi-Fi da escola e depois no 4G.",
     ])
 
-    # 15: Intervalo
+    # Porteiro vivo
+    lista("PRÁTICA · 25 MIN", "O porteiro vivo", [
+        "Um é o porteiro (o roteador). Os outros recebem um cartão de MAC.",
+        "",
+        "Chegou?  \"Meu MAC é ___. Alguém me dá um endereço?\"",
+        "O porteiro anota no Livro e escreve no seu crachá:",
+        "     o seu IP   +   portaria 192.168.0.1",
+    ], size=20, nota="Sete rodadas. Cada uma é um problema de verdade.")
+
+    tabela("AS RODADAS", "O que cada uma mostra", [
+        ["Rodada", "Na vida real"],
+        ["1. Chegada", "O roteador dá IP e anota quem recebeu"],
+        ["2. Sai e volta", "Ele lembra do aparelho pelo MAC"],
+        ["3. Lotação", "Acabaram os endereços: 169.254"],
+        ["4. MAC aleatório", "Celular que troca de MAC ganha IP novo"],
+        ["5. Porteiro de folga", "DHCP desligado: ninguém ganha endereço"],
+        ["6. A encomenda", "O vídeo acha o celular certo pelo IP"],
+        ["7. O espertinho", "IP fixo repetido: conflito de IP"],
+    ], col_widths=[3.6, 8.3], size=15, height=4.0)
+
+    # Intervalo
     frase("", "INTERVALO\n15 minutos", cor=K)
 
-    # 16: Quem está na rede
+    # Quem está na rede
+    frase("DEPOIS DO INTERVALO", "O Livro da portaria\nexiste de verdade.\nVamos abrir o do roteador.")
+
     lista("PRÁTICA · 35 MIN", "Quem está na rede?", [
         "1.  No navegador do celular: 192.168.0.1",
         "2.  Primeiro acesso: crie a senha de administrador que o professor ditar",
@@ -584,20 +642,14 @@ def build_slides():
         ["C · mídia desconectada", "Nem conectou", "Físico: cabo e porta (Noite 5)"],
     ], col_widths=[3.6, 3.4, 4.9], size=16)
 
-    # 25: Chamados
-    lista("ROLE-PLAY · 20 MIN", "Chamados", [
-        "•  \"Conectado, sem internet. O cabo é novo, a luz acende.\"",
-        "•  \"Faltou luz ontem e a impressora sumiu do computador.\"",
-        "•  \"Acho que o vizinho está usando meu Wi-Fi.\"",
-        "•  \"Meu filho disse que o IP dele vazou no jogo.\"",
-    ], size=19, nota="Técnico: o que você olha primeiro? E depois?")
-
-    # 26: Duelo
-    lista("DUELO RELÂMPAGO", "Time A × Time B", [
-        "•  5 segundos pra responder",
-        "•  Errou, passa pro outro time",
-        "•  Vale ponto quem explicar o porquê",
-    ], size=24)
+    # Cartaz
+    lista("PRÁTICA · 25 MIN", "O cartaz da rede", [
+        "•  No meio: o roteador — modelo, MAC da etiqueta, portaria",
+        "•  Em volta: cada aparelho — dono, nome na lista, IP, MAC (★ = aleatório)",
+        "•  Em vermelho: o intruso (ou quem poderia ter entrado)",
+        "•  Em verde, fora do prédio: a rua e o IP de fora",
+        "•  Num canto: quando essa rede ficaria com 169.254?",
+    ], size=18, nota="Depois: cada equipe apresenta. Todo mundo fala uma parte.")
 
     # 27: O que fica
     lista("O QUE FICA", "Três frases pra guardar", [
