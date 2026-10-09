@@ -101,11 +101,13 @@ def build_roteiro():
     add_bullet(doc, "Fita crepe e caneta pra etiquetar os roteadores: EQUIPE 1, EQUIPE 2…")
     add_bullet(doc, "Régua de tomadas")
 
-    add_heading(doc, "Prepare os roteadores das equipes (em casa, antes)", level=2)
-    add_bullet(doc, "Restaure cada um para o padrão de fábrica (botão Reset, ~10 segundos com o aparelho ligado)")
-    add_bullet(doc, "Entre no painel (http://192.168.0.1 ou tplinkwifi.net) e crie a senha de administrador. Use a mesma em todos e anote num papel que fica com você")
-    add_bullet(doc, "Troque o nome do Wi-Fi pra EQUIPE-1, EQUIPE-2… e a senha do Wi-Fi pra algo simples (ex.: redes2026). Escreva o nome e a senha do Wi-Fi na fita crepe colada no roteador")
-    add_bullet(doc, "Descubra, em cada modelo, onde fica a lista de aparelhos conectados. O nome muda: \"Clientes DHCP\", \"Lista de clientes DHCP\", \"Dispositivos conectados\", \"Mapa da rede → Clientes\" ou \"Estatísticas wireless\". Anote o caminho na fita do roteador")
+    add_heading(doc, "Prepare os roteadores das equipes (antes da aula)", level=2)
+    add_para(doc, "Os roteadores ficam como vêm de fábrica. Ninguém configura nada antes — é justamente isso que a noite mostra: o aparelho sai da caixa e já distribui endereço sozinho. Configurar de verdade é a Noite 9.")
+    add_bullet(doc, "Restaure cada um para o padrão de fábrica (botão Reset, ~10 segundos com o aparelho ligado). Assim nenhum guarda senha ou configuração de aula anterior")
+    add_bullet(doc, "Numere com fita crepe: EQUIPE 1, EQUIPE 2… O nome e a senha do Wi-Fi a turma acha na etiqueta embaixo do aparelho, como na Noite 2")
+    add_bullet(doc, "Escolha uma senha de administrador igual pra todos (ex.: redes2026). Os alunos vão criá-la no primeiro acesso ao painel, no Bloco 5")
+    add_bullet(doc, "Faça o primeiro acesso em UM roteador de cada modelo em casa, pra conhecer as telas, e depois dê Reset de novo. TP-Link mais novo (Archer C5, 840N com firmware novo): pede pra criar a senha de administrador e depois abre um assistente de configuração rápida — dá pra pular. 840N com firmware antigo: entra com admin / admin")
+    add_bullet(doc, "Nesse teste, descubra onde fica a lista de aparelhos conectados. O nome muda: \"Clientes DHCP\", \"Lista de clientes DHCP\", \"Dispositivos conectados\", \"Mapa da rede → Clientes\" ou \"Estatísticas wireless\". Anote o caminho na fita do roteador")
     add_para(doc, "Os roteadores vão ficar sem internet e o celular vai reclamar (\"Wi-Fi sem internet\"). É de propósito. Diga à turma: \"Lembram da Noite 1? Rede não é internet. A rede funciona sem ela.\"", italic=True, color=COR_PRIMARIA)
 
     add_heading(doc, "Prepare o roteador sabotado (Estação B)", level=2)
@@ -188,10 +190,11 @@ def build_roteiro():
 
     # BLOCO 3
     add_heading(doc, "BLOCO 3 — PRÁTICA · ACHE SEUS ENDEREÇOS · 20 MIN")
-    add_para(doc, "Turma em equipes de 3 ou 4. Cada equipe recebe um roteador (EQUIPE-1, EQUIPE-2…). Página 1 da folha.")
+    add_para(doc, "Turma em equipes de 3 ou 4. Cada equipe recebe um roteador (EQUIPE 1, EQUIPE 2…), de fábrica. Página 1 da folha.")
     add_heading(doc, "No celular — 12 min", level=2)
     add_bullet(doc, "Desligue os dados móveis (senão o celular foge pro 4G quando vê \"sem internet\")")
-    add_bullet(doc, "Conecte no Wi-Fi da sua equipe. Se aparecer \"Sem internet — conectar mesmo assim?\", diga que sim")
+    add_bullet(doc, "Vire o roteador da equipe e ache na etiqueta o nome do Wi-Fi (SSID) e a senha (Senha Wireless / PIN). É a leitura de etiqueta da Noite 2")
+    add_bullet(doc, "Conecte nesse Wi-Fi. Se aparecer \"Sem internet — conectar mesmo assim?\", diga que sim")
     add_bullet(doc, "Android: Configurações → Wi-Fi → engrenagem ao lado da rede → Endereço IP. O MAC fica em \"Avançado\" ou \"Privacidade\"")
     add_bullet(doc, "iPhone: Ajustes → Wi-Fi → (i) ao lado da rede → Endereço IP e Endereço Wi-Fi")
     add_bullet(doc, "Anote IP, MAC e se o MAC é aleatório/privado. Compare com o que anotou em casa")
@@ -224,8 +227,9 @@ def build_roteiro():
     add_heading(doc, "BLOCO 5 — PRÁTICA · QUEM ESTÁ NA REDE? · 35 MIN")
     add_para(doc, "A atividade principal da noite. Cada equipe entra no painel do SEU roteador e descobre quem é cada aparelho conectado. Página 2 da folha.")
     add_heading(doc, "Passo a passo (escreva no quadro)", level=2)
-    add_bullet(doc, "Celular conectado no Wi-Fi da equipe. Abra o navegador e digite: 192.168.0.1 (é o gateway que vocês anotaram!)")
-    add_bullet(doc, "Senha de administrador: você fala em voz alta ou passa de equipe em equipe")
+    add_bullet(doc, "Celular conectado no Wi-Fi da equipe. Abra o navegador e digite: 192.168.0.1 (é o gateway que vocês anotaram!) ou o endereço da etiqueta (tplinkwifi.net)")
+    add_bullet(doc, "Primeiro acesso: o roteador pede pra criar a senha de administrador. Você dita a mesma senha pra todas as equipes. Nos 840N antigos, entra com admin / admin")
+    add_bullet(doc, "Se abrir o assistente de configuração rápida: PULAR / SAIR. Não é hoje")
     add_bullet(doc, "Ache a lista de aparelhos (o caminho está na fita do roteador)")
     add_bullet(doc, "Preencha a tabela da folha: nome que aparece, IP, MAC — e quem é (de qual colega é cada aparelho)")
     add_bullet(doc, "Cada um confere: o MAC que o roteador mostra bate com o que você anotou no Bloco 3? E com o da tarefa de casa?")
@@ -235,19 +239,20 @@ def build_roteiro():
     add_bullet(doc, "O computador aparece com cabo, os celulares pelo Wi-Fi — alguns painéis mostram separado")
     add_bullet(doc, "Um MAC na lista que bate com a etiqueta do roteador? Não, o roteador não aparece na própria lista. Mas a etiqueta embaixo dele mostra o MAC dele. Peça pra conferirem")
     add_para(doc, "\"Isto aqui é o que vocês vão fazer no cliente que diz 'acho que o vizinho tá usando meu Wi-Fi'. Entra no painel, conta os aparelhos da casa, compara com a lista. Sobrou aparelho? Tem alguém de fora.\"", italic=True, color=COR_PRIMARIA)
-    add_para(doc, "REGRA: hoje não se muda NADA no painel. Quem clicar em \"Bloquear\" ou \"Salvar\" sem querer, avisa. A Noite 9 é a de configurar.", bold=True, color=COR_ALERTA)
+    add_para(doc, "REGRA: a única coisa que se faz no painel hoje é criar a senha de administrador que você ditou. Fora isso, só olhar. Quem clicar em \"Bloquear\" ou \"Salvar\" sem querer, avisa. A Noite 9 é a de configurar.", bold=True, color=COR_ALERTA)
+    add_para(doc, "Aproveite o momento: \"Esse roteador estava com o painel aberto pra qualquer um criar a senha. No cliente, roteador instalado sem senha de administrador é porta aberta. O técnico SEMPRE cria essa senha.\"", italic=True, color=COR_PRIMARIA)
     add_para(doc, "Onde dilatar: equipe que terminar rápido desliga e religa o Wi-Fi do celular e confere se o IP mudou (geralmente não — o roteador lembra pelo MAC por um tempo). Depois \"esquece a rede\" e conecta de novo: com MAC aleatório, pode ganhar outro IP.", italic=True, color=COR_DESTAQUE)
 
     add_hr(doc)
 
     # BLOCO 6
     add_heading(doc, "BLOCO 6 — PRÁTICA · CAÇA AO INTRUSO · 15 MIN")
-    add_para(doc, "Durante o Bloco 5, sem ninguém ver, conecte o seu celular (o \"intruso\") no Wi-Fi de uma equipe — a senha está na fita. Se der, conecte também um aparelho de outra equipe noutra rede.")
+    add_para(doc, "Durante o Bloco 5, sem ninguém ver, conecte o seu celular (o \"intruso\") no Wi-Fi de uma equipe — a senha está na etiqueta embaixo do roteador. Se der, conecte também um aparelho de outra equipe noutra rede.")
     add_bullet(doc, "Anuncie: \"Uma das redes foi invadida. Cada equipe confere a sua lista e diz se tem intruso.\"")
     add_bullet(doc, "A equipe tem que dizer: qual aparelho é o intruso, o IP e o MAC dele, e como chegou nessa conclusão")
     add_bullet(doc, "A conclusão certa é por eliminação: contaram os aparelhos da equipe, identificaram cada um, sobrou um")
     add_bullet(doc, "Mostre que o nome do intruso podia ser qualquer coisa. No seu celular, mude o nome do aparelho pra \"Impressora-HP\" antes — fica mais divertido")
-    add_para(doc, "\"Como o intruso entrou? Sabia a senha — estava escrita na fita. Na casa do cliente é igual: senha na geladeira, senha que o filho passou pro amigo. A gente resolve isso na Noite 11.\"", italic=True, color=COR_PRIMARIA)
+    add_para(doc, "\"Como o intruso entrou? Leu a senha de fábrica na etiqueta. Na casa do cliente é igual: roteador com a senha de fábrica até hoje, senha na geladeira, senha que o filho passou pro amigo. A gente resolve isso na Noite 11.\"", italic=True, color=COR_PRIMARIA)
 
     add_hr(doc)
 
@@ -350,7 +355,8 @@ def build_roteiro():
     # DEPOIS DA AULA
     add_heading(doc, "DEPOIS DA AULA")
     add_bullet(doc, "Reative o DHCP do roteador da Estação B, ou etiquete ele como \"SEM DHCP — DEMONSTRAÇÃO\". Ele serve de novo na Noite 14")
-    add_bullet(doc, "Mantenha os roteadores com os nomes EQUIPE-1, EQUIPE-2… — a Noite 9 parte deles")
+    add_bullet(doc, "Dê Reset nos roteadores das equipes de novo. A Noite 9 começa com eles de fábrica — é lá que a turma configura nome, senha do Wi-Fi e DHCP")
+    add_bullet(doc, "Mantenha a numeração EQUIPE 1, EQUIPE 2… na fita")
     add_bullet(doc, "Anote quantas equipes acharam o intruso sozinhas. É o indicador da noite")
     add_bullet(doc, "Desconecte seu celular das redes das equipes (e esqueça as redes)")
 
@@ -493,7 +499,7 @@ def build_slides():
     # 10: Prática - ache seus endereços
     lista("PRÁTICA · 20 MIN", "Ache seus endereços", [
         "1.  Desligue os dados móveis",
-        "2.  Conecte no Wi-Fi da sua equipe (\"sem internet\"? conecte assim mesmo)",
+        "2.  Conecte no Wi-Fi do roteador da equipe — nome e senha estão na etiqueta",
         "3.  Android: Wi-Fi → engrenagem da rede    iPhone: Wi-Fi → (i)",
         "4.  Anote IP, MAC e se é aleatório",
         "5.  No computador: ipconfig  e  ipconfig /all",
@@ -530,11 +536,11 @@ def build_slides():
     # 16: Quem está na rede
     lista("PRÁTICA · 35 MIN", "Quem está na rede?", [
         "1.  No navegador do celular: 192.168.0.1",
-        "2.  Senha de administrador: o professor passa",
-        "3.  Ache a lista de aparelhos (caminho na fita do roteador)",
+        "2.  Primeiro acesso: crie a senha de administrador que o professor ditar",
+        "3.  Assistente de configuração? Pule. Ache a lista de aparelhos",
         "4.  Anote nome, IP e MAC de cada um — e de quem é",
         "5.  O MAC bate com o que você anotou?",
-    ], nota="Hoje NÃO se muda nada no painel. Só olhar.", nota_cor=R)
+    ], nota="Fora a senha de administrador, hoje NÃO se muda nada. Só olhar.", nota_cor=R)
 
     # 17: Nome não é documento
     frase("CUIDADO", "O nome que aparece na lista\nquem escolhe é o aparelho.\nQuem identifica é o MAC.")
@@ -704,10 +710,10 @@ def build_folha():
         "QUEM ESTÁ NA REDE?",
         f"Painel do roteador · {NOITE} · 2 de 3",
     )
-    add_para(doc, "No navegador do celular, digite o endereço do gateway (192.168.0.1). Entre com a senha que o professor passar e ache a lista de aparelhos. Hoje NÃO se muda nada — só olhar e anotar.", italic=True, size=10, color=COR_CINZA)
+    add_para(doc, "No navegador do celular, digite o endereço do gateway (192.168.0.1). No primeiro acesso, crie a senha de administrador que o professor ditar (se abrir o assistente de configuração, pule). Ache a lista de aparelhos. Fora a senha, hoje NÃO se muda nada — só olhar e anotar.", italic=True, size=10, color=COR_CINZA)
 
     p = doc.add_paragraph()
-    r = p.add_run("Nome do Wi-Fi da equipe: ____________________    Modelo do roteador: ____________________")
+    r = p.add_run("Nome do Wi-Fi (da etiqueta): ____________________    Modelo do roteador: ____________________")
     r.font.size = Pt(11)
     p = doc.add_paragraph()
     r = p.add_run("Onde fica a lista no painel (o caminho): ______________________________________________")
