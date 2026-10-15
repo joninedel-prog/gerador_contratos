@@ -130,7 +130,7 @@ def build_roteiro():
     add_para(doc, "Cada aluno sai sabendo explicar o DNS com a analogia da agenda do celular, achar o dono de um link, separar link verdadeiro de golpe, conferir o cadeado e o certificado no celular, e reconhecer o defeito de DNS no campo: \"o número responde, o nome não\".")
 
     add_heading(doc, "Esta é a sétima de quinze noites", level=2)
-    add_para(doc, "Fecha o bloco do \"invisível\" (Noites 6 e 7). A Noite 8 começa o projeto da rede de casa (planejamento). O DNS volta na Noite 9, quando a turma configura o roteador, e a segurança volta inteira na Noite 11 — hoje é só a parte do link e do cadeado.")
+    add_para(doc, "Fecha o bloco do \"invisível\" (Noites 6 e 7). A Noite 8 é a de configurar o roteador de verdade: o DNS volta lá, quando a turma vê onde se troca a agenda, e a segurança volta inteira na Noite 10 — hoje é só a parte do link e do cadeado.")
     add_para(doc, "Não entre em criptografia, chaves, tipos de registro de DNS nem servidores raiz. Pra técnico de campo e pra família, basta: agenda, dono do link, cadeado.", italic=True, color=COR_ALERTA)
 
     add_hr(doc)
@@ -206,7 +206,7 @@ def build_roteiro():
     add_heading(doc, "Quem é a agenda — 4 min", level=2)
     add_bullet(doc, "Em casa, quem responde é o roteador — mas ele mesmo pergunta pra agenda do provedor. Por isso, quando a agenda do provedor cai, \"a internet cai\" pra todo mundo, mesmo com tudo ligado")
     add_bullet(doc, "Existem agendas públicas, gratuitas: 8.8.8.8 (Google) e 1.1.1.1 (Cloudflare). Lembram do teste do balanço? A gente pingava 8.8.8.8")
-    add_bullet(doc, "Na Noite 9, quando configurar o roteador, a turma vai ver onde se troca a agenda")
+    add_bullet(doc, "Na Noite 8, quando configurar o roteador, a turma vai ver onde se troca a agenda")
     add_heading(doc, "O sintoma de campo — 3 min", level=2)
     add_para(doc, "\"O cliente diz: 'tá conectado, o WhatsApp até manda mensagem, mas nenhum site abre'. Muitas vezes é a agenda. O que já estava conectado continua, porque já sabe o número. O que precisa procurar nome novo, falha. Teste do técnico: o número responde, o nome não.\"", italic=True, color=COR_PRIMARIA)
 
@@ -346,10 +346,10 @@ def build_roteiro():
     add_bullet(doc, "O cliente diz que o WhatsApp funciona e nenhum site abre. Quais os dois pings que você faz?")
 
     add_heading(doc, "A tarefa", level=2)
-    add_para(doc, "\"Na próxima noite a gente começa o projeto de verdade: a rede de uma casa. A tarefa: desenhem a planta da casa de vocês, à mão, sem régua — os cômodos vistos de cima. Marquem com um X onde fica o modem ou roteador, com uma seta por onde o cabo da internet chega, e pintem os cômodos onde o Wi-Fi é fraco.\"", italic=True)
+    add_para(doc, "\"Na próxima noite cada equipe configura um roteador do zero. A tarefa: olhem a etiqueta embaixo do roteador de casa e anotem a marca e o modelo. Vejam no celular o nome do Wi-Fi da casa: é igual ao da etiqueta? Se for, ninguém nunca mexeu nele. E perguntem em casa se alguém sabe a senha de administrador. Não tirem foto da etiqueta nem mandem a senha pra ninguém.\"", italic=True)
 
     add_heading(doc, "Anuncie a próxima", level=2)
-    add_para(doc, "\"Na próxima noite: planejando a rede de uma casa. Onde colocar o roteador, por onde passar cabo, quanto material comprar. É a primeira parte do projeto final.\"", italic=True)
+    add_para(doc, "\"Na próxima noite: configurando o roteador. Cada equipe pega um roteador de fábrica e deixa ele pronto pra entregar ao cliente: nome, senha, endereços, a agenda (DNS), rede de convidados e cópia de segurança.\"", italic=True)
 
     add_hr(doc)
 
@@ -371,7 +371,7 @@ def build_roteiro():
     # DEPOIS DA AULA
     add_heading(doc, "DEPOIS DA AULA")
     add_bullet(doc, "DESFAÇA a sabotagem da Estação B: Propriedades do IPv4 → \"Obter o endereço dos servidores DNS automaticamente\". Se usou o celular, volte o DNS privado pra \"Automático\"")
-    add_bullet(doc, "Guarde os cartões de links e as cartilhas. As cartilhas voltam na Noite 11 (segurança)")
+    add_bullet(doc, "Guarde os cartões de links e as cartilhas. As cartilhas voltam na Noite 10 (segurança)")
     add_bullet(doc, "Anote quantas equipes acertaram o #2 e o #15 sem ajuda. É o indicador da noite")
 
     add_hr(doc)
@@ -544,7 +544,7 @@ def build_slides():
         "•  Em casa, o roteador responde — e pergunta pra agenda do provedor",
         "•  Agenda do provedor caiu? \"A internet caiu\" pra todo mundo",
         "•  Agendas públicas e gratuitas: 8.8.8.8 (Google) e 1.1.1.1",
-        "•  Na Noite 9 a gente vê onde se troca a agenda do roteador",
+        "•  Na Noite 8 a gente vê onde se troca a agenda do roteador",
     ])
 
     frase("O SINTOMA DE CAMPO", "\"Tá conectado, o WhatsApp manda mensagem,\nmas nenhum site abre.\"\n\nO número responde. O nome não.", size=30)
@@ -656,14 +656,13 @@ def build_slides():
         "\"Cadeado mais dono certo. Um sem o outro não vale.\"",
     ], size=23)
 
-    lista("PARA A PRÓXIMA NOITE", "Planejando a rede de uma casa", [
+    lista("PARA A PRÓXIMA NOITE", "Configurando o roteador", [
         "A tarefa:",
         "",
-        "•  Desenhe a planta da sua casa à mão, vista de cima",
-        "•  X onde fica o modem ou roteador",
-        "•  Uma seta por onde o cabo da internet chega",
-        "•  Pinte os cômodos onde o Wi-Fi é fraco",
-    ])
+        "•  Anote a marca e o modelo do roteador de casa (etiqueta embaixo)",
+        "•  O nome do Wi-Fi da casa é igual ao da etiqueta?",
+        "•  Alguém em casa sabe a senha de administrador?",
+    ], nota="Não tire foto da etiqueta nem mande a senha pra ninguém.", nota_cor=PPalette.R)
 
     path = os.path.join(OUTDIR, "Aula - Redes 7 - Nomes na rede.pptx")
     prs.save(path)
@@ -815,9 +814,9 @@ def build_folha():
     r.font.size = Pt(11)
 
     add_heading(doc, "TAREFA DA SEMANA", level=2, color=COR_DESTAQUE)
-    add_bullet(doc, "Numa folha à parte, desenhe a planta da sua casa à mão, vista de cima, com os cômodos")
-    add_bullet(doc, "Marque com X onde fica o modem/roteador e com uma seta por onde chega o cabo da internet")
-    add_bullet(doc, "Pinte os cômodos onde o Wi-Fi é fraco. Traga na Noite 8")
+    add_bullet(doc, "Anote a marca e o modelo do roteador de casa (etiqueta embaixo): ______________________________")
+    add_bullet(doc, "O nome do Wi-Fi da casa é igual ao da etiqueta?  ☐ Sim  ☐ Não     Alguém sabe a senha de administrador?  ☐ Sim  ☐ Não")
+    add_bullet(doc, "Não tire foto da etiqueta nem mande a senha pra ninguém. Traga na Noite 8")
 
     doc.add_paragraph()
     p = doc.add_paragraph()

@@ -1,12 +1,13 @@
 """Gera os 4 arquivos da Noite 8 do curso de Redes.
 
-Noite 8 — Rede local em casa I: planejando a instalação
+Noite 8 — Configurando o roteador: da caixa à entrega
 Padrão prática-pesada, sem role-play e sem duelo. Parte da tarefa da Noite 7
-(planta da casa desenhada à mão). A turma faz a galeria das plantas, preenche a
-ficha de visita técnica da própria casa, passa por uma clínica de 8 plantas com
-roteador mal posicionado, mede na escola o caminho real de um cabo (trena),
-projeta a rede de uma das casas na malha quadriculada, orça com a tabela de
-preços de referência e confere o projeto de outra dupla por checklist.
+(etiqueta do roteador de casa). Na Noite 6 a turma só entrou no painel, criou a
+senha de administrador e olhou a lista de aparelhos. Hoje cada equipe configura
+de verdade um roteador de fábrica: nome e senha do Wi-Fi, endereço do painel,
+faixa de endereços e reserva de IP, a agenda (DNS) entregue pelo roteador,
+rede de convidados, cópia de segurança com restauração e ficha de entrega.
+No fim as equipes trocam de roteador e testam se a ficha da outra funciona.
 Não precisa de internet.
 """
 import os
@@ -16,7 +17,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from docx import Document
 from docx.shared import Pt, Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_ALIGN_VERTICAL
 
 from common import (
     COR_PRIMARIA, COR_ALERTA, COR_DESTAQUE, COR_CINZA,
@@ -32,177 +32,56 @@ NOITE = "Noite 8"
 FOOTER = f"Redes de Computadores · {NOITE}"
 
 
-# A visita técnica: o que perguntar e o que olhar
-VISITA = [
-    ("Quem usa", "Quantas pessoas moram? Alguém trabalha ou estuda de casa?"),
-    ("O que liga", "Celulares, TV, computador, videogame, câmera, impressora. Onde cada um fica?"),
-    ("Parado ou anda", "O aparelho fica sempre no mesmo lugar (TV, PC) ou anda pela casa (celular)?"),
-    ("Onde a internet chega", "Por onde entra o cabo do provedor? Onde está o modem/ONU?"),
-    ("A casa", "Térrea ou sobrado? Alvenaria ou madeira? Tem laje? Galpão, garagem, área externa?"),
-    ("Onde dói", "Em quais cômodos o Wi-Fi é fraco ou cai? A que horas fica lento?"),
-    ("Por onde passa", "Tem forro, rodapé, canaleta ou eletroduto vazio por onde o cabo pode ir?"),
-    ("Tomadas", "Tem tomada perto de onde o roteador vai ficar?"),
+# O que se configura e por quê (a entrega)
+ENTREGA = [
+    ("Senha de administrador", "Quem tem ela manda no roteador. De fábrica, qualquer um entra"),
+    ("Nome do Wi-Fi", "O cliente acha a rede dele. \"TP-Link_3F2A\" não diz de quem é"),
+    ("Senha do Wi-Fi + WPA2", "A senha da etiqueta qualquer visita lê. WPA2 (ou WPA3) é a tranca"),
+    ("Endereço do painel", "Não pode bater com o endereço da ONU do provedor"),
+    ("Faixa de endereços e reserva", "A impressora e a câmera ficam sempre no mesmo número"),
+    ("A agenda (DNS)", "O roteador diz pros aparelhos qual agenda usar"),
+    ("Rede de convidados", "A visita navega sem enxergar os aparelhos da casa"),
+    ("Cópia de segurança", "Se o roteador resetar, tudo volta em 1 minuto"),
 ]
 
-# Regras de posição do roteador
-REGRAS_ROTEADOR = [
-    ("No centro", "O sinal se espalha pra todos os lados, igual luz. No canto, metade vai pra rua"),
-    ("No alto", "Em cima de móvel ou na parede, a 1,5 m ou mais. No chão, o sinal bate nos móveis"),
-    ("À vista", "Nunca dentro de armário, rack fechado ou gaveta"),
-    ("Longe de metal e água", "Geladeira, micro-ondas, espelho grande, aquário, caixa d'água, quadro de luz"),
-    ("Perto de tomada", "E com espaço pra ventilar: roteador esquenta"),
-]
-
-# Clínica de plantas: título, queixa do cliente, grade de cômodos, textos, problema, solução
-# Na grade, células com o mesmo código viram um cômodo só.
-PLANTAS = [
-    {
-        "titulo": "Onde o técnico deixou",
-        "queixa": "\"Nos quartos dos fundos o Wi-Fi não pega. Na sala é ótimo.\"",
-        "grade": [["Q1", "BW", "Q2"], ["CO", "CO", "CO"], ["SA", "CZ", "CZ"]],
-        "texto": {"Q1": "QUARTO 1", "BW": "BANHEIRO", "Q2": "QUARTO 2", "CO": "CORREDOR",
-                  "SA": "SALA\n► a fibra entra aqui\n■ ROTEADOR (ao lado da porta)", "CZ": "COZINHA"},
-        "problema": "Roteador no canto da casa, onde o técnico do provedor deixou a fibra. Os quartos ficam no lado oposto",
-        "solucao": "Levar um cabo de rede da ONU pelo rodapé até o corredor e colocar o roteador lá, no alto. Uns 8 m de cabo",
-    },
-    {
-        "titulo": "Escondido no rack",
-        "queixa": "\"Comprei roteador novo e continua fraco até na cozinha, que é do lado.\"",
-        "grade": [["Q1", "Q2", "BW"], ["SA", "SA", "CZ"], ["SA", "SA", "CZ"]],
-        "texto": {"Q1": "QUARTO 1", "Q2": "QUARTO 2", "BW": "BANHEIRO",
-                  "SA": "SALA\n■ ROTEADOR dentro do rack fechado,\nno chão, atrás da TV", "CZ": "COZINHA"},
-        "problema": "Roteador fechado no armário, no chão e atrás da TV (metal). O sinal sai fraco de lá",
-        "solucao": "Tirar do rack e colocar em cima dele ou na parede, no alto, à vista. Custo zero",
-    },
-    {
-        "titulo": "O sobrado",
-        "queixa": "\"No quarto do meu filho, lá em cima, não funciona nada.\"",
-        "grade": [["SUP", "SUP", "SUP"], ["SA", "ES", "CZ"], ["SA", "GA", "GA"]],
-        "texto": {"SUP": "ANDAR DE CIMA (laje de concreto no meio)\nQUARTO DO FILHO · QUARTO · BANHEIRO",
-                  "SA": "SALA (térreo)\n■ ROTEADOR em cima da estante", "ES": "ESCADA",
-                  "CZ": "COZINHA", "GA": "GARAGEM"},
-        "problema": "A laje de concreto entre os andares segura o sinal. O roteador está no térreo, longe da escada",
-        "solucao": "Subir um cabo pela escada até o andar de cima e pôr ali um segundo aparelho (ponto de acesso ou kit mesh)",
-    },
-    {
-        "titulo": "O galpão",
-        "queixa": "\"Quero câmera e celular funcionando na oficina, lá nos fundos do terreno.\"",
-        "grade": [["CA", "CA", "PA"], ["CA", "CA", "PA"], ["PA", "PA", "GL"]],
-        "texto": {"CA": "CASA\n■ ROTEADOR na sala", "PA": "PÁTIO\n(30 m entre a casa e o galpão)",
-                  "GL": "GALPÃO /\nOFICINA"},
-        "problema": "Trinta metros de pátio e duas paredes: o Wi-Fi da casa não chega. Repetidor no meio do pátio é gambiarra",
-        "solucao": "Cabo próprio pra área externa, dentro de eletroduto, até o galpão (o cabo vai até 100 m). Lá, um roteador como ponto de acesso",
-    },
-    {
-        "titulo": "A cozinha",
-        "queixa": "\"Toda vez que esquento comida, a internet cai.\"",
-        "grade": [["Q1", "Q2", "Q3"], ["CO", "CO", "CO"], ["SA", "SA", "CZ"]],
-        "texto": {"Q1": "QUARTO 1", "Q2": "QUARTO 2", "Q3": "QUARTO 3", "CO": "CORREDOR",
-                  "SA": "SALA",
-                  "CZ": "COZINHA\n■ ROTEADOR em cima da\ngeladeira, do lado\ndo micro-ondas"},
-        "problema": "O micro-ondas atrapalha o Wi-Fi quando está ligado, e a geladeira (metal) bloqueia o sinal",
-        "solucao": "Tirar da cozinha: corredor, no alto. Na Noite 10 a gente vê por que o micro-ondas atrapalha",
-    },
-    {
-        "titulo": "O gamer do fundo",
-        "queixa": "\"O sinal no meu quarto é bom, mas o jogo online trava.\"",
-        "grade": [["Q1", "BW", "Q2"], ["CO", "CO", "CO"], ["SA", "SA", "CZ"]],
-        "texto": {"Q1": "QUARTO 1", "BW": "BANHEIRO",
-                  "Q2": "QUARTO DO GAMER\nvideogame e PC no Wi-Fi", "CO": "CORREDOR\n■ ROTEADOR no alto",
-                  "SA": "SALA", "CZ": "COZINHA"},
-        "problema": "A posição do roteador está boa. Mas videogame e PC ficam parados e precisam de conexão firme",
-        "solucao": "Cabo do roteador até o quarto, pelo rodapé com canaleta. O que fica parado vai no cabo",
-    },
-    {
-        "titulo": "A área de serviço",
-        "queixa": "\"A sala é o pior lugar da casa pra internet.\"",
-        "grade": [["SA", "SA", "Q1"], ["SA", "SA", "Q2"], ["CZ", "AS", "BW"]],
-        "texto": {"SA": "SALA", "Q1": "QUARTO 1", "Q2": "QUARTO 2", "CZ": "COZINHA",
-                  "AS": "ÁREA DE SERVIÇO\n■ ROTEADOR junto do\nquadro de luz, atrás\nda parede de azulejo",
-                  "BW": "BANHEIRO"},
-        "problema": "Roteador escondido na área de serviço, ao lado do quadro de luz, atrás de parede de azulejo e do tanque",
-        "solucao": "Levar cabo da área de serviço até a parede entre a sala e os quartos e colocar o roteador lá, no alto",
-    },
-    {
-        "titulo": "Nada a mexer",
-        "queixa": "\"Todo dia, depois das oito da noite, a internet fica lenta.\"",
-        "grade": [["Q1", "ES", "Q2"], ["CO", "CO", "CO"], ["SA", "SA", "CZ"]],
-        "texto": {"Q1": "QUARTO 1", "ES": "ESCRITÓRIO\nPC no cabo", "Q2": "QUARTO 2",
-                  "CO": "CORREDOR\n■ ROTEADOR no alto, na parede", "SA": "SALA\nTV no cabo",
-                  "CZ": "COZINHA"},
-        "problema": "A instalação está certa: roteador no centro e no alto, aparelhos parados no cabo. Lentidão em horário fixo é do plano ou do provedor",
-        "solucao": "Não mexer na instalação. Teste de velocidade no PC do cabo, à noite, e falar com o provedor. Não vender o que o cliente não precisa",
-    },
-]
-
-# Tabela de preços de referência (valores para a atividade, não de loja real)
-PRECOS = [
-    ("Cabo de rede Cat5e (interno)", "metro", 2.50),
-    ("Cabo de rede Cat6 (interno)", "metro", 4.00),
-    ("Cabo de rede para área externa", "metro", 5.00),
-    ("Conector RJ45", "unidade", 1.00),
-    ("Capa do conector", "unidade", 0.50),
-    ("Canaleta (com adesivo)", "metro", 6.00),
-    ("Eletroduto para área externa", "metro", 4.00),
-    ("Tomada de rede (ponto na parede)", "unidade", 25.00),
-    ("Roteador simples (100 Mbps)", "unidade", 120.00),
-    ("Roteador dual band Gigabit", "unidade", 250.00),
-    ("Repetidor de sinal", "unidade", 110.00),
-    ("Kit mesh (2 aparelhos)", "kit", 600.00),
-    ("Mão de obra: visita técnica", "visita", 50.00),
-    ("Mão de obra: por ponto de cabo instalado", "ponto", 60.00),
-    ("Mão de obra: configuração do roteador", "aparelho", 80.00),
-]
-
-# Checklist da banca
-CHECKLIST = [
-    "A entrada da internet (E) está marcada",
-    "O roteador (R) está no centro da casa, no alto e fora de armário",
-    "Os aparelhos que ficam parados (TV, PC, videogame) estão no cabo",
-    "O caminho do cabo vai pelo rodapé, forro ou canaleta (nunca no meio do chão)",
-    "A metragem tem subida, descida e sobra",
-    "Conectores: 2 por cabo, mais reserva",
-    "O orçamento tem mão de obra",
-    "A dupla sabe explicar por que escolheu cada coisa",
+# Onde fica cada coisa nos TP-Link da bancada (o nome muda com o firmware)
+MENUS = [
+    ("Nome e senha do Wi-Fi", "Sem fio (Wireless) → Configurações · ou Básico → Sem fio"),
+    ("Tipo de segurança", "Sem fio → Segurança sem fio · WPA2-PSK, criptografia AES"),
+    ("Endereço do painel", "Rede → LAN · ou Avançado → Rede → LAN"),
+    ("Faixa de endereços (DHCP)", "DHCP → Configurações DHCP · ou Avançado → Rede → Servidor DHCP"),
+    ("Reserva de endereço", "DHCP → Reserva de endereço · ou na mesma tela, \"Reserva\""),
+    ("A agenda (DNS)", "Na tela do DHCP: \"DNS primário\" e \"DNS secundário\""),
+    ("Rede de convidados", "Rede de convidados (Guest Network) · nem todo modelo tem"),
+    ("Cópia de segurança", "Ferramentas do sistema → Backup e restauração"),
 ]
 
 
-def reais(v):
-    return f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+def plano_equipe(n):
+    """Plano de endereços de cada equipe (o painel muda pra 192.168.1X.1)."""
+    rede = f"192.168.{10 + n}"
+    return {
+        "painel": f"{rede}.1",
+        "faixa": f"{rede}.100 a {rede}.150",
+        "reserva": f"{rede}.50",
+    }
 
 
-def planta(doc, p, altura=1.2, largura=5.6, size=8):
-    """Desenha a grade de cômodos; códigos iguais viram um cômodo só."""
-    grade = p["grade"]
-    n_l, n_c = len(grade), len(grade[0])
-    tbl = doc.add_table(rows=n_l, cols=n_c)
-    tbl.style = 'Table Grid'
-    for row in tbl.rows:
-        row.height = Cm(altura)
-        for cell in row.cells:
-            cell.width = Cm(largura)
-    feitos = set()
-    for i in range(n_l):
-        for j in range(n_c):
-            cod = grade[i][j]
-            if cod in feitos:
-                continue
-            feitos.add(cod)
-            pos = [(a, b) for a in range(n_l) for b in range(n_c) if grade[a][b] == cod]
-            i2, j2 = max(a for a, _ in pos), max(b for _, b in pos)
-            cell = tbl.cell(i, j)
-            if (i2, j2) != (i, j):
-                cell = cell.merge(tbl.cell(i2, j2))
-            cell.text = ""
-            cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
-            par = cell.paragraphs[0]
-            par.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            r = par.add_run(p["texto"][cod])
-            r.font.size = Pt(size)
-            if "■" in p["texto"][cod]:
-                r.bold = True
-                r.font.color.rgb = COR_ALERTA
-    return tbl
+# Ficha de entrega: os campos
+FICHA = [
+    "Cliente / local",
+    "Marca e modelo do roteador",
+    "Endereço do painel",
+    "Senha de administrador",
+    "Nome do Wi-Fi",
+    "Senha do Wi-Fi e segurança (WPA2/WPA3)",
+    "Rede de convidados: nome e senha",
+    "Faixa de endereços (DHCP)",
+    "Reservas (aparelho → endereço)",
+    "Agenda (DNS) entregue pelo roteador",
+    "Cópia de segurança salva em",
+    "Configurado por / data",
+]
 
 
 # ============================================================
@@ -214,266 +93,249 @@ def build_roteiro():
 
     cabecalho_documento(
         doc,
-        "REDE LOCAL EM CASA I: PLANEJANDO A INSTALAÇÃO",
+        "CONFIGURANDO O ROTEADOR: DA CAIXA À ENTREGA",
         f"Roteiro do professor · Redes de Computadores · {NOITE} · Curso FIC · CEJA Itapiranga – SC",
     )
 
     add_heading(doc, "A IDEIA DESTA NOITE")
-    add_para(doc, "Até aqui a turma aprendeu as peças: equipamentos, cabos, endereços, nomes. Hoje ela junta tudo pela primeira vez num serviço de verdade: planejar a rede de uma casa ANTES de pegar o alicate. Onde o roteador fica, o que vai no cabo, por onde o cabo passa, quanto material comprar e quanto cobrar.")
-    add_para(doc, "É a noite em que o aluno passa de \"sei mexer\" pra \"sei fazer um orçamento\". E a matéria-prima é a casa dele: a planta que ele desenhou de tarefa.")
-    add_para(doc, "A frase da noite: \"Roteador é lâmpada: no centro, no alto e à vista.\"", bold=True, color=COR_PRIMARIA)
+    add_para(doc, "Na Noite 6 a turma entrou no painel, criou a senha de administrador e só olhou. Hoje mexe de verdade. Cada equipe pega um roteador de fábrica e deixa ele pronto pra entregar ao cliente: nome, senha, endereços, a agenda (DNS), rede de convidados e cópia de segurança. No fim, outra equipe recebe o roteador com a ficha de entrega e testa se dá pra usar só com o papel.")
+    add_para(doc, "É o serviço que mais vai aparecer pra eles: roteador novo na caixa, roteador que resetou, roteador que \"ninguém sabe a senha\". Quem sabe configurar e documentar cobra pelo serviço.")
+    add_para(doc, "A frase da noite: \"Roteador de fábrica funciona. Roteador configurado é serviço entregue.\"", bold=True, color=COR_PRIMARIA)
 
     add_heading(doc, "O que se resolve nesta noite", level=2)
-    add_para(doc, "Cada aluno sai sabendo fazer a visita técnica (o que perguntar e o que olhar), escolher onde o roteador fica, decidir o que vai no cabo e o que vai no Wi-Fi, medir o caminho real de um cabo, desenhar o projeto numa malha e montar a lista de materiais com o orçamento.")
+    add_para(doc, "Cada aluno sai sabendo trocar nome e senha do Wi-Fi e escolher a segurança, mudar o endereço do painel e reencontrar o roteador depois, ajustar a faixa de endereços e reservar um endereço fixo, conferir qual agenda (DNS) o roteador entrega, criar rede de convidados, salvar e restaurar a configuração e preencher a ficha de entrega.")
 
     add_heading(doc, "Esta é a oitava de quinze noites", level=2)
-    add_para(doc, "Abre o projeto da rede de casa, que segue na Noite 9 (configurar o roteador), na Noite 10 (cobertura de Wi-Fi) e na Noite 11 (segurança), e fecha no projeto final da Noite 15. Guarde os projetos das duplas: voltam todos.")
-    add_para(doc, "Não entre em faixas de 2,4 e 5 GHz, canais nem potência de sinal: isso é a Noite 10. Hoje a regra é de olho: centro, alto, à vista, longe de metal e água.", italic=True, color=COR_ALERTA)
+    add_para(doc, "Fecha o que a Noite 6 abriu (o painel) e o que a Noite 7 prometeu (onde se troca a agenda). A Noite 9 usa estes mesmos roteadores, já configurados, pra medir cobertura de Wi-Fi. A Noite 10 volta a eles pra auditar a segurança.")
+    add_para(doc, "Não entre em máscara de sub-rede, NAT, redirecionamento de portas nem controle dos pais. Senha forte e WPS ficam pra Noite 10: hoje a senha só precisa ser longa e não ser a da etiqueta.", italic=True, color=COR_ALERTA)
 
     add_hr(doc)
 
     add_heading(doc, "ANTES DA AULA")
     add_heading(doc, "Material da mesa", level=2)
-    add_bullet(doc, "Fita crepe (muita): pra galeria das plantas e pra marcar os pontos de medição")
-    add_bullet(doc, "Trena (uma por equipe, se der). Sem trena: barbante com um nó a cada metro, medido antes com uma régua")
-    add_bullet(doc, "Réguas, lápis e lápis de cor ou canetinhas (duas cores por dupla)")
-    add_bullet(doc, "Um roteador da bancada e um rolo ou pedaço de cabo de rede, só pra mostrar na mão no Bloco 4")
-    add_bullet(doc, "Algumas folhas A4 em branco pra quem esqueceu a tarefa da planta")
-    add_para(doc, "Não precisa de internet nem de computador hoje. Celular só como calculadora.", italic=True, color=COR_CINZA)
+    add_bullet(doc, "Um roteador por equipe de 3 ou 4 (os da bancada), cada um na tomada, numerado com fita crepe: EQUIPE 1, EQUIPE 2…")
+    add_bullet(doc, "Régua de tomadas. NÃO precisa de internet")
+    add_bullet(doc, "1 ou 2 computadores com porta de rede + cabos testados da Noite 5 (pra cópia de segurança e pro ipconfig)")
+    add_bullet(doc, "Fita crepe e canetão (pra etiqueta de entrega que vai no roteador)")
+    add_bullet(doc, "Celulares dos alunos: são eles que configuram, pelo navegador")
 
-    add_heading(doc, "Marque os pontos de medição (Bloco 6)", level=2)
-    add_para(doc, "Antes da turma chegar, cole na escola cinco pares de etiquetas de fita crepe, cada par com um ponto A e um ponto B, sempre em lugares onde o cabo não pode ir reto:")
-    add_bullet(doc, "Par 1 — A: canto da sala de aula, perto da porta  ·  B: o canto oposto da mesma sala")
-    add_bullet(doc, "Par 2 — A: a mesa do professor  ·  B: o fundo da sala, do outro lado (tem que contornar as carteiras pela parede)")
-    add_bullet(doc, "Par 3 — A: dentro da sala  ·  B: no corredor, passando pela porta")
-    add_bullet(doc, "Par 4 — A: perto de uma tomada baixa  ·  B: uma janela ou ponto alto (tem subida)")
-    add_bullet(doc, "Par 5 — A: a sala de aula  ·  B: a sala vizinha (porta a porta pelo corredor)")
-    add_para(doc, "Se a escola não deixar sair da sala, faça os cinco pares dentro dela, todos contornando móveis, porta ou quadro.", italic=True, color=COR_CINZA)
+    add_heading(doc, "Prepare os roteadores", level=2)
+    add_bullet(doc, "Dê Reset em todos (botão Reset, ~10 segundos com o aparelho ligado). A turma começa de fábrica, como cliente que acabou de comprar")
+    add_bullet(doc, "Em casa, configure UM de cada modelo seguindo este roteiro inteiro, pra conhecer as telas, e dê Reset de novo. Anote no verso da fita de cada modelo o caminho dos menus (a tabela abaixo ajuda, mas o nome muda com o firmware)")
+    add_bullet(doc, "Confira se o seu modelo tem rede de convidados. O Archer C5 tem. Os TL-WR840N mais antigos podem não ter: nessas equipes o Bloco 6 vira observação no roteador de outra equipe")
+    add_table(doc, [["O quê", "Onde costuma ficar"]] + [list(r) for r in MENUS], col_widths=[4.5, 12])
+
+    add_heading(doc, "O plano de endereços das equipes", level=2)
+    add_para(doc, "Cada equipe muda o endereço do painel pra um número próprio. Assim nenhum roteador fica igual ao outro e ninguém entra no da vizinha por engano:")
+    add_table(doc, [["Equipe", "Novo endereço do painel", "Faixa de endereços", "Reserva"]] +
+              [[str(n), plano_equipe(n)["painel"], plano_equipe(n)["faixa"], plano_equipe(n)["reserva"]] for n in range(1, 7)],
+              col_widths=[2, 4.8, 6, 3.7])
 
     add_heading(doc, "Imprima", level=2)
-    add_bullet(doc, "Folha do aluno (4 páginas), uma por pessoa")
+    add_bullet(doc, "Folha do aluno (3 páginas), uma por pessoa")
     add_bullet(doc, "Resumo do aluno, uma por pessoa (pra levar pra casa)")
-    add_bullet(doc, "ANEXO 1 (clínica de plantas, 8 casas), 1 jogo por equipe")
+    add_bullet(doc, "Uma ficha de entrega extra por equipe (é a página 3 da folha): ela vai junto com o roteador no Bloco 9")
 
     add_hr(doc)
 
     add_heading(doc, "QUADRO DE TEMPO — 210 MINUTOS")
     add_table(doc, [
         ["Bloco", "Tempo", "O que acontece"],
-        ["1. Retomada + galeria das plantas", "20 min", "As plantas da tarefa na parede. Onde está o roteador de cada um?"],
-        ["2. A visita técnica", "10 min", "O que o técnico pergunta e o que ele olha antes de orçar"],
-        ["3. PRÁTICA — Ficha da minha casa", "20 min", "Cada um preenche a ficha de visita da própria casa. A dupla confere"],
-        ["4. Onde fica o roteador", "15 min", "A lâmpada. Centro, alto, à vista. Cabo × Wi-Fi"],
-        ["5. PRÁTICA — Clínica de plantas", "25 min", "Equipes analisam 8 casas: o problema, a solução, o que comprar"],
+        ["1. Retomada + censo das etiquetas", "20 min", "Quantas casas ainda estão com o Wi-Fi de fábrica?"],
+        ["2. O que se configura e por quê", "15 min", "Os oito itens da entrega. Onde fica cada um no painel"],
+        ["3. PRÁTICA — Nome, senha e tranca", "35 min", "Primeiro acesso, senha de administrador, nome e senha do Wi-Fi, WPA2. Todo mundo reconecta"],
+        ["4. PRÁTICA — Mudar a portaria de lugar", "15 min", "O painel muda de endereço. A equipe perde o roteador e reencontra pelo gateway"],
+        ["5. PRÁTICA — Endereços e a agenda", "25 min", "Faixa do DHCP, reserva de endereço e o DNS que o roteador entrega"],
         ["INTERVALO", "15 min", ""],
-        ["6. PRÁTICA — O cabo não anda reto", "20 min", "Equipes medem na escola o caminho real do cabo entre dois pontos"],
-        ["7. PRÁTICA — O projeto da dupla", "30 min", "Uma das plantas na malha: entrada, roteador, cabos, metragem"],
-        ["8. Lista de materiais e orçamento", "25 min", "5 min de explicação + 20 min de orçamento com a tabela de preços"],
-        ["9. PRÁTICA — Banca de projetos", "20 min", "As duplas trocam de projeto e conferem pelo checklist"],
+        ["6. PRÁTICA — Rede de convidados", "15 min", "A visita navega mas não enxerga a casa. Teste: o painel abre pela rede de convidados?"],
+        ["7. PRÁTICA — Cópia de segurança", "20 min", "Salvar a configuração, resetar o roteador e restaurar"],
+        ["8. PRÁTICA — Ficha e etiqueta de entrega", "15 min", "A ficha pro cliente e a etiqueta no roteador"],
+        ["9. PRÁTICA — O roteador trocado", "25 min", "Cada equipe recebe o roteador e a ficha de outra. A ficha funciona?"],
         ["10. Fechamento + tarefa", "10 min", "Quiz de saída e anúncio da Noite 9"],
     ], col_widths=[6.5, 2, 8])
-    add_para(doc, "Blocos 3, 5, 6, 7, 9 e a parte prática do 8: 135 min de atividade do aluno (64% do total), mais a galeria do Bloco 1. A exposição está em três blocos curtos (30 min somados), cada um seguido de prática.", italic=True, color=COR_CINZA)
+    add_para(doc, "Blocos 3 a 9: 150 min de atividade do aluno (71% do total), mais o censo do Bloco 1. A exposição é só o Bloco 2 (15 min) e falas curtas dentro das práticas.", italic=True, color=COR_CINZA)
 
     add_hr(doc)
 
     # BLOCO 1
-    add_heading(doc, "BLOCO 1 — RETOMADA + GALERIA DAS PLANTAS · 20 MIN")
+    add_heading(doc, "BLOCO 1 — RETOMADA + CENSO DAS ETIQUETAS · 20 MIN")
     add_heading(doc, "Recap relâmpago — 5 min", level=2)
+    add_bullet(doc, "Qual o endereço da portaria (o painel) dos roteadores da bancada? (192.168.0.1)")
+    add_bullet(doc, "Quem entrega o endereço pro celular? (o roteador, o DHCP, o porteiro)")
     add_bullet(doc, "O DNS faz o quê? (a agenda: nome vira número)")
-    add_bullet(doc, "Quem é o dono de https://caixa.gov.br.consulta-fgts.com? (consulta-fgts.com)")
-    add_bullet(doc, "Cadeado quer dizer que o site é bom? (não: cadeado mais dono certo)")
-    add_bullet(doc, "Alguém mandou a cartilha pro grupo da família? O que responderam?")
+    add_bullet(doc, "Como o intruso entrou no Wi-Fi da equipe na Noite 6? (leu a senha na etiqueta)")
 
-    add_heading(doc, "A galeria — 15 min", level=2)
-    add_para(doc, "Cada aluno cola a planta que desenhou de tarefa na parede, com fita crepe, numa linha só. Quem esqueceu desenha agora, em 5 minutos, numa folha em branco: vale rascunho. Depois a turma passa pela galeria olhando todas e, de volta ao lugar, responde no quadro:")
-    add_bullet(doc, "\"Em quantas casas o roteador está no CANTO da casa?\" (quase todas)")
-    add_bullet(doc, "\"E por que ele está ali?\" (porque foi ali que o técnico do provedor deixou: onde a fibra entra)")
-    add_bullet(doc, "\"Os cômodos pintados, com Wi-Fi fraco, ficam perto ou longe do X?\" (longe)")
-    add_bullet(doc, "\"Alguém tem a casa sem nenhum cômodo pintado? Onde está o roteador dele?\"")
-    add_para(doc, "\"O técnico do provedor deixa o roteador onde é mais fácil pra ELE: perto da porta, onde a fibra entra. Não onde é melhor pra casa. Hoje vocês aprendem a fazer o contrário, e isso é serviço que se cobra.\"", italic=True, color=COR_PRIMARIA)
-    add_para(doc, "Deixe a galeria na parede até o fim da aula: as plantas voltam no Bloco 7.", italic=True, color=COR_CINZA)
+    add_heading(doc, "O censo — 15 min", level=2)
+    add_para(doc, "Cada aluno diz o que trouxe da tarefa e você marca no quadro, numa tabela de três colunas: marca e modelo · Wi-Fi com nome de fábrica? · alguém sabe a senha de administrador?")
+    add_bullet(doc, "\"Quantas casas estão com o nome de fábrica?\" (costuma ser metade ou mais)")
+    add_bullet(doc, "\"Se o nome é de fábrica, a senha provavelmente também é. Onde ela está escrita?\" (na etiqueta, embaixo do roteador: qualquer visita lê)")
+    add_bullet(doc, "\"Quantos sabem a senha de administrador?\" (quase ninguém. Muitos nunca souberam que existe)")
+    add_bullet(doc, "\"Quantas marcas diferentes apareceram?\" (o painel muda de marca pra marca, mas os itens são os mesmos)")
+    add_para(doc, "\"Esse quadro é o mercado de vocês. Cada casa com roteador de fábrica é um serviço de meia hora: configurar, deixar seguro e entregar a ficha. Hoje vocês aprendem o serviço inteiro.\"", italic=True, color=COR_PRIMARIA)
 
     add_hr(doc)
 
     # BLOCO 2
-    add_heading(doc, "BLOCO 2 — A VISITA TÉCNICA · 10 MIN")
-    add_para(doc, "\"Ninguém orça uma pintura sem ver a parede. Rede é igual: antes de falar preço, o técnico vai até a casa, pergunta e olha. Quem pula a visita erra a metragem, esquece o galpão, compra roteador que não precisava.\"", italic=True)
-    add_table(doc, [["O quê", "O que perguntar ou olhar"]] + [list(r) for r in VISITA], col_widths=[4, 12.5])
-    add_para(doc, "Ênfase em duas linhas: \"Parado ou anda\" decide cabo ou Wi-Fi (Bloco 4), e \"Onde dói\" é o que o cliente quer resolver. O resto é pra não errar o orçamento.", italic=True, color=COR_DESTAQUE)
+    add_heading(doc, "BLOCO 2 — O QUE SE CONFIGURA E POR QUÊ · 15 MIN")
+    add_para(doc, "Projete a tabela e passe item por item. Pra cada um, pergunte primeiro \"o que acontece se o técnico NÃO fizer isso?\" e deixe a turma responder.")
+    add_table(doc, [["Item", "Por quê"]] + [list(r) for r in ENTREGA], col_widths=[5, 11.5])
+    add_heading(doc, "Uma palavra sobre a ligação com a internet", level=2)
+    add_para(doc, "Na tela de WAN (ou Internet) o roteador pergunta como ele recebe a internet. Na maioria das casas, atrás da ONU do provedor, é \"IP dinâmico\" e não se mexe. Se o provedor deixou a ONU em modo ponte, é PPPoE: precisa de usuário e senha que só o provedor dá. Sem esses dados, não mexa nessa tela. Hoje os roteadores estão sem internet, então a turma só olha qual tipo está marcado.", italic=True)
 
     add_hr(doc)
 
     # BLOCO 3
-    add_heading(doc, "BLOCO 3 — PRÁTICA · A FICHA DA MINHA CASA · 20 MIN")
-    add_para(doc, "Cada aluno faz a visita técnica da própria casa, de memória, na página 1 da folha. É a mesma ficha que o técnico leva.")
-    add_bullet(doc, "12 min: cada um preenche sozinho a ficha da sua casa, incluindo a tabela de aparelhos (onde fica, parado ou anda)")
-    add_bullet(doc, "8 min: em dupla, cada um lê a ficha do outro e faz duas perguntas que a ficha não respondeu. As respostas entram na ficha")
-    add_para(doc, "Circule pelas duplas. As perguntas que mais aparecem: \"tem forro?\", \"onde fica a tomada?\", \"o galpão precisa de internet?\" Puxe pro quadro as que forem boas.", italic=True, color=COR_CINZA)
-    add_para(doc, "Onde dilatar: pergunte quem tem casa de madeira, quem tem sobrado, quem tem galpão ou casa no interior. Cada caso diferente muda o projeto. Deixe os alunos contarem a casa deles.", italic=True, color=COR_DESTAQUE)
+    add_heading(doc, "BLOCO 3 — PRÁTICA · NOME, SENHA E TRANCA · 35 MIN")
+    add_para(doc, "Cada equipe no seu roteador, pelo celular de um dos alunos (o \"configurador\"). Troque o configurador a cada bloco, pra todo mundo pôr a mão. Página 1 da folha.")
+    add_heading(doc, "Passo a passo", level=2)
+    add_bullet(doc, "1. Conectar no Wi-Fi de fábrica (nome e senha na etiqueta) e abrir 192.168.0.1 no navegador")
+    add_bullet(doc, "2. Criar a senha de administrador. Desta vez a EQUIPE escolhe (no mínimo 10 caracteres) e anota na folha. Se abrir assistente de configuração, pule")
+    add_bullet(doc, "3. Olhar a tela WAN / Internet e anotar o tipo marcado. Não mexer")
+    add_bullet(doc, "4. Sem fio → trocar o nome do Wi-Fi para EQUIPE N - SOBRENOME DE ALGUÉM (ex.: EQUIPE 3 - SCHNEIDER). Sem acento")
+    add_bullet(doc, "5. Segurança sem fio → WPA2-PSK (ou WPA2/WPA3), criptografia AES, e uma senha nova de pelo menos 12 caracteres, que a equipe inventa. Salvar")
+    add_bullet(doc, "6. O celular cai. É esperado. Conectar de novo, agora no nome novo com a senha nova. Todos os celulares da equipe fazem o mesmo")
+    add_para(doc, "Quando o celular cair no passo 6, pare a turma: \"Isso que aconteceu aqui acontece na casa do cliente com TODOS os aparelhos: celular de cada um, TV, impressora, câmera. Antes de trocar a senha, combine com o cliente quem vai reconectar o quê. Senão vocês vão embora e a TV fica sem internet.\"", italic=True, color=COR_PRIMARIA)
+    add_para(doc, "Equipe que se trancou pra fora (esqueceu a senha, salvou errado): botão Reset e começa de novo. Diga que isso também é aula: \"agora vocês sabem quanto custa não anotar\".", italic=True, color=COR_CINZA)
+    add_para(doc, "Onde dilatar: peça que cada equipe esconda o nome do Wi-Fi (\"Ocultar SSID\" / desmarcar \"Transmitir\"), veja a rede sumir da lista do celular e conecte digitando o nome na mão. Depois volte a mostrar. Discuta: esconder o nome protege? (Pouco: qualquer aplicativo de Wi-Fi acha. E dá trabalho pro cliente.)", italic=True, color=COR_DESTAQUE)
 
     add_hr(doc)
 
     # BLOCO 4
-    add_heading(doc, "BLOCO 4 — ONDE FICA O ROTEADOR · 15 MIN")
-    add_heading(doc, "A lâmpada — 7 min", level=2)
-    add_para(doc, "Pegue o roteador da bancada na mão.", italic=True, color=COR_CINZA)
-    add_para(doc, "\"Imaginem que isso aqui é uma lâmpada, e vocês só podem ter UMA pra iluminar a casa inteira. Onde vocês põem? No canto da sala, perto da porta? Dentro do armário? No chão, atrás do sofá?\"", italic=True)
-    add_para(doc, "Deixe a turma responder. Fica claro sozinho: no meio da casa, no alto, sem nada na frente. O Wi-Fi se espalha igual luz: pra todos os lados, e perde força em cada parede.")
-    add_table(doc, [["Regra", "Por quê"]] + [list(r) for r in REGRAS_ROTEADOR], col_widths=[4.5, 12])
-
-    add_heading(doc, "Cabo × Wi-Fi — 5 min", level=2)
-    add_para(doc, "\"O que fica parado vai no cabo. O que anda vai no Wi-Fi.\"", bold=True, color=COR_PRIMARIA)
-    add_bullet(doc, "Parado: TV, computador de mesa, videogame, câmera, impressora. Cabo é mais firme e não divide o sinal com ninguém")
-    add_bullet(doc, "Anda: celular, notebook, tablet. Wi-Fi")
-    add_bullet(doc, "Cada aparelho que sai do Wi-Fi pro cabo deixa o Wi-Fi mais folgado pros outros")
-
-    add_heading(doc, "E se a fibra entra no canto? — 3 min", level=2)
-    add_para(doc, "\"O técnico do provedor deixa a ONU onde a fibra entra. A gente não mexe na fibra: a gente leva um CABO DE REDE da ONU até o meio da casa, e lá põe o roteador. Esse cabo é o serviço de vocês.\" Mostre o pedaço de cabo.", italic=True)
+    add_heading(doc, "BLOCO 4 — PRÁTICA · MUDAR A PORTARIA DE LUGAR · 15 MIN")
+    add_para(doc, "\"Na casa do cliente, a ONU do provedor muitas vezes já usa 192.168.0.1 ou 192.168.1.1. Se o roteador usar o mesmo número, dá conflito: tudo parece ligado e nada funciona. Por isso o técnico muda o endereço do painel do roteador.\"", italic=True)
+    add_bullet(doc, "Rede → LAN → endereço IP: trocar pelo número da sua equipe (tabela na página 1: equipe 1 = 192.168.11.1, equipe 2 = 192.168.12.1…). Salvar")
+    add_bullet(doc, "O roteador reinicia e o painel some do navegador. É esperado")
+    add_bullet(doc, "Desafio: reencontrar o roteador SEM olhar a tabela. No celular: Wi-Fi → (a rede da equipe) → detalhes → \"Gateway\" ou \"Roteador\". No computador por cabo: ipconfig → \"Gateway Padrão\"")
+    add_bullet(doc, "Abrir o painel no endereço novo e anotar na folha")
+    add_para(doc, "\"O gateway é o endereço da portaria. Lembram da Noite 6? Quando o técnico não sabe o endereço do painel de um roteador, é no gateway que ele olha. Serve pra qualquer marca.\"", italic=True, color=COR_PRIMARIA)
 
     add_hr(doc)
 
     # BLOCO 5
-    add_heading(doc, "BLOCO 5 — PRÁTICA · CLÍNICA DE PLANTAS · 25 MIN")
-    add_para(doc, "No formato das clínicas de cabos (Noite 5) e de links (Noite 7). Equipes de 3. Cada equipe recebe as 8 casas do ANEXO 1 e preenche o laudo na página 2 da folha: o problema, a solução e o que precisa comprar.")
-    add_heading(doc, "Regras", level=2)
-    add_bullet(doc, "Leiam a queixa do cliente E olhem a planta. O ■ vermelho é onde o roteador está hoje")
-    add_bullet(doc, "Pra cada casa, desenhem a lápis, no próprio cartão, onde o roteador deveria ficar")
-    add_bullet(doc, "Atenção: pode ter casa em que a solução é não mexer em nada")
-    add_bullet(doc, "~15 min pra equipe, depois correção")
-    add_heading(doc, "Gabarito (só com você)", level=2)
-    add_table(doc, [["#", "Casa", "O problema", "A solução"]] +
-              [[str(i), p["titulo"], p["problema"], p["solucao"]] for i, p in enumerate(PLANTAS, 1)],
-              col_widths=[0.7, 2.8, 6.2, 6.8])
-    add_heading(doc, "Correção — 10 min", level=2)
-    add_para(doc, "Casa por casa, uma equipe diferente dá o laudo. Pare em três:")
-    add_bullet(doc, "#2 (rack): a solução é de graça. Técnico bom também resolve sem vender nada")
-    add_bullet(doc, "#4 (galpão): quem pôs repetidor no meio do pátio? Repetidor precisa de tomada e de sinal bom pra repetir. O certo é cabo")
-    add_bullet(doc, "#8 (nada a mexer): quem mandou trocar o roteador? A lentidão em horário fixo é do plano ou do provedor. Mexer na instalação aqui é vender o que o cliente não precisa")
-    add_para(doc, "Onde dilatar: volte à galeria da parede e peça que cada equipe escolha uma planta da turma (com licença do dono) e dê o laudo dela, igual às 8 casas. O dono da planta diz se faz sentido.", italic=True, color=COR_DESTAQUE)
+    add_heading(doc, "BLOCO 5 — PRÁTICA · ENDEREÇOS E A AGENDA · 25 MIN")
+    add_heading(doc, "A faixa de endereços — 8 min", level=2)
+    add_bullet(doc, "Tela do DHCP: a faixa já mudou sozinha junto com o painel (192.168.1X.100 a .199, mais ou menos). Ajustar pra .100 a .150, como na tabela")
+    add_bullet(doc, "\"Cinquenta endereços dá pra casa inteira? Contem quantos aparelhos a casa de vocês tem.\" (Sobra: uma casa tem uns 8 a 15)")
+    add_heading(doc, "A reserva — 10 min", level=2)
+    add_para(doc, "\"A impressora pega um endereço hoje e outro amanhã, e o computador continua procurando ela no número antigo. Prometido na Noite 6: hoje a gente resolve com a reserva.\"", italic=True)
+    add_bullet(doc, "Escolha um celular da equipe pra fazer o papel da impressora. Ache o MAC dele na lista de aparelhos conectados (o CPF, Noite 6)")
+    add_bullet(doc, "Reserva de endereço → adicionar: o MAC desse celular → o endereço da reserva da equipe (192.168.1X.50). Salvar")
+    add_bullet(doc, "No celular \"impressora\": desligar e ligar o Wi-Fi. Conferir nos detalhes da rede: ganhou o .50?")
+    add_para(doc, "Atenção: celular novo usa \"MAC aleatório\" (privado) pra cada rede. Se a reserva não pegar, no celular: Wi-Fi → a rede → Privacidade → \"Usar MAC do dispositivo\". Reconecte e refaça a reserva com o MAC novo. Impressora e câmera não têm esse problema.", italic=True, color=COR_ALERTA)
+    add_heading(doc, "A agenda (DNS) — 7 min", level=2)
+    add_para(doc, "\"Na Noite 7 eu disse que ia mostrar onde se troca a agenda. É aqui.\"", italic=True)
+    add_bullet(doc, "Na tela do DHCP, \"DNS primário\" e \"DNS secundário\" estão vazios ou 0.0.0.0: o roteador usa a agenda do provedor")
+    add_bullet(doc, "Preencher 8.8.8.8 e 1.1.1.1 (as agendas públicas da Noite 7). Salvar")
+    add_bullet(doc, "Conferir no computador por cabo: ipconfig /all → \"Servidores DNS\" mostra 8.8.8.8. O roteador está dizendo pro computador qual agenda usar")
+    add_para(doc, "\"Quando um cliente reclamar que 'tem internet mas nenhum site abre', e os dois pings da Noite 7 apontarem pra agenda, é aqui que vocês trocam.\"", italic=True, color=COR_PRIMARIA)
 
     add_hr(doc)
     add_heading(doc, "INTERVALO · 15 MIN", color=COR_CINZA)
     add_hr(doc)
 
     # BLOCO 6
-    add_heading(doc, "BLOCO 6 — PRÁTICA · O CABO NÃO ANDA RETO · 20 MIN")
-    add_para(doc, "Cada equipe recebe um dos cinco pares de pontos que você marcou e mede três vezes, anotando na página 2 da folha:")
-    add_bullet(doc, "1. No olho: quantos metros vocês acham que dá de A até B? (antes de medir)")
-    add_bullet(doc, "2. Em linha reta, com a trena")
-    add_bullet(doc, "3. Pelo caminho que o cabo faria de verdade: colado no rodapé, contornando porta e móvel, subindo e descendo na parede. Nunca no meio do chão")
-    add_para(doc, "~10 min pra medir. Se der tempo, a equipe troca de par e mede outro.", italic=True, color=COR_CINZA)
-    add_heading(doc, "A conta da folga — 10 min", level=2)
-    add_para(doc, "Cada equipe diz no quadro os três números. Quase sempre o caminho real dá uma vez e meia a duas vezes a linha reta, e o \"no olho\" erra pra menos. Depois, a regra da folha:")
-    add_para(doc, "Cabo pra comprar = caminho real + 1 m em cada ponta (subir até o aparelho) + 10% de sobra", bold=True, color=COR_PRIMARIA, align=WD_ALIGN_PARAGRAPH.CENTER)
-    add_para(doc, "\"Cabo curto não tem conserto: não se emenda cabo de rede. Faltou 30 cm, joga o cabo fora e passa outro. Por isso a sobra é obrigação, não desperdício.\"", italic=True, color=COR_ALERTA)
+    add_heading(doc, "BLOCO 6 — PRÁTICA · REDE DE CONVIDADOS · 15 MIN")
+    add_bullet(doc, "Rede de convidados → ativar. Nome: EQUIPE N - VISITA. Senha própria, diferente da principal. Salvar")
+    add_bullet(doc, "Deixar DESMARCADO \"permitir que convidados acessem a rede local\" (o nome varia)")
+    add_bullet(doc, "Um aluno conecta o celular na rede de VISITA e tenta abrir o painel (o endereço novo da equipe). Não abre: a visita não enxerga a casa")
+    add_bullet(doc, "Na lista de aparelhos do painel principal, o celular da visita aparece separado (ou nem aparece)")
+    add_para(doc, "\"Pra quem serve? Visita, cliente de comércio, o amigo do filho, a TV e a câmera baratas que vocês não confiam. A senha da visita pode ir pra parede. A da casa, não.\"", italic=True, color=COR_PRIMARIA)
+    add_para(doc, "Equipe com roteador sem rede de convidados: acompanha o teste na equipe vizinha e anota na folha. Diga que, na hora de recomendar roteador pro cliente, esse é um item a conferir.", italic=True, color=COR_CINZA)
 
     add_hr(doc)
 
     # BLOCO 7
-    add_heading(doc, "BLOCO 7 — PRÁTICA · O PROJETO DA DUPLA · 30 MIN")
-    add_para(doc, "Cada dupla escolhe UMA das duas plantas da galeria (a que tiver mais problema pra resolver) e passa a limpo na malha quadriculada da página 3 da folha.")
-    add_bullet(doc, "Escala: cada quadrado é 1 metro. O dono da planta estima o tamanho dos cômodos (\"o quarto tem uns 3 por 3\")")
-    add_bullet(doc, "Marquem com letras: E = onde a internet entra, R = onde o roteador VAI ficar, C = cada aparelho que vai no cabo")
-    add_bullet(doc, "Com a outra cor, desenhem o caminho de cada cabo, pelas paredes")
-    add_bullet(doc, "Contem os quadrados de cada caminho e preencham a tabela de trechos, já com a regra da folga")
-    add_para(doc, "Circule. Erros comuns: cabo atravessando o meio do cômodo, roteador ainda no canto \"porque é ali que a fibra chega\", esquecer o cabo da ONU até o roteador. Pergunte em vez de corrigir: \"por onde esse cabo passa?\"", italic=True, color=COR_CINZA)
-    add_para(doc, "Onde dilatar: duplas que terminam cedo desenham uma segunda opção (por exemplo, com repetidor em vez de cabo) e comparam qual é melhor pro cliente.", italic=True, color=COR_DESTAQUE)
+    add_heading(doc, "BLOCO 7 — PRÁTICA · CÓPIA DE SEGURANÇA · 20 MIN")
+    add_para(doc, "As equipes vêm uma de cada vez ao computador (ou fazem pelo celular, se o navegador deixar baixar e enviar arquivo). Enquanto esperam, adiantam a ficha de entrega (Bloco 8).")
+    add_bullet(doc, "Ferramentas do sistema → Backup → salvar o arquivo da configuração. Renomear: equipeN-AAAA-MM-DD")
+    add_bullet(doc, "Agora a prova: botão Reset no roteador. Tudo volta ao de fábrica (o Wi-Fi da etiqueta reaparece). A equipe vê o trabalho de uma hora sumir")
+    add_bullet(doc, "Entrar pelo endereço de fábrica (192.168.0.1), criar uma senha de administrador qualquer, Backup e restauração → Restaurar → escolher o arquivo")
+    add_bullet(doc, "O roteador reinicia e volta com tudo: nome, senha, endereço novo, reserva, convidados. Conferir conectando de novo")
+    add_para(doc, "\"Raio na rede, cliente que apertou o Reset achando que ia consertar, roteador que trocou na garantia pelo mesmo modelo: com a cópia, o serviço volta em um minuto. Sem ela, vocês refazem tudo — e cobram de novo, ou de graça.\"", italic=True, color=COR_PRIMARIA)
+    add_para(doc, "A cópia de segurança guarda as senhas. Ela fica com o cliente (pendrive, e-mail dele) ou com o técnico, nunca num computador de uso geral. Apague as cópias do computador da escola no fim da aula.", italic=True, color=COR_ALERTA)
 
     add_hr(doc)
 
     # BLOCO 8
-    add_heading(doc, "BLOCO 8 — LISTA DE MATERIAIS E ORÇAMENTO · 25 MIN")
-    add_heading(doc, "O que entra no orçamento — 5 min", level=2)
-    add_bullet(doc, "Cabo: a metragem total da tabela de trechos, já com a folga")
-    add_bullet(doc, "Conectores: 2 por cabo, mais uns 4 de reserva (sempre se perde algum na crimpagem, lembram da Noite 4?)")
-    add_bullet(doc, "Canaleta: os metros do cabo que passam por fora da parede")
-    add_bullet(doc, "Aparelhos: só se precisar (roteador novo, ponto de acesso, mesh)")
-    add_bullet(doc, "Mão de obra: visita, cada ponto de cabo e a configuração do roteador")
-    add_para(doc, "Na Noite 3 a turma pesquisou preço em loja de verdade. Hoje usa a tabela de preços de referência da página 4, pra todo mundo chegar a números comparáveis e a correção ser rápida.", italic=True, color=COR_CINZA)
-    add_heading(doc, "O orçamento — 20 min", level=2)
-    add_para(doc, "A dupla preenche o orçamento do próprio projeto na página 4. O celular serve de calculadora.")
-    add_para(doc, "Onde dilatar: peça o orçamento em duas versões, \"econômica\" e \"completa\" (com canaleta e tomada de rede na parede), e que a dupla diga qual recomendaria e por quê.", italic=True, color=COR_DESTAQUE)
+    add_heading(doc, "BLOCO 8 — PRÁTICA · FICHA E ETIQUETA DE ENTREGA · 15 MIN")
+    add_para(doc, "Página 3 da folha: a ficha de entrega, no mesmo espírito da ficha técnica das noites anteriores. Uma ficha por equipe, preenchida a caneta, legível.")
+    add_bullet(doc, "Tudo que foi configurado vai na ficha: endereço do painel, senhas, nomes, faixa, reserva, DNS, onde está a cópia")
+    add_bullet(doc, "Na fita crepe, a etiqueta que fica NO roteador: \"Configurado por EQUIPE N em DD/MM · painel 192.168.1X.1\". SEM senha nenhuma")
+    add_para(doc, "\"A ficha com as senhas fica com o cliente, guardada. Na etiqueta do roteador vai só quem configurou e o endereço do painel: o próximo técnico agradece, e a visita não lê senha nenhuma.\"", italic=True, color=COR_PRIMARIA)
 
     add_hr(doc)
 
     # BLOCO 9
-    add_heading(doc, "BLOCO 9 — PRÁTICA · BANCA DE PROJETOS · 20 MIN")
-    add_para(doc, "Cada dupla entrega o projeto (páginas 3 e 4) pra dupla do lado, que confere pelo checklist da página 4. Igual à conferência de cabo no testador: passa ou não passa.")
-    add_bullet(doc, "10 min: a dupla conferente marca o checklist, dá o veredito (aprovado, aprovado com ajuste, refazer) e escreve UMA sugestão")
-    add_bullet(doc, "Devolve. A dupla dona tem 3 min pra corrigir o que puder")
-    add_bullet(doc, "7 min: duas ou três duplas mostram o projeto pra turma, contando o problema da casa e a solução. Escolha as plantas mais diferentes (sobrado, galpão, madeira)")
-    add_para(doc, "\"Tudo que vocês conferiram hoje é o que o cliente vai perguntar: por que aí, por que tanto cabo, por que esse preço. Quem sabe responder fecha o serviço.\"", italic=True, color=COR_PRIMARIA)
+    add_heading(doc, "BLOCO 9 — PRÁTICA · O ROTEADOR TROCADO · 25 MIN")
+    add_para(doc, "Cada equipe entrega o roteador e a ficha de entrega pra próxima (a 1 pra 2, a 2 pra 3… a última pra 1). A equipe que recebe faz de conta que é o próximo técnico a chegar naquela casa, um ano depois, só com o papel.")
+    add_heading(doc, "A missão — 15 min", level=2)
+    add_bullet(doc, "Conectar todos os celulares da equipe no Wi-Fi, usando só a ficha")
+    add_bullet(doc, "Entrar no painel, usando só a ficha")
+    add_bullet(doc, "Conferir item por item: o nome, a segurança, a faixa, a reserva, o DNS e a rede de convidados estão como a ficha diz?")
+    add_bullet(doc, "Preencher o laudo na página 3: cada item ✓ ou ✗, e o que faltou ou estava errado na ficha")
+    add_heading(doc, "A volta — 10 min", level=2)
+    add_bullet(doc, "Devolve o roteador e o laudo pra equipe dona. Ela corrige a ficha")
+    add_bullet(doc, "No quadro: quantas fichas funcionaram de primeira? O que mais faltou? (costuma ser letra ilegível, senha com 0 e O confundidos, endereço do painel antigo)")
+    add_para(doc, "\"Ficha que só quem escreveu entende não é ficha. O cliente perde o papel, o técnico muda: o papel tem que funcionar sozinho.\"", italic=True, color=COR_PRIMARIA)
 
     add_hr(doc)
 
     # BLOCO 10
     add_heading(doc, "BLOCO 10 — FECHAMENTO E TAREFA · 10 MIN")
     add_heading(doc, "Quiz de saída", level=2)
-    add_bullet(doc, "Onde o roteador deve ficar? Três palavras")
-    add_bullet(doc, "TV e celular: quem vai no cabo e quem vai no Wi-Fi? Por quê?")
-    add_bullet(doc, "O caminho do cabo deu 12 m. Quanto cabo você compra?")
-    add_bullet(doc, "Por que não dá pra comprar o cabo \"certinho\"?")
+    add_bullet(doc, "Você mudou o endereço do painel e perdeu o roteador. Onde acha o endereço novo?")
+    add_bullet(doc, "Por que trocar a senha do Wi-Fi exige combinar com o cliente antes?")
+    add_bullet(doc, "A impressora muda de endereço toda semana. O que você configura?")
+    add_bullet(doc, "O que vai na etiqueta colada no roteador? E o que NÃO vai?")
 
     add_heading(doc, "A tarefa", level=2)
-    add_para(doc, "\"Na próxima noite vocês configuram um roteador do zero. A tarefa: olhem a etiqueta embaixo do roteador de casa e anotem na folha a marca e o modelo. Depois vejam no celular o nome do Wi-Fi da casa: é igual ao que está na etiqueta? Se for, ninguém nunca mexeu nele. E perguntem em casa se alguém sabe a senha de administrador. Não tirem foto da etiqueta nem mandem a senha pra ninguém.\"", italic=True)
+    add_para(doc, "\"Na próxima noite a gente mede até onde o Wi-Fi chega. A tarefa: descubram quantos mega é o plano de internet de casa (está na fatura ou no aplicativo do provedor). E, com o celular, rodem um teste de velocidade (fast.com ou o aplicativo do provedor) duas vezes: do lado do roteador e no cômodo mais longe dele. Anotem os três números.\"", italic=True)
 
     add_heading(doc, "Anuncie a próxima", level=2)
-    add_para(doc, "\"Na próxima noite: configurando o roteador. Cada equipe pega um roteador de fábrica e deixa ele pronto pra entregar ao cliente: nome, senha, segurança. A segunda parte do projeto.\"", italic=True)
+    add_para(doc, "\"Na próxima noite: até onde o Wi-Fi chega. Com estes mesmos roteadores, vocês medem o sinal pela escola, mudam o roteador de lugar e de faixa e veem o que melhora.\"", italic=True)
 
     add_hr(doc)
 
     add_heading(doc, "SE PERGUNTAREM")
-    add_para(doc, "\"Posso mudar a fibra de lugar?\"", bold=True)
-    add_para(doc, "> \"A fibra e a ONU são do provedor: quem mexe é o técnico deles, e geralmente cobram. O que vocês fazem é levar cabo de rede da ONU até onde o roteador vai ficar. É mais barato e é serviço de vocês.\"", italic=True)
-    add_para(doc, "\"Repetidor não resolve tudo?\"", bold=True)
-    add_para(doc, "> \"Repetidor repete o sinal que recebe: precisa ficar onde o sinal ainda é bom, e divide a velocidade. Ajuda em casa pequena com um cômodo ruim. Pra galpão, sobrado ou casa grande, cabo ou mesh. Na Noite 10 a gente mede isso.\"", italic=True)
-    add_para(doc, "\"Até quantos metros vai o cabo de rede?\"", bold=True)
-    add_para(doc, "> \"Até 100 metros por trecho. Pra casa, sobra. Pra galpão longe, ainda vai. Passou disso, precisa de outro equipamento no meio.\"", italic=True)
-    add_para(doc, "\"Pode passar cabo de rede junto com fio de luz?\"", bold=True)
-    add_para(doc, "> \"Não no mesmo eletroduto: a rede elétrica atrapalha o sinal e é norma separar. Canaleta ou eletroduto próprio pra rede.\"", italic=True)
-    add_para(doc, "\"Quanto se cobra de verdade por ponto?\"", bold=True)
-    add_para(doc, "> \"Varia muito com a cidade e a dificuldade. A tabela de hoje é de referência. Pra cobrar de verdade, perguntem a quem já faz e vejam quanto o provedor cobra pelo mesmo serviço.\"", italic=True)
+    add_para(doc, "\"Posso fazer isso no roteador do provedor?\"", bold=True)
+    add_para(doc, "> \"O aparelho é do provedor, emprestado. Nome e senha do Wi-Fi, quase sempre pode, e às vezes o próprio aplicativo do provedor faz. O resto, combine com o provedor antes: tem provedor que reseta remoto e apaga o que vocês fizeram.\"", italic=True)
+    add_para(doc, "\"Esqueci a senha de administrador do roteador de casa. E agora?\"", bold=True)
+    add_para(doc, "> \"Reset de 10 segundos e configura de novo. Por isso a cópia de segurança e a ficha. Antes de resetar, anote o nome e a senha do Wi-Fi, pra configurar igual e os aparelhos da casa reconectarem sozinhos.\"", italic=True)
+    add_para(doc, "\"WPA3 é melhor que WPA2?\"", bold=True)
+    add_para(doc, "> \"É, mas aparelho antigo não conecta em WPA3. Por isso muitos roteadores têm o modo misto WPA2/WPA3. O que nunca se usa é WEP nem rede aberta.\"", italic=True)
+    add_para(doc, "\"Posso usar o mesmo nome e senha do roteador antigo no novo?\"", bold=True)
+    add_para(doc, "> \"Pode, e é um truque bom: configurando igualzinho, todos os aparelhos da casa conectam sozinhos no novo, sem ninguém mexer na TV e na impressora.\"", italic=True)
+    add_para(doc, "\"E se o cliente quiser a senha do Wi-Fi fácil de lembrar?\"", bold=True)
+    add_para(doc, "> \"Fácil de lembrar não é o mesmo que curta. Uma frase com quatro palavras é longa e fácil. Na Noite 10 a gente vê isso com calma.\"", italic=True)
 
     add_hr(doc)
 
     add_heading(doc, "DEPOIS DA AULA")
-    add_bullet(doc, "Recolha os projetos das duplas (páginas 3 e 4) ou peça foto: eles voltam na Noite 10 (cobertura) e na Noite 15 (projeto final)")
-    add_bullet(doc, "Tire as etiquetas de fita crepe dos pontos de medição")
-    add_bullet(doc, "Anote quantas equipes acertaram a casa #8 (nada a mexer) sem ajuda. É o indicador da noite")
+    add_bullet(doc, "Apague do computador da escola os arquivos de cópia de segurança (têm senhas)")
+    add_bullet(doc, "NÃO dê Reset nos roteadores: a Noite 9 usa eles configurados. Guarde cada roteador com a ficha de entrega da equipe, num envelope ou preso com elástico")
+    add_bullet(doc, "Anote quantas fichas funcionaram de primeira no Bloco 9. É o indicador da noite")
 
     add_hr(doc)
 
     add_heading(doc, "DESCRITIVO PARA O DIÁRIO")
-    add_para(doc, "Desenvolvi atividade de planejamento de rede local doméstica. A partir das plantas residenciais desenhadas pelos estudantes, discutimos a posição do roteador instalado pelo provedor e seus efeitos na cobertura. Apresentei o roteiro de visita técnica e os critérios de posicionamento do roteador, bem como a escolha entre conexão cabeada e sem fio conforme o uso dos aparelhos. Os estudantes preencheram a ficha de visita técnica da própria residência, analisaram em equipe oito situações de instalação com laudo de problema e solução e mediram, nas dependências da escola, o percurso real de cabeamento entre pontos definidos, comparando estimativa, linha reta e trajeto real e aplicando regra de folga. Em dupla, elaboraram o projeto da rede de uma residência em malha quadriculada com escala, calcularam a metragem de cabo e montaram lista de materiais e orçamento com tabela de preços de referência. Ao final, as duplas conferiram os projetos umas das outras por checklist e apresentaram soluções à turma.")
+    add_para(doc, "Desenvolvi atividade prática de configuração de roteador doméstico a partir das configurações de fábrica. Partimos do levantamento, feito pelos estudantes, da situação dos roteadores das próprias residências. Apresentei os itens de uma configuração de entrega e sua finalidade. Em equipes, os estudantes criaram senha de administração, configuraram nome de rede, senha e criptografia WPA2, alteraram o endereço de acesso ao equipamento e o localizaram novamente pelo gateway, ajustaram a faixa do servidor DHCP, fizeram reserva de endereço por MAC, definiram os servidores DNS entregues pelo roteador e verificaram o resultado no computador, e criaram rede de convidados isolada da rede local. Salvaram a configuração em arquivo, restauraram o equipamento após reset e registraram o serviço em ficha de entrega. Ao final, cada equipe validou a ficha e a configuração de outra equipe, registrando laudo.")
 
     add_hr(doc)
 
     add_heading(doc, "CAIXA DE FERRAMENTAS DIDÁTICAS", color=COR_DESTAQUE)
     add_para(doc, "Se sobrar tempo, ou pra usar em outra noite:", italic=True, color=COR_CINZA)
-    add_para(doc, "1. O cabo do tamanho certo", bold=True)
-    add_para(doc, "A equipe que mediu o par de pontos corta e crimpa um cabo com a metragem que calculou (com a folga) e passa ele de verdade pelo caminho, de A até B, com fita crepe no rodapé. Chegou? Sobrou quanto? Depois testa no testador. Junta Noites 4, 5 e 8. 30 min.")
-    add_para(doc, "2. A planta da escola", bold=True)
-    add_para(doc, "A turma desenha na malha a planta do corredor e das salas do CEJA e decide onde ficaria um roteador pra cobrir tudo. Guarde: na Noite 10 a turma mede o sinal de verdade e vê se acertou. 25 min.")
-    add_para(doc, "3. Preço de verdade", bold=True)
-    add_para(doc, "Cada dupla pesquisa no celular o preço real de três itens do seu orçamento (cabo, roteador, canaleta) em duas lojas, como na Noite 3, e compara com a tabela de referência. Ficou mais caro ou mais barato? 15 min.")
-    add_para(doc, "4. Cartaz das regras do roteador", bold=True)
-    add_para(doc, "Em equipe, um cartaz pra família: \"Onde colocar o roteador\", com as cinco regras desenhadas (sem palavra técnica). Apresentação de 1 minuto por equipe. 20 min.")
-    add_para(doc, "5. A casa de dois andares", bold=True)
-    add_para(doc, "Desafio pra quem terminou: a dupla projeta o sobrado da casa #3 na malha, os dois andares lado a lado, com o caminho do cabo subindo pela escada, e orça. 20 min.")
+    add_para(doc, "1. Configurar sem olhar o roteiro", bold=True)
+    add_para(doc, "A equipe dá Reset e configura tudo de novo, agora sem a folha, só com a ficha de entrega que ela mesma fez. Cronometre. A meta do técnico é fazer o serviço inteiro em menos de 20 minutos. 25 min.")
+    add_para(doc, "2. O mesmo serviço em outra marca", bold=True)
+    add_para(doc, "Se alguém tiver um roteador de outra marca em casa (ou a escola tiver), a equipe tenta achar os oito itens no painel dele, só com a tabela do Bloco 2. Mostra que o serviço é o mesmo, só muda o nome do menu. 20 min.")
+    add_para(doc, "3. O guia do cliente", bold=True)
+    add_para(doc, "Cada equipe escreve, em linguagem de vó, um bilhete pra deixar na casa do cliente: \"como conectar um aparelho novo no Wi-Fi\" e \"como passar o Wi-Fi de visita\". Leitura pra turma. 15 min.")
+    add_para(doc, "4. Horário do Wi-Fi", bold=True)
+    add_para(doc, "Nos modelos que têm (Agenda do Wi-Fi / Controle de horário), a equipe programa o Wi-Fi pra desligar de madrugada e discute quando isso é útil (economia, filhos) e quando atrapalha (câmera, alarme). 15 min.")
+    add_para(doc, "5. Atualização do roteador", bold=True)
+    add_para(doc, "No painel: Ferramentas do sistema → Atualização de firmware. A equipe anota a versão instalada e o modelo com a versão de hardware da etiqueta (V4, V6…). Discuta por que nunca se atualiza com o roteador ligado por Wi-Fi nem com risco de faltar luz. Não precisa atualizar de verdade. 10 min.")
 
-    # ANEXO 1 — clínica de plantas
-    for k in range(0, len(PLANTAS), 2):
-        doc.add_page_break()
-        add_heading(doc, f"ANEXO 1 — CLÍNICA DE PLANTAS · CASAS {k + 1} E {k + 2} (1 jogo por equipe)")
-        add_para(doc, "■ vermelho = onde o roteador está hoje. Desenhe a lápis onde ele deveria ficar.", italic=True, size=10, color=COR_CINZA)
-        for i in (k, k + 1):
-            p = PLANTAS[i]
-            add_para(doc, f"CASA {i + 1} — {p['titulo'].upper()}", bold=True, size=13, color=COR_PRIMARIA)
-            add_para(doc, f"O cliente diz: {p['queixa']}", italic=True, size=11)
-            planta(doc, p, altura=2.2, largura=5.6, size=10)
-            doc.add_paragraph()
-
-    path = os.path.join(OUTDIR, "Roteiro - Redes 8 - Planejando a rede de casa.docx")
+    path = os.path.join(OUTDIR, "Roteiro - Redes 8 - Configurando o roteador.docx")
     doc.save(path)
     return path
 
@@ -510,127 +372,126 @@ def build_slides():
         add_footer(s, FOOTER)
         return s
 
-    add_slide_cover(prs, "NOITE 8", "A REDE", "DA CASA",
-                    "Parte 1: planejando a instalação",
+    add_slide_cover(prs, "NOITE 8", "CONFIGURANDO", "O ROTEADOR",
+                    "Da caixa à entrega",
                     "Redes de Computadores · Curso FIC · CEJA Itapiranga – SC")
 
-    lista("RETOMADA", "Da Noite 7 pra hoje", [
+    lista("RETOMADA", "Das Noites 6 e 7 pra hoje", [
+        "•  Qual o endereço da portaria (o painel) dos roteadores da bancada?",
+        "•  Quem entrega o endereço pro celular?",
         "•  O DNS faz o quê?",
-        "•  Quem é o dono de https://caixa.gov.br.consulta-fgts.com?",
-        "•  Cadeado quer dizer que o site é bom?",
-        "•  Alguém mandou a cartilha pra família?",
+        "•  Como o intruso entrou no Wi-Fi da equipe na Noite 6?",
     ])
 
-    lista("A GALERIA", "Cole a planta da sua casa na parede", [
-        "Passe pela galeria e olhe todas. Depois:",
+    lista("O CENSO", "O roteador da sua casa", [
+        "•  Marca e modelo",
+        "•  O Wi-Fi ainda tem o nome de fábrica?",
+        "•  Alguém sabe a senha de administrador?",
         "",
-        "•  Em quantas casas o roteador está no CANTO?",
-        "•  Por que ele está ali?",
-        "•  Os cômodos com Wi-Fi fraco ficam perto ou longe do X?",
+        "Se o nome é de fábrica, a senha também é. E está escrita embaixo do roteador.",
     ])
 
-    frase("O QUE A GALERIA MOSTRA", "O técnico do provedor deixa o roteador\nonde é fácil pra ELE.\nNão onde é bom pra casa.", size=30)
+    frase("A FRASE DA NOITE", "Roteador de fábrica funciona.\nRoteador configurado\né serviço entregue.")
 
-    tabela("A VISITA TÉCNICA", "Antes de falar preço, pergunte e olhe",
-           [["O quê", "O que perguntar ou olhar"]] + [list(r) for r in VISITA],
-           col_widths=[2.9, 9.0], size=13, height=4.0)
+    tabela("O QUE SE CONFIGURA", "Oito itens da entrega", [["Item", "Por quê"]] + [list(r) for r in ENTREGA],
+           col_widths=[3.9, 8.0], size=13, height=4.0,
+           nota="Pra cada um: o que acontece se o técnico NÃO fizer?")
 
-    lista("PRÁTICA · 20 MIN", "A ficha da minha casa", [
-        "•  Página 1 da folha: a visita técnica da SUA casa",
-        "•  12 min sozinho",
-        "•  8 min em dupla: leia a ficha do outro e faça duas perguntas",
-        "   que ela não respondeu",
-    ], size=22)
-
-    frase("UMA PERGUNTA", "Se você só pudesse ter UMA lâmpada\npra iluminar a casa inteira,\nonde você colocaria?", size=32)
-
-    frase("A FRASE DA NOITE", "Roteador é lâmpada:\nno centro, no alto e à vista.")
-
-    tabela("ONDE FICA O ROTEADOR", "Cinco regras", [["Regra", "Por quê"]] + [list(r) for r in REGRAS_ROTEADOR],
-           col_widths=[3.4, 8.5], size=15, height=3.6)
-
-    frase("CABO × WI-FI", "O que fica parado vai no cabo.\nO que anda vai no Wi-Fi.")
-
-    lista("CABO × WI-FI", "Quem vai onde", [
-        "•  Parado: TV, computador, videogame, câmera, impressora  →  CABO",
-        "•  Anda: celular, notebook, tablet  →  WI-FI",
+    lista("A LIGAÇÃO COM A INTERNET", "A tela WAN: só olhe", [
+        "•  Atrás da ONU do provedor: quase sempre \"IP dinâmico\". Não mexa",
+        "•  ONU em modo ponte: PPPoE, com usuário e senha que só o provedor dá",
+        "•  Sem esses dados, não mexa nessa tela",
         "",
-        "Cada aparelho que vai pro cabo deixa o Wi-Fi mais folgado pros outros.",
-    ], size=21)
+        "Hoje os roteadores estão sem internet: anote só o tipo marcado.",
+    ], size=20)
 
-    frase("E SE A FIBRA ENTRA NO CANTO?", "A gente não mexe na fibra.\nLeva um cabo de rede da ONU\naté o meio da casa.\nEsse cabo é o serviço de vocês.", size=30)
+    lista("PRÁTICA · 35 MIN", "Nome, senha e tranca", [
+        "1.  Wi-Fi de fábrica (etiqueta) → abrir 192.168.0.1",
+        "2.  Senha de administrador: a equipe escolhe (10+ caracteres) e anota",
+        "3.  Tela WAN: anotar o tipo. Não mexer",
+        "4.  Nome do Wi-Fi: EQUIPE N - SOBRENOME (sem acento)",
+        "5.  Segurança: WPA2-PSK, AES, senha nova de 12+ caracteres",
+        "6.  O celular cai. Reconectar todo mundo no nome novo",
+    ], size=19, nota="Troque o configurador a cada bloco: todo mundo põe a mão.")
 
-    lista("PRÁTICA · 25 MIN", "Clínica de plantas", [
-        "•  Equipes de 3. Oito casas",
-        "•  Leia a queixa do cliente e olhe a planta (■ = roteador hoje)",
-        "•  Desenhe a lápis onde ele deveria ficar",
-        "•  Laudo na página 2: problema, solução, o que comprar",
-    ], size=21, nota="Atenção: pode ter casa em que a solução é não mexer em nada.", nota_cor=R)
+    frase("O CELULAR CAIU", "Na casa do cliente caem TODOS:\ncelulares, TV, impressora, câmera.\nCombine antes quem reconecta o quê.", size=30)
+
+    lista("PRÁTICA · 15 MIN", "Mudar a portaria de lugar", [
+        "•  A ONU do provedor muitas vezes já usa 192.168.0.1 ou 192.168.1.1",
+        "•  Mesmo número no roteador = conflito: tudo ligado, nada funciona",
+        "•  Rede → LAN → o endereço da sua equipe (página 1)",
+        "•  O painel some. Agora ache de novo, SEM olhar a tabela",
+    ], size=20)
+
+    frase("ONDE ESTÁ O PAINEL?", "No gateway.\nCelular: Wi-Fi → detalhes → Gateway\nComputador: ipconfig → Gateway Padrão", size=30)
+
+    tabela("O PLANO DE ENDEREÇOS", "Cada equipe com o seu", [["Equipe", "Painel", "Faixa", "Reserva"]] +
+           [[str(n), plano_equipe(n)["painel"], plano_equipe(n)["faixa"], plano_equipe(n)["reserva"]] for n in range(1, 7)],
+           col_widths=[1.6, 3.2, 4.6, 2.5], size=15, height=3.8)
+
+    lista("PRÁTICA · 25 MIN", "Endereços e a agenda", [
+        "•  DHCP: faixa .100 a .150",
+        "•  Reserva: o MAC de um celular (a \"impressora\") → o endereço .50",
+        "•  Desliga e liga o Wi-Fi do celular: ganhou o .50?",
+        "•  DNS primário 8.8.8.8 · secundário 1.1.1.1",
+        "•  No computador: ipconfig /all → Servidores DNS",
+    ], size=20, nota="Celular novo usa MAC aleatório: Privacidade → \"Usar MAC do dispositivo\".", nota_cor=R)
+
+    frase("A PROMESSA DA NOITE 7", "Onde se troca a agenda?\nNo roteador.\nEle diz pros aparelhos qual DNS usar.", size=32)
 
     frase("", "INTERVALO\n15 minutos", cor=K)
 
-    lista("PRÁTICA · 20 MIN", "O cabo não anda reto", [
-        "Sua equipe recebe um par de pontos: A e B. Meça três vezes:",
+    lista("PRÁTICA · 15 MIN", "Rede de convidados", [
+        "•  Ativar: EQUIPE N - VISITA, com senha própria",
+        "•  Deixar DESMARCADO \"convidados acessam a rede local\"",
+        "•  Um celular na rede de VISITA tenta abrir o painel",
         "",
-        "1.  No olho: quantos metros você acha que dá?",
-        "2.  Em linha reta, com a trena",
-        "3.  Pelo caminho do cabo: rodapé, contornando porta e móvel,",
-        "     subindo e descendo. Nunca no meio do chão",
-    ], size=20)
-
-    frase("A CONTA DA FOLGA", "Cabo pra comprar =\ncaminho real\n+ 1 m em cada ponta\n+ 10% de sobra", size=32)
-
-    frase("CUIDADO", "Cabo de rede não se emenda.\nFaltou 30 cm: joga fora e passa outro.\nSobra é obrigação, não desperdício.", cor=R, size=30)
-
-    lista("PRÁTICA · 30 MIN", "O projeto da dupla", [
-        "•  Escolham UMA das duas plantas e passem pra malha (página 3)",
-        "•  Cada quadrado é 1 metro",
-        "•  E = entrada da internet   ·   R = roteador   ·   C = aparelho no cabo",
-        "•  Com outra cor: o caminho de cada cabo, pelas paredes",
-        "•  Contem os quadrados e preencham a tabela de trechos",
-    ], size=20)
-
-    lista("O ORÇAMENTO", "O que não pode faltar", [
-        "•  Cabo: a metragem com a folga",
-        "•  Conectores: 2 por cabo + 4 de reserva",
-        "•  Canaleta: o cabo que passa por fora da parede",
-        "•  Aparelhos: só se precisar",
-        "•  Mão de obra: visita + cada ponto + configuração do roteador",
-    ], size=21, nota="Preços: a tabela de referência da página 4.")
-
-    tabela("TABELA DE REFERÊNCIA", "Preços pra atividade (não são de loja)",
-           [["Item", "Unid.", "Preço"]] + [[n, u, reais(v)] for n, u, v in PRECOS[:8]],
-           col_widths=[7.4, 2.2, 2.3], size=13, height=3.9)
-
-    tabela("TABELA DE REFERÊNCIA", "Aparelhos e mão de obra",
-           [["Item", "Unid.", "Preço"]] + [[n, u, reais(v)] for n, u, v in PRECOS[8:]],
-           col_widths=[7.4, 2.2, 2.3], size=14, height=3.6)
-
-    lista("PRÁTICA · 20 MIN", "Banca de projetos", [
-        "•  Entregue o projeto pra dupla do lado",
-        "•  Ela confere pelo checklist da página 4",
-        "•  Veredito: aprovado · aprovado com ajuste · refazer",
-        "•  E escreve UMA sugestão",
-        "•  3 min pra corrigir. Depois, algumas duplas apresentam",
+        "Não abre? A visita navega, mas não enxerga a casa.",
     ], size=21)
 
-    lista("O QUE FICA", "Três frases pra guardar", [
-        "\"Roteador é lâmpada: no centro, no alto e à vista.\"",
-        "",
-        "\"O que fica parado vai no cabo. O que anda vai no Wi-Fi.\"",
-        "",
-        "\"Cabo não anda reto. E sobra é obrigação.\"",
-    ], size=23)
+    lista("PRÁTICA · 20 MIN", "Cópia de segurança", [
+        "1.  Backup → salvar o arquivo: equipeN-data",
+        "2.  Reset no roteador. Tudo some",
+        "3.  192.168.0.1 → senha qualquer → Restaurar → o arquivo",
+        "4.  Reiniciou: voltou tudo?",
+    ], size=22, nota="O arquivo guarda as senhas: fica com o cliente, nunca em computador de uso geral.", nota_cor=R)
 
-    lista("PARA A PRÓXIMA NOITE", "Configurando o roteador", [
+    frase("POR QUE A CÓPIA", "Raio, Reset sem querer,\nroteador trocado na garantia:\ncom a cópia, volta em um minuto.", size=32)
+
+    tabela("A FICHA DE ENTREGA", "Fica com o cliente", [["O que vai na ficha", ""]] +
+           [[FICHA[i], FICHA[i + 6]] for i in range(6)],
+           col_widths=[5.95, 5.95], size=14, height=3.6,
+           nota="Na etiqueta do roteador: quem configurou, data e painel. Nenhuma senha.")
+
+    lista("PRÁTICA · 25 MIN", "O roteador trocado", [
+        "Vocês recebem o roteador e a ficha de outra equipe.",
+        "São o próximo técnico, um ano depois, só com o papel.",
+        "",
+        "•  Conectar todos os celulares, só com a ficha",
+        "•  Entrar no painel, só com a ficha",
+        "•  Conferir cada item. Laudo na página 3",
+    ], size=21)
+
+    frase("A LIÇÃO DA FICHA", "Ficha que só quem escreveu entende\nnão é ficha.\nO papel tem que funcionar sozinho.", size=30)
+
+    lista("O QUE FICA", "Três frases pra guardar", [
+        "\"Roteador de fábrica funciona. Configurado é serviço entregue.\"",
+        "",
+        "\"Perdeu o painel? Olhe o gateway.\"",
+        "",
+        "\"Senha vai na ficha do cliente. Nunca na etiqueta do roteador.\"",
+    ], size=22)
+
+    lista("PARA A PRÓXIMA NOITE", "Até onde o Wi-Fi chega", [
         "A tarefa:",
         "",
-        "•  Anote a marca e o modelo do roteador de casa (etiqueta embaixo)",
-        "•  O nome do Wi-Fi da casa é igual ao da etiqueta?",
-        "•  Alguém em casa sabe a senha de administrador?",
-    ], nota="Não tire foto da etiqueta nem mande a senha pra ninguém.", nota_cor=R)
+        "•  Quantos mega é o plano de internet de casa? (fatura ou aplicativo)",
+        "•  Teste de velocidade no celular (fast.com) do lado do roteador",
+        "•  E de novo no cômodo mais longe dele",
+        "•  Anote os três números",
+    ])
 
-    path = os.path.join(OUTDIR, "Aula - Redes 8 - Planejando a rede de casa.pptx")
+    path = os.path.join(OUTDIR, "Aula - Redes 8 - Configurando o roteador.pptx")
     prs.save(path)
     return path
 
@@ -638,198 +499,140 @@ def build_slides():
 # ============================================================
 # FOLHA DO ALUNO
 # ============================================================
-def linhas(doc, n):
-    for _ in range(n):
-        p = doc.add_paragraph()
-        p.paragraph_format.space_after = Pt(0)
-        r = p.add_run("_" * 100)
-        r.font.size = Pt(11)
-        r.font.color.rgb = COR_CINZA
-
-
-def pergunta(doc, texto, size=11):
-    p = doc.add_paragraph()
-    r = p.add_run(texto)
-    r.font.size = Pt(size)
-    r.bold = True
-
-
-def campo(doc, texto, size=11, space_after=4):
+def campo(doc, texto, size=11, space_after=4, bold=False):
     p = doc.add_paragraph()
     p.paragraph_format.space_after = Pt(space_after)
     r = p.add_run(texto)
     r.font.size = Pt(size)
+    r.bold = bold
     return p
+
+
+def linha(doc):
+    p = campo(doc, "_" * 100, space_after=0)
+    p.runs[0].font.color.rgb = COR_CINZA
 
 
 def build_folha():
     doc = Document()
     setup_page(doc, margem=Cm(1.8))
 
-    # PÁGINA 1 — Ficha de visita técnica da minha casa
+    # PÁGINA 1 — Nome, senha, painel
     cabecalho_documento(
         doc,
-        "VISITA TÉCNICA: A MINHA CASA",
-        f"Redes de Computadores · {NOITE} · Curso FIC · CEJA Itapiranga · 1 de 4",
+        "CONFIGURANDO O ROTEADOR",
+        f"Redes de Computadores · {NOITE} · Curso FIC · CEJA Itapiranga · 1 de 3",
     )
-    campo(doc, "Nome: _________________________________________________     Dupla com: ________________", space_after=8)
+    campo(doc, "Nome: _________________________________________________     Equipe: ________", space_after=8)
 
-    add_heading(doc, "1  A casa", level=2)
-    campo(doc, "Quantas pessoas moram: ____    Alguém trabalha ou estuda de casa?  ☐ Sim  ☐ Não")
-    campo(doc, "A casa é:  ☐ térrea  ☐ sobrado     ☐ alvenaria  ☐ madeira  ☐ mista     Tem laje?  ☐ Sim  ☐ Não")
-    campo(doc, "Tem galpão, garagem ou área externa que precisa de internet?  ☐ Sim  ☐ Não   Qual? ______________")
-    campo(doc, "Tem forro ou rodapé por onde um cabo pode passar?  ☐ Sim  ☐ Não  ☐ Não sei")
+    add_heading(doc, "1  A tarefa: o roteador da minha casa", level=2)
+    campo(doc, "Marca e modelo: __________________________   Wi-Fi com nome de fábrica?  ☐ Sim  ☐ Não")
+    campo(doc, "Alguém sabe a senha de administrador?  ☐ Sim  ☐ Não")
 
-    add_heading(doc, "2  A internet hoje", level=2)
-    campo(doc, "Por onde a internet entra na casa (em que cômodo, em que parede)? ______________________________")
-    campo(doc, "Onde está o roteador hoje? ________________________   Fica:  ☐ no alto  ☐ no chão  ☐ dentro de móvel")
-    campo(doc, "Cômodos onde o Wi-Fi é fraco ou cai: ______________________________________________________")
-    campo(doc, "Fica lento em algum horário? ☐ Não  ☐ Sim, às ______ horas")
-
-    add_heading(doc, "3  Os aparelhos", level=2)
-    add_para(doc, "Parado = fica sempre no mesmo lugar. Anda = vai de um cômodo pro outro.", italic=True, size=10, color=COR_CINZA)
+    add_heading(doc, "2  Nome, senha e tranca", level=2)
+    add_para(doc, "Anote a lápis. No fim, passe a limpo na ficha de entrega (página 3).", italic=True, size=10, color=COR_CINZA)
     tbl = add_table(doc, [
-        ["Aparelho", "Quantos", "Em que cômodo", "Parado ou anda?", "Cabo ou Wi-Fi?"],
-        ["Celular", "", "", "", ""],
-        ["TV", "", "", "", ""],
-        ["Computador / notebook", "", "", "", ""],
-        ["Videogame", "", "", "", ""],
-        ["Câmera / impressora / outro", "", "", "", ""],
-    ], col_widths=[4.6, 1.8, 4.0, 3.3, 3.3])
+        ["O quê", "De fábrica (etiqueta)", "Como a equipe deixou"],
+        ["Endereço do painel", "192.168.0.1", ""],
+        ["Senha de administrador", "(nenhuma)", ""],
+        ["Nome do Wi-Fi", "", ""],
+        ["Senha do Wi-Fi", "", ""],
+        ["Segurança", "", "☐ WPA2-PSK  ☐ WPA2/WPA3   AES"],
+        ["Tela WAN: tipo marcado", "", "(não mexer)"],
+    ], col_widths=[4.6, 5.2, 7.6])
     for row in tbl.rows[1:]:
-        row.height = Cm(0.8)
+        row.height = Cm(0.85)
+    campo(doc, "Quantos celulares da equipe reconectaram no nome novo? ____   Algum não conseguiu? Por quê? ____________")
 
-    add_heading(doc, "4  As perguntas da dupla", level=2)
-    add_para(doc, "Sua dupla leu sua ficha e fez duas perguntas que ela não respondia. Anote as perguntas e as respostas.", italic=True, size=10, color=COR_CINZA)
-    for i in (1, 2):
-        campo(doc, f"Pergunta {i}: ___________________________________________________________________________")
-        campo(doc, "Resposta: ____________________________________________________________________________", space_after=8)
-
-    add_heading(doc, "5  Onde fica o roteador", level=2)
-    campo(doc, "Roteador é lâmpada: no ______________, no ______________ e à ______________.")
-    campo(doc, "O que fica ______________ vai no cabo. O que ______________ vai no Wi-Fi.")
-
-    # PÁGINA 2 — Clínica de plantas + medição
-    doc.add_page_break()
-    cabecalho_documento(
-        doc,
-        "CLÍNICA DE PLANTAS E O CABO QUE NÃO ANDA RETO",
-        f"Laudo da equipe · {NOITE} · 2 de 4",
-    )
-    campo(doc, "Equipe: ______________________________________________________________")
-
-    add_heading(doc, "1  Clínica de plantas", level=2)
-    add_para(doc, "Pra cada casa do cartão: qual o problema, onde o roteador deveria ficar e o que precisa comprar.", italic=True, size=10, color=COR_CINZA)
-    tbl = add_table(doc, [["#", "O problema", "A solução", "Comprar"]] +
-                    [[f"{i}", "", "", "☐ nada  ☐ cabo\n☐ aparelho"] for i in range(1, len(PLANTAS) + 1)],
-                    col_widths=[0.7, 6.4, 6.4, 3.0])
-    for row in tbl.rows[1:]:
-        row.height = Cm(1.0)
-    campo(doc, "Qual casa enganou a equipe? ______   Por quê? ________________________________________________")
-
-    add_heading(doc, "2  O cabo não anda reto", level=2)
-    campo(doc, "Par de pontos que a equipe mediu: ☐ 1  ☐ 2  ☐ 3  ☐ 4  ☐ 5")
-    tbl = add_table(doc, [
-        ["Medida", "Metros"],
-        ["1. No olho (antes de medir)", ""],
-        ["2. Em linha reta, com a trena", ""],
-        ["3. Pelo caminho do cabo (rodapé, porta, subida)", ""],
-        ["Quantas vezes o caminho real é maior que a linha reta? (3 ÷ 2)", ""],
-    ], col_widths=[13, 4.5])
-    for row in tbl.rows[1:]:
-        row.height = Cm(0.8)
-
-    add_para(doc, "Cabo pra comprar = caminho real + 1 m em cada ponta + 10% de sobra", bold=True, size=11, color=COR_PRIMARIA, align=WD_ALIGN_PARAGRAPH.CENTER)
-    campo(doc, "Faça a conta do seu par:   ________ + 2 m = ________   +10% = ________ m de cabo")
-    pergunta(doc, "Por que não dá pra comprar o cabo \"certinho\", sem sobra?")
-    linhas(doc, 2)
-
-    # PÁGINA 3 — O projeto na malha
-    doc.add_page_break()
-    cabecalho_documento(
-        doc,
-        "O PROJETO DA DUPLA",
-        f"A rede de uma casa · {NOITE} · 3 de 4",
-    )
-    campo(doc, "Dupla: ______________________________________   Casa de: __________________________")
-    add_para(doc, "Cada quadrado = 1 metro.  E = entrada da internet  ·  R = roteador  ·  C = aparelho no cabo. Com outra cor, o caminho de cada cabo, pelas paredes.", italic=True, size=10, color=COR_CINZA)
-
-    malha = doc.add_table(rows=14, cols=17)
-    malha.style = 'Table Grid'
-    for row in malha.rows:
-        row.height = Cm(1.0)
+    add_heading(doc, "3  Mudar a portaria de lugar", level=2)
+    tbl = add_table(doc, [["Equipe", "Novo endereço do painel", "Faixa de endereços", "Reserva"]] +
+                    [[str(n), plano_equipe(n)["painel"], plano_equipe(n)["faixa"], plano_equipe(n)["reserva"]] for n in range(1, 7)],
+                    col_widths=[2, 4.8, 6.6, 4])
+    for row in tbl.rows:
         for cell in row.cells:
-            cell.width = Cm(1.0)
+            for run in cell.paragraphs[0].runs:
+                run.font.size = Pt(9)
+    campo(doc, "Depois de mudar, onde a equipe achou o endereço novo?  ☐ gateway no celular  ☐ ipconfig no computador")
+    campo(doc, "O gateway que apareceu: ____________________   Bate com o endereço da sua equipe?  ☐ Sim  ☐ Não")
+    campo(doc, "Por que o técnico muda o endereço do painel na casa do cliente?", bold=True)
+    linha(doc)
+    linha(doc)
 
-    add_heading(doc, "Os trechos de cabo", level=2)
+    # PÁGINA 2 — Endereços, agenda, convidados, cópia
+    doc.add_page_break()
+    cabecalho_documento(
+        doc,
+        "ENDEREÇOS, AGENDA, VISITA E CÓPIA",
+        f"Configurando o roteador · {NOITE} · 2 de 3",
+    )
+
+    add_heading(doc, "1  A faixa de endereços (DHCP)", level=2)
+    campo(doc, "A faixa estava: de ____________________ até ____________________")
+    campo(doc, "A equipe deixou: de ____________________ até ____________________   (são ______ endereços)")
+
+    add_heading(doc, "2  A reserva", level=2)
+    campo(doc, "Aparelho que fez de \"impressora\": ______________________   MAC: ____ : ____ : ____ : ____ : ____ : ____")
+    campo(doc, "Endereço reservado: ____________________   Depois de reconectar, ele ganhou esse endereço?  ☐ Sim  ☐ Não")
+    campo(doc, "Teve que desligar o MAC aleatório (privado) do celular?  ☐ Sim  ☐ Não")
+
+    add_heading(doc, "3  A agenda (DNS)", level=2)
+    campo(doc, "Antes, os campos de DNS estavam: ____________________   A equipe colocou: ____________ e ____________")
+    campo(doc, "No computador, ipconfig /all → Servidores DNS mostrou: ____________________")
+    campo(doc, "Que reclamação de cliente faz você vir até esta tela? (lembre da Noite 7)", bold=True)
+    linha(doc)
+
+    add_heading(doc, "4  Rede de convidados", level=2)
+    campo(doc, "O roteador tem rede de convidados?  ☐ Sim  ☐ Não (acompanhamos a equipe ______)")
+    campo(doc, "Nome: ____________________   Senha: ____________________")
+    campo(doc, "Pela rede de VISITA, o painel abriu?  ☐ Sim  ☐ Não     O que isso quer dizer? ________________________")
+
+    add_heading(doc, "5  Cópia de segurança", level=2)
     tbl = add_table(doc, [
-        ["Trecho (de onde até onde)", "Quadrados", "+ 2 m pontas", "+ 10%", "Total (m)"],
-        ["ONU → roteador", "", "", "", ""],
-        ["Roteador → ", "", "", "", ""],
-        ["Roteador → ", "", "", "", ""],
-        ["Roteador → ", "", "", "", ""],
-        ["TOTAL DE CABO", "", "", "", ""],
-    ], col_widths=[6.5, 2.6, 2.8, 2.4, 3.2])
+        ["Passo", "Feito?"],
+        ["Salvamos o arquivo da configuração (nome: ______________________)", "☐"],
+        ["Demos Reset: o Wi-Fi de fábrica voltou", "☐"],
+        ["Entramos em 192.168.0.1 e restauramos o arquivo", "☐"],
+        ["Voltou tudo: nome, senha, painel, reserva, convidados", "☐"],
+    ], col_widths=[15, 2.5])
     for row in tbl.rows[1:]:
         row.height = Cm(0.75)
+    campo(doc, "Onde a cópia de segurança deve ficar? E onde NÃO deve?", bold=True)
+    linha(doc)
 
-    # PÁGINA 4 — Orçamento + banca + tarefa
+    # PÁGINA 3 — Ficha de entrega + laudo do roteador trocado + tarefa
     doc.add_page_break()
     cabecalho_documento(
         doc,
-        "ORÇAMENTO E BANCA",
-        f"Lista de materiais · {NOITE} · 4 de 4",
+        "FICHA DE ENTREGA E LAUDO",
+        f"O serviço documentado · {NOITE} · 3 de 3",
     )
 
-    add_heading(doc, "1  Tabela de preços de referência", level=2)
-    add_para(doc, "Valores pra atividade em sala, não de loja. No serviço de verdade, pesquise (como na Noite 3).", italic=True, size=9, color=COR_CINZA)
-    metade = (len(PRECOS) + 1) // 2
-    esq, dir_ = PRECOS[:metade], PRECOS[metade:]
-    rows = [["Item", "Preço", "Item", "Preço"]]
-    for i in range(metade):
-        a = esq[i]
-        b = dir_[i] if i < len(dir_) else ("", "", None)
-        rows.append([f"{a[0]} ({a[1]})", reais(a[2]),
-                     f"{b[0]} ({b[1]})" if b[0] else "", reais(b[2]) if b[2] is not None else ""])
-    tbl = add_table(doc, rows, col_widths=[6.4, 2.2, 6.7, 2.2])
-    for row in tbl.rows:
-        for cell in row.cells:
-            for run in cell.paragraphs[0].runs:
-                run.font.size = Pt(8.5)
-
-    add_heading(doc, "2  O orçamento do projeto", level=2)
-    tbl = add_table(doc, [
-        ["Item", "Qtd", "Preço unit.", "Total"],
-        ["Cabo de rede", "", "", ""],
-        ["Conectores RJ45 (2 por cabo + 4)", "", "", ""],
-        ["Canaleta", "", "", ""],
-        ["", "", "", ""],
-        ["Mão de obra: visita", "1", "", ""],
-        ["Mão de obra: pontos de cabo", "", "", ""],
-        ["Mão de obra: configuração do roteador", "", "", ""],
-        ["TOTAL", "", "", ""],
-    ], col_widths=[8.5, 2, 3.4, 3.6])
+    add_heading(doc, "1  Ficha de entrega ao cliente (a caneta, letra legível)", level=2)
+    tbl = add_table(doc, [["Item", "Como ficou"]] + [[c, ""] for c in FICHA], col_widths=[6.5, 11])
     for row in tbl.rows[1:]:
-        row.height = Cm(0.62)
+        row.height = Cm(0.72)
+    add_para(doc, "Etiqueta no roteador (fita crepe): \"Configurado por EQUIPE __ em __/__ · painel 192.168.___.1\". Nenhuma senha.", italic=True, size=9, color=COR_ALERTA)
 
-    add_heading(doc, "3  Banca: conferência da dupla vizinha", level=2)
-    campo(doc, "Projeto da dupla: ____________________________   Conferido por: ____________________________", size=10)
-    meio = (len(CHECKLIST) + 1) // 2
-    tbl = add_table(doc, [[CHECKLIST[i], "☐", CHECKLIST[i + meio] if i + meio < len(CHECKLIST) else "", "☐"]
-                          for i in range(meio)], header=False, col_widths=[8.0, 0.7, 8.0, 0.7])
-    for row in tbl.rows:
-        for cell in row.cells:
-            for run in cell.paragraphs[0].runs:
-                run.font.size = Pt(8.5)
-    campo(doc, "Veredito:  ☐ aprovado   ☐ aprovado com ajuste   ☐ refazer", size=10)
-    campo(doc, "Uma sugestão: _________________________________________________________________________", size=10)
+    add_heading(doc, "2  O roteador trocado: laudo da ficha da equipe ____", level=2)
+    tbl = add_table(doc, [
+        ["Conferido só com a ficha", "✓ ou ✗", "O que faltou ou estava errado"],
+        ["Todos conectaram no Wi-Fi", "", ""],
+        ["Entramos no painel", "", ""],
+        ["Nome e segurança como na ficha", "", ""],
+        ["Faixa e reserva como na ficha", "", ""],
+        ["DNS como na ficha", "", ""],
+        ["Rede de convidados como na ficha", "", ""],
+    ], col_widths=[6.5, 2, 9])
+    for row in tbl.rows[1:]:
+        row.height = Cm(0.7)
+    campo(doc, "A ficha funcionou sozinha?  ☐ Sim, de primeira  ☐ Com ajuda da outra equipe  ☐ Não", size=10)
 
     add_heading(doc, "TAREFA DA SEMANA", level=2, color=COR_DESTAQUE)
-    campo(doc, "Roteador de casa — marca e modelo (etiqueta embaixo): _____________________________________", size=10)
-    campo(doc, "O nome do Wi-Fi da casa é igual ao da etiqueta?  ☐ Sim  ☐ Não     Alguém sabe a senha de administrador?  ☐ Sim  ☐ Não", size=10)
-    add_para(doc, "Não tire foto da etiqueta nem mande a senha pra ninguém. Traga esta folha na Noite 9 · CEJA Itapiranga – SC", italic=True, size=9, color=COR_CINZA, align=WD_ALIGN_PARAGRAPH.CENTER)
+    campo(doc, "Plano de internet de casa: ______ mega     Teste de velocidade (fast.com):", size=10)
+    campo(doc, "Do lado do roteador: ______ mega     No cômodo mais longe (qual? __________): ______ mega", size=10)
+    add_para(doc, "Traga esta folha na Noite 9 · CEJA Itapiranga – SC", italic=True, size=9, color=COR_CINZA, align=WD_ALIGN_PARAGRAPH.CENTER)
 
-    path = os.path.join(OUTDIR, "Folha do Aluno - Redes 8 - Planejando a rede de casa.docx")
+    path = os.path.join(OUTDIR, "Folha do Aluno - Redes 8 - Configurando o roteador.docx")
     doc.save(path)
     return path
 
@@ -843,47 +646,42 @@ def build_resumo():
 
     cabecalho_documento(
         doc,
-        "A REDE DA CASA: PLANEJANDO A INSTALAÇÃO",
+        "CONFIGURANDO O ROTEADOR: DA CAIXA À ENTREGA",
         f"Resumo do aluno · {NOITE} · Redes de Computadores · Curso FIC · CEJA Itapiranga",
     )
 
     add_heading(doc, "A ideia principal", level=2)
-    add_para(doc, "Rede boa começa antes do alicate: visita, planta, posição do roteador, caminho do cabo, lista de materiais e orçamento. O técnico do provedor deixa o roteador onde é fácil pra ele; o seu serviço é deixar onde é bom pra casa.")
+    add_para(doc, "O roteador sai da caixa funcionando, mas com nome, senha e painel que qualquer um conhece. Configurar é deixar ele seguro e organizado. Entregar é deixar a ficha com o cliente, pra ele e pro próximo técnico.")
 
-    add_heading(doc, "A visita técnica: o que perguntar e o que olhar", level=2)
-    add_table(doc, [["O quê", "O que perguntar ou olhar"]] + [list(r) for r in VISITA], col_widths=[3.8, 11.7])
+    add_heading(doc, "Os oito itens da entrega", level=2)
+    add_table(doc, [["Item", "Por quê"]] + [list(r) for r in ENTREGA], col_widths=[5, 10.5])
 
-    add_heading(doc, "Onde fica o roteador", level=2)
-    add_table(doc, [["Regra", "Por quê"]] + [list(r) for r in REGRAS_ROTEADOR], col_widths=[4.2, 11.3])
-    add_bullet(doc, "A fibra entra no canto? Não mexa nela: leve um cabo de rede da ONU até o meio da casa e ponha o roteador lá")
+    add_heading(doc, "Onde fica cada coisa (TP-Link)", level=2)
+    add_table(doc, [["O quê", "Onde costuma ficar"]] + [list(r) for r in MENUS], col_widths=[4.5, 11])
+    add_para(doc, "Outra marca? Os itens são os mesmos, só muda o nome do menu.", italic=True, size=10, color=COR_CINZA)
 
-    add_heading(doc, "Cabo ou Wi-Fi", level=2)
-    add_bullet(doc, "Fica parado (TV, computador, videogame, câmera, impressora): cabo")
-    add_bullet(doc, "Anda (celular, notebook, tablet): Wi-Fi")
-    add_bullet(doc, "Galpão ou cômodo longe: cabo até lá (até 100 m) e um aparelho na ponta. Repetidor no meio do pátio é gambiarra")
+    add_heading(doc, "Na hora do serviço", level=2)
+    add_bullet(doc, "Antes de trocar a senha do Wi-Fi, combine com o cliente: TODOS os aparelhos vão cair e precisar reconectar")
+    add_bullet(doc, "Truque: no roteador novo, use o mesmo nome e senha do antigo. Os aparelhos reconectam sozinhos")
+    add_bullet(doc, "Perdeu o painel depois de mudar o endereço? Olhe o gateway: no celular (detalhes da rede) ou no computador (ipconfig)")
+    add_bullet(doc, "Reserva de endereço não pegou num celular? Ele está com MAC aleatório: Wi-Fi → a rede → Privacidade → \"Usar MAC do dispositivo\"")
+    add_bullet(doc, "Tela WAN: atrás da ONU, quase sempre \"IP dinâmico\". PPPoE só com usuário e senha do provedor")
+    add_bullet(doc, "Nunca deixe o Wi-Fi aberto nem em WEP. WPA2, ou WPA2/WPA3 se todos os aparelhos aceitarem")
 
-    add_heading(doc, "Quanto cabo comprar", level=2)
-    add_bullet(doc, "Meça o caminho de verdade: pelo rodapé, forro ou canaleta, contornando portas. Nunca no meio do chão")
-    add_bullet(doc, "O caminho real costuma dar uma vez e meia a duas vezes a linha reta")
-    add_para(doc, "Cabo pra comprar = caminho real + 1 m em cada ponta + 10% de sobra", bold=True, color=COR_PRIMARIA)
-    add_bullet(doc, "Cabo de rede não se emenda. Faltou, passa outro: por isso a sobra")
-    add_bullet(doc, "Conectores: 2 por cabo, mais uns 4 de reserva")
-
-    add_heading(doc, "O que entra no orçamento", level=2)
-    add_bullet(doc, "Cabo, conectores, canaleta ou eletroduto")
-    add_bullet(doc, "Aparelhos, só se precisar (roteador, ponto de acesso, mesh)")
-    add_bullet(doc, "Mão de obra: visita, cada ponto de cabo e a configuração do roteador")
-    add_bullet(doc, "Se a instalação já está certa, não venda nada: lentidão em horário fixo é do plano ou do provedor")
+    add_heading(doc, "Ficha, etiqueta e cópia", level=2)
+    add_bullet(doc, "Ficha de entrega com tudo, inclusive as senhas: fica guardada com o cliente")
+    add_bullet(doc, "Etiqueta no roteador: quem configurou, a data e o endereço do painel. Nenhuma senha")
+    add_bullet(doc, "Cópia de segurança: salva a configuração inteira num arquivo. Depois de um Reset, restaura em um minuto. Guarda as senhas: fica com o cliente ou com o técnico")
 
     add_heading(doc, "Três frases pra guardar", level=2)
-    add_para(doc, "\"Roteador é lâmpada: no centro, no alto e à vista.\"", bold=True, color=COR_PRIMARIA)
-    add_para(doc, "\"O que fica parado vai no cabo. O que anda vai no Wi-Fi.\"", bold=True, color=COR_PRIMARIA)
-    add_para(doc, "\"Cabo não anda reto. E sobra é obrigação.\"", bold=True, color=COR_PRIMARIA)
+    add_para(doc, "\"Roteador de fábrica funciona. Configurado é serviço entregue.\"", bold=True, color=COR_PRIMARIA)
+    add_para(doc, "\"Perdeu o painel? Olhe o gateway.\"", bold=True, color=COR_PRIMARIA)
+    add_para(doc, "\"Senha vai na ficha do cliente. Nunca na etiqueta do roteador.\"", bold=True, color=COR_PRIMARIA)
 
     add_heading(doc, "Pra se testar em casa", level=2)
-    add_bullet(doc, "Onde está o roteador da sua casa? Ele obedece às cinco regras? O que você mudaria?")
-    add_bullet(doc, "O caminho do cabo até o quarto dá 9 m. Quanto cabo você compra?")
-    add_bullet(doc, "A internet de um cliente fica lenta todo dia às 20 h, e o roteador está bem posicionado. O que você faz?")
+    add_bullet(doc, "Ache o gateway da sua rede de casa no celular. É o endereço do painel do seu roteador")
+    add_bullet(doc, "Se você fosse configurar o roteador da sua casa amanhã, o que mudaria primeiro? E com quem precisaria combinar?")
+    add_bullet(doc, "Por que a ficha de entrega não pode depender da memória de quem configurou?")
 
     doc.add_paragraph()
     p = doc.add_paragraph()
@@ -893,7 +691,7 @@ def build_resumo():
     r.italic = True
     r.font.color.rgb = COR_CINZA
 
-    path = os.path.join(OUTDIR, "Resumo do Aluno - Redes 8 - Planejando a rede de casa.docx")
+    path = os.path.join(OUTDIR, "Resumo do Aluno - Redes 8 - Configurando o roteador.docx")
     doc.save(path)
     return path
 

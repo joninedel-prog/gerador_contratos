@@ -2,7 +2,8 @@
 
 Segue o layout do modelo da SED/CEJA (Plano Mensal 2 — SETEMBRO-OUTUBRO 2026):
 cabeçalho com brasão, campos em negrito na mesma linha, marcadores ● e Arial 12.
-Conteúdo das Noites 7 a 11 do módulo de Redes.
+Conteúdo das Noites 7 a 11 do módulo de Redes (DNS, configuração do roteador,
+cobertura, segurança e redes móveis).
 """
 import os
 
@@ -20,25 +21,26 @@ CAMPOS = [
     ("COMPONENTE CURRICULAR:", "Informática — Curso FIC em Montador e Reparador de Computadores"),
     ("PROFESSOR:", "Joni César Eidt"),
     ("TEMA GERADOR:", "Projeto de Vida: Construindo o Futuro"),
-    ("RECORTE DO COMPONENTE:", "Instalar — planejar, configurar e proteger a rede de casa"),
+    ("RECORTE DO COMPONENTE:", "Configurar — do roteador de fábrica à rede pronta, segura e móvel"),
     ("TURMA:", "Ensino Médio – Noturno (Multisseriado)"),
-    ("QUESTÃO MOTRIZ:", "Se um vizinho me chamar para instalar a internet na casa dele, o que eu "
-                        "preciso planejar, configurar e deixar seguro?"),
+    ("QUESTÃO MOTRIZ:", "Se um vizinho me entregar um roteador novo na caixa, o que eu preciso configurar "
+                        "para deixar a internet da casa dele boa, segura e funcionando em todos os cômodos?"),
 ]
 
 OBJETIVOS = [
     "Explicar a função do serviço de nomes (DNS) na tradução do endereço de um site em endereço de rede;",
     "Ler e interpretar o endereço de um site, identificando o domínio responsável e reconhecendo links fraudulentos;",
     "Distinguir o que a conexão segura (HTTPS) garante e o que ela não garante ao usuário;",
-    "Planejar a instalação de uma rede doméstica a partir da planta do imóvel, definindo a posição do "
-    "roteador e os pontos cabeados;",
-    "Elaborar lista de materiais e orçamento de uma instalação de rede;",
-    "Configurar um roteador doméstico a partir das configurações de fábrica: nome de rede, senha, "
-    "criptografia, senha de administração e distribuição automática de endereços;",
-    "Medir a intensidade do sinal sem fio e propor soluções para áreas de cobertura fraca;",
+    "Configurar um roteador doméstico a partir das configurações de fábrica: senha de administração, nome "
+    "de rede, senha e criptografia, endereço de acesso, distribuição automática e reserva de endereços, "
+    "servidor de nomes e rede de convidados;",
+    "Salvar e restaurar a configuração do equipamento e registrar o serviço em ficha de entrega;",
+    "Medir a intensidade do sinal sem fio e a velocidade entregue, e propor soluções para áreas de "
+    "cobertura fraca;",
     "Diferenciar as faixas de 2,4 GHz e 5 GHz quanto a alcance e velocidade;",
     "Aplicar e auditar práticas de segurança na configuração da rede sem fio e orientar o usuário final;",
-    "Reconhecer no planejamento, na instalação e na orientação ao cliente uma frente concreta de "
+    "Reconhecer as redes móveis (4G e 5G) e usar o celular e o roteador móvel como ponto de acesso;",
+    "Reconhecer na configuração, na manutenção e na orientação ao cliente uma frente concreta de "
     "prestação de serviço.",
 ]
 
@@ -47,10 +49,11 @@ INTERACAO_INTRO = ("O componente segue integrado ao tema gerador pelo viés do t
 
 INTERACAO = [
     ("LINGUAGENS — ", "leitura crítica de links e de mensagens, identificando as estratégias de "
-                      "persuasão usadas em golpes digitais, e produção de cartilha de orientação para a "
-                      "família (EM13LGG701 e EM13LGG702)."),
-    ("MATEMÁTICA — ", "leitura de planta em escala, cálculo da metragem de cabo e elaboração de "
-                      "orçamento em planilha (EM13MAT201 e EM13MAT203)."),
+                      "persuasão usadas em golpes digitais, produção de cartilha de orientação para a "
+                      "família e registro técnico do serviço em ficha de entrega (EM13LGG701 e EM13LGG702)."),
+    ("MATEMÁTICA — ", "unidades de velocidade de transmissão e de consumo de dados, e comparação entre o "
+                      "plano contratado, a velocidade medida perto e longe do roteador e a franquia móvel "
+                      "(EM13MAT101)."),
     ("CIÊNCIAS HUMANAS — ", "segurança digital e golpes como questão social, e o uso ético e crítico "
                             "das tecnologias na vida em família e em comunidade (EM13CHS106)."),
     ("CIÊNCIAS DA NATUREZA — ", "propagação das ondas de rádio, faixas de frequência, atenuação por "
@@ -61,37 +64,38 @@ HABILIDADE_IF = ("(EMIFFTP05) Selecionar e mobilizar intencionalmente recursos c
                  "problemas reais relacionados à produtividade, à colaboração e/ou à comunicação.")
 
 CONTEUDOS = [
-    "Nomes na rede: serviço de nomes (DNS); estrutura do endereço de um site (protocolo, subdomínio, "
-    "domínio, extensão e caminho); conexão segura (HTTPS) e certificado; links fraudulentos e "
-    "engenharia social.",
-    "Planejamento da rede doméstica: visita técnica e levantamento de necessidades; planta baixa "
-    "simplificada; critérios de posicionamento do roteador; escolha entre cabo e sem fio; lista de "
-    "materiais e orçamento.",
-    "Configuração do roteador: restauração de fábrica e primeiro acesso; conexão com o modem do "
-    "provedor; nome de rede e senha; criptografia WPA2 e WPA3; rede de convidados; distribuição "
-    "automática de endereços; servidor de nomes; atualização e cópia de segurança da configuração.",
-    "Cobertura sem fio: intensidade de sinal; faixas de 2,4 GHz e 5 GHz; canais e interferência de "
-    "redes vizinhas; repetidor, sistema mesh e ponto de acesso cabeado.",
-    "Segurança em rede: senhas fortes e frases-senha; senha padrão de equipamentos; WPS; riscos da "
-    "rede aberta, da rede pública e da rede falsa; auditoria da configuração; orientação ao cliente.",
-    "Registro do serviço: ficha de entrega da instalação ao cliente.",
+    "Nomes na rede: serviço de nomes (DNS); estrutura do endereço de um site (protocolo, domínio e "
+    "caminho); conexão segura (HTTPS) e certificado; links fraudulentos e engenharia social.",
+    "Configuração do roteador: senha de administração; tela de conexão com o provedor (IP dinâmico e "
+    "PPPoE); nome de rede, senha e criptografia WPA2 e WPA3; alteração do endereço de acesso e gateway; "
+    "faixa do servidor DHCP e reserva de endereço por MAC; servidores DNS; rede de convidados; cópia "
+    "de segurança e restauração.",
+    "Cobertura sem fio: intensidade de sinal; teste de velocidade; posicionamento do roteador; faixas "
+    "de 2,4 GHz e 5 GHz; canais e interferência de redes vizinhas; repetidor, sistema mesh e ponto de "
+    "acesso cabeado.",
+    "Segurança em rede: senhas fortes e frases-senha; senha padrão de equipamentos; WPS; firmware; "
+    "riscos da rede aberta, da rede pública e da rede falsa; auditoria da configuração; orientação ao "
+    "cliente.",
+    "Redes móveis: 4G e 5G; sinal e cobertura da operadora; roteamento de internet pelo celular "
+    "(hotspot); roteador móvel e roteador com chip; franquia e consumo de dados.",
+    "Registro do serviço: ficha de entrega da configuração ao cliente.",
 ]
 
 METODOLOGIA = [
     "Predominância de atividade prática (mais de sessenta por cento do encontro) e exposição dialogada "
     "em blocos curtos, sempre seguidos de prática;",
     "A situação-problema antecede o conteúdo: cada encontro abre por algo que o estudante traz de casa "
-    "— os endereços de sites que usa, a planta da própria casa, o cômodo onde o sinal não chega;",
+    "— os endereços de sites que usa, a etiqueta do próprio roteador, a velocidade medida no cômodo "
+    "mais longe;",
     "Encenação com material físico para tornar visível o que é invisível na rede, como a agenda viva "
     "do serviço de nomes;",
-    "Estações rotativas e clínicas com laudo: classificação de links, teste de sinal e auditoria de "
-    "roteador;",
-    "Execução em bancada com roteadores reais e conferência cruzada entre equipes por checklist;",
-    "Projeto contínuo: a planta da casa trazida pelo estudante acompanha os encontros, do planejamento "
-    "à cobertura e à segurança;",
+    "Execução em bancada com roteadores reais, partindo das configurações de fábrica, com passo a "
+    "passo impresso e rodízio de quem opera o equipamento;",
+    "Verificação objetiva permanente: o aparelho conecta ou não conecta, o endereço reservado aparece "
+    "ou não aparece, a rede de convidados enxerga ou não enxerga a rede da casa;",
+    "Estações rotativas com laudo: classificação de links, medição de sinal e auditoria de roteador;",
+    "Conferência cruzada entre equipes: cada equipe valida a configuração e a ficha de entrega de outra;",
     "Trabalho em equipes com rodízio de funções e tutoria entre pares;",
-    "Produção e apresentação de materiais pela turma: cartilha anti-golpe, cartaz de diagnóstico de "
-    "cobertura e orçamento;",
     "Retomada nos minutos iniciais de cada encontro e atendimento individual nos minutos finais;",
     "Registro do serviço executado em ficha técnica, no mesmo formato adotado nas unidades anteriores.",
 ]
@@ -99,24 +103,23 @@ METODOLOGIA = [
 RECURSOS = [
     "Laboratório de informática e projetor;",
     "Roteadores domésticos para bancada, cabos de rede e régua de tomadas;",
-    "Celulares do professor e dos estudantes, com aplicativo de análise de sinal sem fio e "
-    "compartilhamento de internet (hotspot);",
-    "Plantas das casas desenhadas pelos próprios estudantes;",
-    "Planilha modelo de orçamento;",
+    "Celulares do professor e dos estudantes, com aplicativo de análise de sinal sem fio, teste de "
+    "velocidade e compartilhamento de internet (hotspot);",
+    "Fatura ou aplicativo do provedor de internet, trazidos pelos próprios estudantes;",
     "Cartolinas e canetões para a produção de cartilha e cartazes;",
     "Material impresso produzido pelo professor: roteiros, folhas do aluno, cartões de links, "
-    "checklists de configuração e de auditoria e fichas de entrega.",
+    "passo a passo de configuração, checklist de auditoria e fichas de entrega.",
 ]
 
 AVALIACAO = [
-    "Portfólio profissional: planta da casa com o projeto da rede, orçamento e ficha de entrega da "
-    "instalação;",
-    "Produto verificável: roteador configurado que conecta os aparelhos da equipe e passa na "
-    "conferência por checklist feita por outra equipe;",
+    "Portfólio profissional: ficha de entrega da configuração do roteador e laudos de cobertura e de "
+    "auditoria de segurança;",
+    "Produto verificável: roteador configurado que conecta os aparelhos da equipe, restaurado a partir "
+    "da cópia de segurança e validado por outra equipe somente com a ficha de entrega;",
     "Atividades práticas de aula, com ficha de acompanhamento por encontro (clínica de links, mapa de "
     "sinal e laudo de auditoria);",
     "Produções coletivas: cartilha anti-golpe para a família e cartaz de diagnóstico de cobertura;",
-    "Avaliação prática integradora aplicada em 13/11: configuração completa e auditoria de segurança "
+    "Avaliação prática integradora aplicada em 06/11: configuração completa e auditoria de segurança "
     "de um roteador;",
     "Participação e frequência, com atenção permanente ao risco de evasão;",
     "Recomposição imediata das aprendizagens não atingidas, com repetição do procedimento até a "
