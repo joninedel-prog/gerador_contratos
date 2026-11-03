@@ -900,9 +900,120 @@ def build_resumo():
 
 
 # ============================================================
+# ANEXOS PRA IMPRIMIR (arquivo separado do roteiro)
+# ============================================================
+def _cel_texto(cell, linhas, align=WD_ALIGN_PARAGRAPH.CENTER):
+    """Escreve linhas [(texto, tamanho, negrito)] numa célula, centralizadas."""
+    cell.text = ""
+    for i, (texto, size, bold) in enumerate(linhas):
+        p = cell.paragraphs[0] if i == 0 else cell.add_paragraph()
+        p.alignment = align
+        run = p.add_run(texto)
+        run.font.size = Pt(size)
+        run.bold = bold
+
+
+def build_anexos():
+    doc = Document()
+    setup_page(doc, margem=Cm(1.5))
+
+    cabecalho_documento(
+        doc,
+        "ANEXOS PRA IMPRIMIR — NOITE 7",
+        f"Nomes na rede · Redes de Computadores · {NOITE} · CEJA Itapiranga – SC",
+    )
+    add_heading(doc, "O que imprimir", level=2)
+    add_table(doc, [
+        ["Páginas", "O quê", "Quantas cópias"],
+        ["2", "Anexo 1 — A Agenda (fica na mesa do aluno-Agenda)", "1"],
+        ["3 a 8", "Anexo 1 — Placa + página de cada site (uma folha por site, cortar no meio)", "1 jogo"],
+        ["9", "Anexo 1 — Cartões de pedido (recortar)", "1 (2 se a turma for grande)"],
+        ["10", "Anexo 2 — Clínica de links, 16 cartões (recortar)", "1 por equipe"],
+        ["11", "Gabarito da clínica — SÓ PRO PROFESSOR", "1"],
+    ], col_widths=[2.5, 11, 4.5])
+    add_para(doc, "Fita crepe pra prender as placas no peito. Os links do Anexo 2 são SÓ NO PAPEL: ninguém digita no celular.",
+             italic=True, size=10, color=COR_CINZA)
+
+    # A Agenda
+    doc.add_page_break()
+    add_heading(doc, "ANEXO 1 — A AGENDA (o DNS)")
+    add_para(doc, "Números inventados pra brincadeira. Na rodada 5 o professor risca o número do bb.com.br e escreve 66.66.0.66.",
+             italic=True, size=10, color=COR_CINZA)
+    tbl = add_table(doc, [["Nome", "Número (IP)"]] + [[n, ip] for n, ip, _ in SITES_VIVOS],
+                    col_widths=[10, 8])
+    for row in tbl.rows:
+        row.height = Cm(2.2)
+        for cell in row.cells:
+            for run in cell.paragraphs[0].runs:
+                run.font.size = Pt(24)
+
+    # Placa (metade de cima) + página (metade de baixo), uma folha por site
+    for nome, ip, pagina in SITES_VIVOS + [GOLPISTA]:
+        doc.add_page_break()
+        golpista = nome == GOLPISTA[0]
+        tbl = add_table(doc, [[""], [""]], header=False, col_widths=[18])
+        tbl.rows[0].height = Cm(12)
+        tbl.rows[1].height = Cm(12)
+        _cel_texto(tbl.rows[0].cells[0], [
+            ("PLACA (no peito)", 10, False),
+            (ip, 54, True),
+            ("o golpista — não mostre até a rodada 5" if golpista else nome, 20 if golpista else 28, not golpista),
+        ])
+        titulo, _, resto = pagina.partition(":")
+        _cel_texto(tbl.rows[1].cells[0], [
+            ("PÁGINA (na mão) — corte aqui em cima", 10, False),
+            (titulo, 30, True),
+            (resto.strip(), 20, False),
+        ])
+
+    # Cartões de pedido
+    doc.add_page_break()
+    add_heading(doc, "ANEXO 1 — CARTÕES DE PEDIDO (recortar)")
+    add_para(doc, "Um por navegador. Os dois últimos são de propósito com o nome errado (rodada 3).",
+             italic=True, size=10, color=COR_CINZA)
+    pedidos = ["google.com.br", "youtube.com", "bb.com.br", "itapiranga.sc.gov.br", "mercadolivre.com.br",
+               "google.com.br", "youtube.com", "bb.com.br", "mercadolivre.com.br", "itapiranga.sc.gov.br",
+               "gogle.com.br", "youtub.com"]
+    tbl = add_table(doc, [[""] * 3 for _ in range(4)], header=False, col_widths=[6] * 3)
+    for i, pedido in enumerate(pedidos):
+        row = tbl.rows[i // 3]
+        row.height = Cm(5.2)
+        _cel_texto(row.cells[i % 3], [("Abrir", 14, False), (pedido, 16, True)])
+
+    # Clínica de links
+    doc.add_page_break()
+    add_heading(doc, "ANEXO 2 — CLÍNICA DE LINKS (1 jogo por equipe, recortar)")
+    add_para(doc, "Só no papel. Ninguém digita estes links.", bold=True, size=10, color=COR_ALERTA)
+    tbl = add_table(doc, [[""] * 2 for _ in range(8)], header=False, col_widths=[9, 9])
+    for i, (url, _, _, _) in enumerate(LINKS):
+        row = tbl.rows[i // 2]
+        row.height = Cm(2.9)
+        _cel_texto(row.cells[i % 2], [(f"#{i + 1}", 12, True), (url, 12, False)])
+        for run in row.cells[i % 2].paragraphs[1].runs:
+            run.font.name = "Consolas"
+
+    # Gabarito
+    doc.add_page_break()
+    add_heading(doc, "GABARITO DA CLÍNICA — SÓ PRO PROFESSOR", color=COR_ALERTA)
+    add_para(doc, "Não imprima pra turma. Na correção, pare no #2, #7, #13, #15 e #16.",
+             italic=True, size=10, color=COR_CINZA)
+    add_table(doc, [["#", "Dono", "Veredito", "Por quê"]] +
+              [[str(i + 1), dono, ver, pq] for i, (_, dono, ver, pq) in enumerate(LINKS)],
+              col_widths=[1, 4.5, 3.5, 9])
+
+    path = os.path.join(OUTDIR, "Anexos - Redes 7 - Nomes na rede.docx")
+    doc.save(path)
+    return path
+
+
+# ============================================================
 # MAIN
 # ============================================================
 if __name__ == "__main__":
+    if sys.argv[1:] == ["anexos"]:
+        print("Gerando Anexos...")
+        print("  →", build_anexos())
+        sys.exit()
     print("Gerando Roteiro...")
     print("  →", build_roteiro())
     print("Gerando Slides...")
