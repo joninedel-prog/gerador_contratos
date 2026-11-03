@@ -1,8 +1,8 @@
 """Gera os 4 arquivos da Noite 7 do curso de Redes.
 
 Noite 7 — Nomes na rede: DNS, URL e o que o HTTPS resolve
-Padrão prática-pesada, sem role-play e sem duelo. Parte da tarefa da Noite 6
-(três endereços de sites anotados com https://). A turma entende o DNS pela agenda
+Padrão prática-pesada, sem role-play e sem duelo. Abre com um censo:
+cada um copia do celular o endereço de três sites que usa. A turma entende o DNS pela agenda
 do celular, aprende a achar o dono de um link lendo o endereço, faz uma clínica de links
 (verdadeiro × golpe), caça golpes de verdade no próprio celular, passa por estações (ping por nome × por número, DNS sabotado,
 cadeado no celular), fabrica links falsos pra outra equipe desmascarar e fecha
@@ -154,7 +154,7 @@ def build_roteiro():
     add_heading(doc, "QUADRO DE TEMPO — 210 MINUTOS")
     add_table(doc, [
         ["Bloco", "Tempo", "O que acontece"],
-        ["1. Retomada + censo dos endereços", "15 min", "Os sites da tarefa no quadro. O que eles têm em comum?"],
+        ["1. Retomada + censo dos endereços", "15 min", "Cada um copia do celular o endereço de 3 sites que usa. Um vai pro quadro. O que eles têm em comum?"],
         ["2. Nome e número: o DNS", "15 min", "Analogia da agenda do celular"],
         ["3. Como se lê um endereço", "10 min", "Protocolo, dono, caminho. A regra da primeira barra"],
         ["4. PRÁTICA — Clínica de links", "35 min", "Equipes analisam 16 links: dono, verdadeiro ou golpe, e a pista"],
@@ -179,7 +179,11 @@ def build_roteiro():
     add_bullet(doc, "Qual era o número da portaria? (192.168.0.1)")
 
     add_heading(doc, "O censo — 10 min", level=2)
-    add_para(doc, "Cada aluno escreve no quadro um dos três endereços que anotou na tarefa. Quem não fez, abre um site agora no celular e copia da barra. Depois pergunte, sem explicar:")
+    add_para(doc, "Ninguém precisa ter feito nada em casa: o material é o celular de cada um.")
+    add_bullet(doc, "3 min: cada aluno abre no celular três sites que usa (banco, loja, rede social, notícia…) e copia na folha (página 1, item 3) o endereço completo, do jeito que aparece na barra lá em cima, com o https:// e tudo. Repare se tem cadeado")
+    add_bullet(doc, "Dica: no Chrome do Android a barra esconde o começo. Toque na barra pra ver o endereço inteiro (e não aperte Enter)")
+    add_bullet(doc, "Cada aluno vai ao quadro e escreve UM dos três, sem repetir site que já está lá")
+    add_para(doc, "Com o quadro cheio, pergunte, sem explicar:")
     add_bullet(doc, "\"O que todos têm em comum?\" (começam com https://, quase todos têm .com ou .br)")
     add_bullet(doc, "\"Alguém anotou um número em vez de nome?\" (ninguém — e na Noite 6 a gente só usou número)")
     add_bullet(doc, "\"Quantos tinham cadeado?\" (quase todos)")
@@ -217,7 +221,7 @@ def build_roteiro():
     add_bullet(doc, "Antes dela, leia de TRÁS PRA FRENTE: .br (Brasil) → .gov (governo) → caixa. O dono é a palavra que vem logo antes do final (.com.br, .gov.br, .com, .net…)")
     add_bullet(doc, "Tudo que estiver antes do dono é enfeite: o dono do site cria o que quiser ali. Quem é dono de golpe.com cria bb.com.br.golpe.com")
     add_bullet(doc, ".gov.br só órgão público registra. .com.br qualquer pessoa registra, com CPF ou CNPJ")
-    add_para(doc, "Volte ao quadro do censo e ache o dono de cada endereço que a turma escreveu. É rápido e fixa a regra.", italic=True, color=COR_DESTAQUE)
+    add_para(doc, "Volte ao quadro do censo e ache o dono de cada endereço que a turma escreveu. Depois cada um preenche a coluna \"Quem é o dono?\" dos seus três sites na folha. É rápido e fixa a regra.", italic=True, color=COR_DESTAQUE)
 
     add_hr(doc)
 
@@ -291,7 +295,7 @@ def build_roteiro():
     add_bullet(doc, "ping 8.8.8.8 → responde (o número)")
     add_bullet(doc, "ping google.com → a primeira linha mostra o número que a agenda achou. Anote")
     add_bullet(doc, "nslookup google.com → \"Servidor\" é quem respondeu (o roteador ou o celular do professor); \"Endereços\" é o número do Google")
-    add_bullet(doc, "nslookup de um site da tarefa de cada um")
+    add_bullet(doc, "nslookup de um dos sites que cada um anotou no censo")
     add_heading(doc, "Estação B — O computador doente (DNS sabotado)", level=2)
     add_bullet(doc, "Abra o navegador: nenhum site abre")
     add_bullet(doc, "ping 8.8.8.8 → responde! O caminho até a internet está bom")
@@ -299,7 +303,7 @@ def build_roteiro():
     add_bullet(doc, "A equipe escreve o diagnóstico: o número responde, o nome não → é a agenda (DNS)")
     add_bullet(doc, "Pra equipe que acertou: mostre onde estava a sabotagem (Propriedades do IPv4). Uma equipe por vez pode consertar (\"Obter o endereço dos servidores DNS automaticamente\") — e você sabota de novo pra próxima")
     add_heading(doc, "Estação C — O cadeado no celular (4G)", level=2)
-    add_bullet(doc, "Abra um site da sua tarefa. Toque no cadeado (ou no ícone ao lado do endereço) → \"A conexão é segura\" → \"Certificado é válido\". Anote \"Emitido para\" — bate com o dono?")
+    add_bullet(doc, "Abra um dos sites que você anotou no censo. Toque no cadeado (ou no ícone ao lado do endereço) → \"A conexão é segura\" → \"Certificado é válido\". Anote \"Emitido para\" — bate com o dono?")
     add_bullet(doc, "Abra http://neverssl.com — um site feito de propósito sem cadeado. O que o navegador mostra? (\"Não seguro\")")
     add_bullet(doc, "No iPhone, o Safari mostra menos detalhes: vale só ver o cadeado e o \"Não seguro\"")
     add_para(doc, "\"O que vocês viram na Estação B é um dos chamados mais comuns: 'tem internet mas não abre nada'. Sem saber disso, o técnico troca cabo, reinicia roteador, liga pro provedor. Com dois pings, em um minuto ele sabe que é a agenda.\"", italic=True, color=COR_PRIMARIA)
@@ -485,13 +489,17 @@ def build_slides():
         "•  Qual era o número da portaria?",
     ])
 
-    lista("O CENSO", "Escreva no quadro um site da sua tarefa", [
-        "Agora olhe o quadro:",
-        "",
+    lista("O CENSO", "Os sites que você usa", [
+        "1.  No celular, abra 3 sites que você usa",
+        "2.  Copie na folha o endereço da barra lá em cima, com o https://",
+        "3.  Escreva UM deles no quadro (sem repetir)",
+    ], size=22, nota="Chrome no Android: toque na barra pra ver o endereço inteiro.")
+
+    lista("O CENSO", "Agora olhe o quadro", [
         "•  O que todos têm em comum?",
         "•  Alguém escreveu um NÚMERO em vez de nome?",
         "•  Quantos tinham cadeado?",
-    ])
+    ], size=26)
 
     frase("A PERGUNTA DA NOITE", "A gente digita nome.\nO celular só sabe ir até número.\nQuem traduz?")
 
@@ -584,7 +592,7 @@ def build_slides():
     frase("O DIAGNÓSTICO EM 1 MINUTO", "ping 8.8.8.8 responde\nping google.com não\n=\na agenda (DNS)", size=32)
 
     lista("ESTAÇÃO C", "O cadeado no celular", [
-        "1.  Abra um site da sua tarefa",
+        "1.  Abra um dos sites que você anotou no censo",
         "2.  Toque no cadeado → \"A conexão é segura\" → \"Certificado é válido\"",
         "3.  \"Emitido para\" bate com o dono?",
         "4.  Abra http://neverssl.com — o que aparece?",
@@ -686,9 +694,9 @@ def build_folha():
 
     add_para(doc, "A regra: ache a primeira barra depois do https://. Antes dela, leia de trás pra frente. O dono é a palavra que vem logo antes do final (.com.br, .gov.br, .com…).", italic=True, size=10, color=COR_PRIMARIA)
 
-    add_heading(doc, "3  Os sites da sua tarefa", level=2)
+    add_heading(doc, "3  Os sites que você usa (censo)", level=2)
     tbl = add_table(doc, [
-        ["Endereço que você anotou", "Quem é o dono?", "Cadeado?"],
+        ["Endereço copiado da barra (com https://)", "Quem é o dono?", "Cadeado?"],
         ["", "", "☐ Sim  ☐ Não"],
         ["", "", "☐ Sim  ☐ Não"],
         ["", "", "☐ Sim  ☐ Não"],
