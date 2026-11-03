@@ -2,9 +2,9 @@
 
 Noite 7 — Nomes na rede: DNS, URL e o que o HTTPS resolve
 Padrão prática-pesada, sem role-play e sem duelo. Parte da tarefa da Noite 6
-(três endereços de sites anotados com https://). A turma encena o DNS ("agenda viva"),
-aprende a achar o dono de um link lendo o endereço, faz uma clínica de links
-(verdadeiro × golpe), passa por estações (ping por nome × por número, DNS sabotado,
+(três endereços de sites anotados com https://). A turma entende o DNS pela agenda
+do celular, aprende a achar o dono de um link lendo o endereço, faz uma clínica de links
+(verdadeiro × golpe), caça golpes de verdade no próprio celular, passa por estações (ping por nome × por número, DNS sabotado,
 cadeado no celular), fabrica links falsos pra outra equipe desmascarar e fecha
 com uma cartilha anti-golpe pra família.
 Precisa de um pouco de internet: hotspot do celular do professor no computador
@@ -43,16 +43,6 @@ AGENDA = [
     ("Agenda apagada", "DNS fora do ar: você sabe o nome, mas não acha o número"),
     ("Últimas ligações (o celular lembra)", "O cache: o aparelho guarda os números que já procurou"),
 ]
-
-# Os sites da agenda viva — números inventados pra brincadeira
-SITES_VIVOS = [
-    ("google.com.br", "142.250.0.10", "Página do Google: uma caixa de busca"),
-    ("youtube.com", "142.250.0.30", "Página do YouTube: um vídeo de gatinho"),
-    ("bb.com.br", "170.66.0.20", "Página do banco: \"Digite sua senha\" + SELO: certificado de bb.com.br"),
-    ("itapiranga.sc.gov.br", "200.19.0.40", "Página da Prefeitura: notícias da cidade"),
-    ("mercadolivre.com.br", "54.94.0.50", "Página da loja: ofertas"),
-]
-GOLPISTA = ("(o golpista)", "66.66.0.66", "Página IGUALZINHA à do banco: \"Digite sua senha\" — SEM selo")
 
 # Clínica de links: (link, dono, veredito, explicação)
 LINKS = [
@@ -141,8 +131,8 @@ def build_roteiro():
     add_heading(doc, "Material da mesa", level=2)
     add_bullet(doc, "1 ou 2 computadores/notebooks (os da sala) e o seu celular")
     add_bullet(doc, "Internet pro computador: o hotspot do seu celular (Wi-Fi do computador LIGADO hoje, ao contrário das noites 5 e 6). Se a escola tiver Wi-Fi com internet, melhor ainda")
-    add_bullet(doc, "Pra agenda viva (Bloco 3): o ANEXO 1 impresso — a Agenda, as placas dos sites e os cartões de pedido. Fita crepe")
-    add_bullet(doc, "Pra clínica de links (Bloco 5): o ANEXO 2 impresso e recortado — um jogo de 16 cartões por equipe")
+    add_bullet(doc, "Pra clínica de links (Bloco 4): o ANEXO impresso e recortado — um jogo de 16 cartões por equipe")
+    add_bullet(doc, "Pra caça ao golpe (Bloco 5): o celular dos alunos. Antes da aula, separe 2 ou 3 mensagens de golpe que VOCÊ recebeu (print da tela), pra quem não achar nenhuma")
     add_bullet(doc, "Pra cartilha (Bloco 9): uma folha A4 ou meia cartolina por equipe e canetões")
 
     add_heading(doc, "Prepare as estações (Bloco 7)", level=2)
@@ -156,7 +146,7 @@ def build_roteiro():
     add_heading(doc, "Imprima", level=2)
     add_bullet(doc, "Folha do aluno (3 páginas), uma por pessoa")
     add_bullet(doc, "Resumo do aluno, uma por pessoa (pra levar pra casa)")
-    add_bullet(doc, "ANEXO 1 (agenda viva), 1 jogo. ANEXO 2 (cartões de links), 1 jogo por equipe")
+    add_bullet(doc, "ANEXO (cartões de links), 1 jogo por equipe")
 
     add_hr(doc)
 
@@ -166,9 +156,9 @@ def build_roteiro():
         ["Bloco", "Tempo", "O que acontece"],
         ["1. Retomada + censo dos endereços", "15 min", "Os sites da tarefa no quadro. O que eles têm em comum?"],
         ["2. Nome e número: o DNS", "15 min", "Analogia da agenda do celular"],
-        ["3. PRÁTICA — A agenda viva", "25 min", "A turma encena o DNS: pedido, memória, nome errado, agenda fora do ar, agenda adulterada"],
-        ["4. Como se lê um endereço", "10 min", "Protocolo, dono, caminho. A regra da primeira barra"],
-        ["5. PRÁTICA — Clínica de links", "35 min", "Equipes analisam 16 links: dono, verdadeiro ou golpe, e a pista"],
+        ["3. Como se lê um endereço", "10 min", "Protocolo, dono, caminho. A regra da primeira barra"],
+        ["4. PRÁTICA — Clínica de links", "35 min", "Equipes analisam 16 links: dono, verdadeiro ou golpe, e a pista"],
+        ["5. PRÁTICA — Caça ao golpe de verdade", "25 min", "Cada um acha no próprio celular um golpe que recebeu. Ficha do golpe e mural no quadro"],
         ["INTERVALO", "15 min", ""],
         ["6. O cadeado: o que ele resolve", "10 min", "Cartão-postal × carta lacrada. O que o cadeado NÃO garante"],
         ["7. PRÁTICA — Estações", "30 min", "A: ping por nome e por número. B: o DNS sabotado. C: o cadeado no celular"],
@@ -176,7 +166,7 @@ def build_roteiro():
         ["9. PRÁTICA — Cartilha pra família", "25 min", "\"Como não cair em link falso\" em linguagem de vó. Apresentação"],
         ["10. Fechamento + tarefa", "10 min", "Quiz de saída e anúncio da Noite 8"],
     ], col_widths=[6.5, 2, 8])
-    add_para(doc, "Blocos 3, 5, 7, 8 e 9: 135 min de atividade do aluno (64% do total), mais o censo do Bloco 1. A exposição está em três blocos curtos (35 min somados), cada um seguido de prática.", italic=True, color=COR_CINZA)
+    add_para(doc, "Blocos 4, 5, 7, 8 e 9: 135 min de atividade do aluno (64% do total), mais o censo do Bloco 1. A exposição está em três blocos curtos (35 min somados), cada um seguido de prática.", italic=True, color=COR_CINZA)
 
     add_hr(doc)
 
@@ -194,7 +184,7 @@ def build_roteiro():
     add_bullet(doc, "\"Alguém anotou um número em vez de nome?\" (ninguém — e na Noite 6 a gente só usou número)")
     add_bullet(doc, "\"Quantos tinham cadeado?\" (quase todos)")
     add_para(doc, "\"Semana passada, pra entrar no roteador, a gente digitou um número: 192.168.0.1. Aqui no quadro ninguém digitou número. Mas o celular só sabe ir até número. Então alguém está traduzindo. Quem?\"", italic=True, color=COR_PRIMARIA)
-    add_para(doc, "Guarde o quadro: no Bloco 4 esses endereços viram material de aula.", italic=True, color=COR_CINZA)
+    add_para(doc, "Guarde o quadro: no Bloco 3 esses endereços viram material de aula.", italic=True, color=COR_CINZA)
 
     add_hr(doc)
 
@@ -213,30 +203,7 @@ def build_roteiro():
     add_hr(doc)
 
     # BLOCO 3
-    add_heading(doc, "BLOCO 3 — PRÁTICA · A AGENDA VIVA · 25 MIN")
-    add_para(doc, "A turma encena o DNS, no mesmo jeito do porteiro vivo da Noite 6. Use o ANEXO 1.")
-    add_heading(doc, "Montagem — 3 min", level=2)
-    add_bullet(doc, "Um aluno é a AGENDA (o DNS). Fica numa mesa com a folha da Agenda")
-    add_bullet(doc, "Cinco alunos são os SITES. Cada um prende no peito a placa com o número dele e segura a \"página\". Um sexto é o GOLPISTA (66.66.0.66) — só você e ele sabem")
-    add_bullet(doc, "O resto é NAVEGADOR: cada um recebe um cartão de pedido (\"Abrir google.com.br\"…) e um papelzinho, que é a memória dele (o cache)")
-    add_bullet(doc, "Turma pequena? Os sites podem ser placas em cima de cadeiras, com a página embaixo. Não precisa de gente")
-    add_heading(doc, "As rodadas", level=2)
-    add_para(doc, "Troque a Agenda a cada rodada. Depois de cada uma, pergunte: \"isso acontece de verdade quando?\"", italic=True, color=COR_CINZA)
-    add_table(doc, [
-        ["Rodada", "O que acontece", "A lição"],
-        ["1. O pedido", "O navegador vai à Agenda: \"Qual o número de google.com.br?\" A Agenda olha e responde. O navegador anota no papelzinho, vai até o site com aquele número e recebe a página", "O DNS transforma o nome no número; o resto é com o número"],
-        ["2. A memória", "Todos pedem o MESMO site de novo. Quem anotou no papelzinho vai direto, sem passar na Agenda", "O cache: a segunda vez é mais rápida"],
-        ["3. Nome errado", "Entregue pedidos com \"gogle.com.br\" e \"youtub.com\". A Agenda responde: \"não conheço\"", "\"Não é possível acessar esse site\": às vezes é só digitação"],
-        ["4. Agenda fora do ar", "A Agenda sai da mesa. Quem tem número anotado no papelzinho ainda chega. Quem pede site novo, não", "\"O WhatsApp funciona, mas os sites não abrem\""],
-        ["5. Agenda adulterada", "Sem ninguém ver, risque na Agenda o número do bb.com.br e escreva 66.66.0.66. Mande um navegador abrir bb.com.br. Ele vai até o golpista e recebe a página igualzinha pedindo senha", "Digitou o nome certo e caiu no golpe. Acontece quando invadem o roteador — lembra da senha de fábrica?"],
-        ["6. O selo", "Repita a rodada 5, mas agora o navegador confere o SELO antes de digitar a senha. O banco de verdade tem; o golpista não tem", "É o que o cadeado do HTTPS faz — depois do intervalo a gente vê"],
-    ], col_widths=[2.6, 8.6, 5.3])
-    add_para(doc, "Onde dilatar: depois da rodada 6, pergunte \"e se o golpista criasse um site com nome PARECIDO, tipo bb-com-br.app, e fizesse um selo pra esse nome?\" Deixe a turma pensar. A resposta abre o Bloco 4: o selo confere o nome, mas quem confere o nome é você.", italic=True, color=COR_DESTAQUE)
-
-    add_hr(doc)
-
-    # BLOCO 4
-    add_heading(doc, "BLOCO 4 — COMO SE LÊ UM ENDEREÇO · 10 MIN")
+    add_heading(doc, "BLOCO 3 — COMO SE LÊ UM ENDEREÇO · 10 MIN")
     add_para(doc, "Escreva no quadro, bem grande, e marque as três partes com cores diferentes:")
     add_para(doc, "https://  www.caixa.gov.br  /beneficios/bolsa", bold=True, size=14, color=COR_PRIMARIA, align=WD_ALIGN_PARAGRAPH.CENTER)
     add_table(doc, [
@@ -254,9 +221,9 @@ def build_roteiro():
 
     add_hr(doc)
 
-    # BLOCO 5
-    add_heading(doc, "BLOCO 5 — PRÁTICA · CLÍNICA DE LINKS · 35 MIN")
-    add_para(doc, "No formato da clínica de cabos da Noite 5. Equipes de 3. Cada equipe recebe o jogo de 16 cartões do ANEXO 2 e preenche o laudo na página 2 da folha: quem é o dono, o veredito (verdadeiro, golpe ou não dá pra saber) e a pista.")
+    # BLOCO 4
+    add_heading(doc, "BLOCO 4 — PRÁTICA · CLÍNICA DE LINKS · 35 MIN")
+    add_para(doc, "No formato da clínica de cabos da Noite 5. Equipes de 3. Cada equipe recebe o jogo de 16 cartões do ANEXO e preenche o laudo na página 2 da folha: quem é o dono, o veredito (verdadeiro, golpe ou não dá pra saber) e a pista.")
     add_heading(doc, "Regras", level=2)
     add_bullet(doc, "Os links ficam NO PAPEL. Ninguém digita no celular")
     add_bullet(doc, "Primeiro achem o dono (a regra da primeira barra). Só depois decidam")
@@ -272,7 +239,35 @@ def build_roteiro():
     add_bullet(doc, "#13 (wa.me): quem condenou? Estranho não é golpe — tem que achar o dono")
     add_bullet(doc, "#15 (o @): quase ninguém acerta. Diga que é raro, mas existe")
     add_bullet(doc, "#16 (Drive): o dono é bom, o arquivo pode não ser")
-    add_para(doc, "Onde dilatar: peça que cada aluno abra o WhatsApp e procure, nas conversas e nos grupos da família, um link que recebeu. A equipe aplica a regra e diz o dono — sem abrir. Quase sempre aparece um golpe de verdade, e a aula fica real.", italic=True, color=COR_DESTAQUE)
+    add_para(doc, "Onde dilatar: no #14 (bit.ly), pergunte \"por que golpista adora encurtador?\" (porque esconde o dono — e a regra da primeira barra não funciona). Na dúvida, não abre.", italic=True, color=COR_DESTAQUE)
+
+    add_hr(doc)
+
+    # BLOCO 5
+    add_heading(doc, "BLOCO 5 — PRÁTICA · CAÇA AO GOLPE DE VERDADE · 25 MIN")
+    add_para(doc, "Os 16 cartões eram inventados. Agora é com golpe de verdade: quase todo mundo já recebeu um no SMS, no WhatsApp ou no e-mail. A regra da primeira barra vale igual.")
+    add_heading(doc, "A caça — 12 min", level=2)
+    add_bullet(doc, "Cada um procura no próprio celular uma mensagem suspeita: SMS (\"sua encomenda foi taxada\", \"seus pontos vão expirar\"), WhatsApp, grupos da família, a pasta de spam do e-mail")
+    add_bullet(doc, "NÃO TOQUE no link. Pra ler o endereço inteiro, segure o dedo em cima: o celular mostra o endereço e a opção de copiar, sem abrir")
+    add_bullet(doc, "Na equipe, escolham os 2 melhores e preencham a ficha do golpe na página 1 da folha: o link, o dono, o truque do link e o truque da mensagem")
+    add_bullet(doc, "Ninguém achou? Use os prints que você trouxe. Ou a equipe procura junto, no celular de quem topar")
+    add_para(doc, "Combine antes: só se mostra o link e a mensagem do golpista. Conversa pessoal fica no celular de cada um.", bold=True, color=COR_ALERTA)
+    add_heading(doc, "Os truques da mensagem", level=2)
+    add_para(doc, "Escreva no quadro antes de começar. A equipe marca qual a mensagem usou:")
+    add_table(doc, [
+        ["Truque", "Como aparece"],
+        ["Pressa", "\"Regularize em 24h\", \"último aviso\", \"hoje\""],
+        ["Medo", "\"Seu CPF foi bloqueado\", \"compra suspeita no seu cartão\""],
+        ["Prêmio", "\"Você ganhou\", \"pontos pra trocar\", \"valor a receber\""],
+        ["Autoridade", "Nome de banco, Correios, Receita, gov.br, Detran"],
+        ["Conhecido", "\"Oi mãe, troquei de número\""],
+    ], col_widths=[3.5, 13])
+    add_heading(doc, "O mural — 13 min", level=2)
+    add_bullet(doc, "Cada equipe escreve no quadro o seu melhor golpe: só o link, bem grande")
+    add_bullet(doc, "A turma acha o dono de cada um em voz alta. Depois, a equipe conta a mensagem que veio junto")
+    add_bullet(doc, "Ao final, pergunte: \"qual truque apareceu mais?\" e \"qual golpe é o mais bem feito do quadro?\" — vota a turma")
+    add_para(doc, "\"Repararam: o golpe nunca diz 'quando puder, dá uma olhada'. É sempre pressa, medo ou prêmio. Pressa é o sinal de parar.\"", italic=True, color=COR_PRIMARIA)
+    add_para(doc, "Onde dilatar: se aparecer golpe com link encurtado ou sem link nenhum (\"me chama nesse número\"), discuta: sem dono pra ler, o que sobra é o truque da mensagem. O mural fica no quadro: a fábrica de golpes (Bloco 8) e a cartilha (Bloco 9) usam ele.", italic=True, color=COR_DESTAQUE)
 
     add_hr(doc)
     add_heading(doc, "INTERVALO · 15 MIN", color=COR_CINZA)
@@ -282,7 +277,7 @@ def build_roteiro():
     add_heading(doc, "BLOCO 6 — O CADEADO: O QUE ELE RESOLVE · 10 MIN")
     add_heading(doc, "Cartão-postal × carta lacrada — 5 min", level=2)
     add_bullet(doc, "http (sem S) é cartão-postal: todo mundo no caminho pode ler — o vizinho no mesmo Wi-Fi, o Wi-Fi da rodoviária. O navegador avisa: \"Não seguro\"")
-    add_bullet(doc, "https (com S) é carta lacrada: só o site lê. E o site tem que mostrar um documento (o certificado) provando que é dono daquele nome. É o SELO da rodada 6")
+    add_bullet(doc, "https (com S) é carta lacrada: só o site lê. E o site tem que mostrar um documento (o certificado), um selo provando que é dono daquele nome")
     add_heading(doc, "O que o cadeado NÃO garante — 5 min", level=2)
     add_para(doc, "\"O golpista também tem cadeado. Ele compra o nome dele — atualizacao-cadastral.com — e tira o selo DESSE nome, de graça. A conversa com ele vai lacradinha… direto pro golpista. O cadeado diz que ninguém está ouvindo. Não diz se quem está do outro lado é do bem.\"", italic=True, color=COR_ALERTA)
     add_para(doc, "Por isso as duas coisas juntas: cadeado E dono certo. Uma sem a outra não vale.", bold=True, color=COR_PRIMARIA)
@@ -318,7 +313,7 @@ def build_roteiro():
     add_bullet(doc, "Em 8 min, a equipe escreve na folha 4 links: 3 golpes, usando truques diferentes (nome no começo, traço no lugar do ponto, letra trocada, final estranho, o @), e 1 verdadeiro. Em ordem misturada")
     add_bullet(doc, "Troca a folha com a equipe ao lado. A outra equipe tem 5 min pra achar o dono de cada link e apontar o verdadeiro")
     add_bullet(doc, "Desvira e confere. Ponto pra quem desmascarou — e ponto pra quem conseguiu enganar, se o golpe era bem feito")
-    add_para(doc, "Onde dilatar: cada equipe escreve também a MENSAGEM que acompanharia o link (\"Seu CPF foi bloqueado, regularize em 24h…\"). A turma lista no quadro os truques da mensagem: pressa, medo, prêmio, autoridade.", italic=True, color=COR_DESTAQUE)
+    add_para(doc, "Onde dilatar: cada equipe escreve também a MENSAGEM que acompanharia o link (\"Seu CPF foi bloqueado, regularize em 24h…\"), usando os truques do mural do Bloco 5. Ganha ponto quem usou dois truques juntos.", italic=True, color=COR_DESTAQUE)
 
     add_hr(doc)
 
@@ -378,7 +373,7 @@ def build_roteiro():
 
     # DESCRITIVO
     add_heading(doc, "DESCRITIVO PARA O DIÁRIO")
-    add_para(doc, "Desenvolvi atividade sobre resolução de nomes e navegação segura. Apresentei o serviço DNS por analogia com a agenda telefônica, relacionando nome de domínio e endereço IP, cache e servidores DNS públicos, e a estrutura de uma URL (protocolo, domínio e caminho), com ênfase na identificação do domínio responsável pelo endereço. Os estudantes encenaram o funcionamento do DNS, incluindo falha do servidor e adulteração de registro, e analisaram em equipe um conjunto de endereços verdadeiros e fraudulentos, registrando laudo. Em estações práticas, compararam testes de conectividade por endereço IP e por nome (ping e nslookup), diagnosticaram uma falha de DNS preparada e verificaram o certificado HTTPS no navegador do celular, discutindo o que a conexão segura garante e o que não garante. Ao final, criaram endereços fraudulentos para análise mútua e produziram uma cartilha de prevenção a golpes destinada às famílias.")
+    add_para(doc, "Desenvolvi atividade sobre resolução de nomes e navegação segura. Apresentei o serviço DNS por analogia com a agenda telefônica, relacionando nome de domínio e endereço IP, cache e servidores DNS públicos, e a estrutura de uma URL (protocolo, domínio e caminho), com ênfase na identificação do domínio responsável pelo endereço. Os estudantes analisaram em equipe um conjunto de endereços verdadeiros e fraudulentos, registrando laudo, e identificaram em seus próprios celulares mensagens fraudulentas recebidas, classificando o domínio responsável e as técnicas de persuasão utilizadas (urgência, medo, prêmio e autoridade). Em estações práticas, compararam testes de conectividade por endereço IP e por nome (ping e nslookup), diagnosticaram uma falha de DNS preparada e verificaram o certificado HTTPS no navegador do celular, discutindo o que a conexão segura garante e o que não garante. Ao final, criaram endereços fraudulentos para análise mútua e produziram uma cartilha de prevenção a golpes destinada às famílias.")
 
     add_hr(doc)
 
@@ -388,50 +383,15 @@ def build_roteiro():
     add_para(doc, "1. Quem é o dono? (Registro.br)", bold=True)
     add_para(doc, "No celular, entrem em registro.br e consultem um .com.br de uma loja da cidade: aparece quem registrou e desde quando. Depois tentem um nome que não existe: \"disponível\" — qualquer um pode comprar. Mostra como o golpista consegue o nome dele. 15 min.")
     add_para(doc, "2. A memória do computador", bold=True)
-    add_para(doc, "Na Estação A: ipconfig /displaydns mostra todos os nomes que o computador já guardou no cache (o papelzinho da rodada 2). Depois ipconfig /flushdns apaga. Liga com o \"às vezes resolve reiniciando\". 10 min.")
+    add_para(doc, "Na Estação A: ipconfig /displaydns mostra todos os nomes que o computador já guardou no cache (as \"últimas ligações\" da agenda). Depois ipconfig /flushdns apaga. Liga com o \"às vezes resolve reiniciando\". 10 min.")
     add_para(doc, "3. Leia o QR Code antes de abrir", bold=True)
     add_para(doc, "Gere no seu celular (ou imprima) 3 QR Codes: um pro site da Prefeitura, um pra wa.me e um pra um endereço com cara de golpe que você inventar. A turma aponta a câmera e lê o endereço SEM abrir. Diz o dono de cada um. 10 min.")
     add_para(doc, "4. O link encurtado", bold=True)
     add_para(doc, "Mostre que um link bit.ly pode ser visto antes de abrir: em muitos encurtadores, acrescentar um + no final mostra o destino. A turma discute: por que golpista adora encurtador? 10 min.")
-    add_para(doc, "5. Caça ao golpe real", bold=True)
-    add_para(doc, "Cada um procura, no próprio celular (SMS, e-mail, WhatsApp), uma mensagem de golpe que já recebeu. Em equipe, montam a \"ficha\" do golpe: o link, o dono, o truque do link e o truque da mensagem. 20 min.")
-
-    # ANEXO 1 — agenda viva
-    doc.add_page_break()
-    add_heading(doc, "ANEXO 1 — AGENDA VIVA · A AGENDA (imprimir 1)")
-    add_para(doc, "Números inventados pra brincadeira. Na rodada 5 você risca o número do bb.com.br e escreve 66.66.0.66.", italic=True, size=10, color=COR_CINZA)
-    tbl = add_table(doc, [["Nome", "Número (IP)"]] + [[n, ip] for n, ip, _ in SITES_VIVOS],
-                    col_widths=[9, 7.5])
-    for row in tbl.rows:
-        row.height = Cm(1.3)
-        for cell in row.cells:
-            for run in cell.paragraphs[0].runs:
-                run.font.size = Pt(18)
-
-    doc.add_page_break()
-    add_heading(doc, "ANEXO 1 — PLACAS DOS SITES E PÁGINAS (imprimir e recortar)")
-    add_para(doc, "Cada site prende a placa no peito e segura a página. A do golpista fica escondida até a rodada 5.", italic=True, size=10, color=COR_CINZA)
-    tbl = add_table(doc, [["Placa (no peito)", "Página (na mão)"]] +
-                    [[f"{ip}\n{n}", pag] for n, ip, pag in SITES_VIVOS + [GOLPISTA]],
-                    col_widths=[7, 9.5])
-    for row in tbl.rows[1:]:
-        row.height = Cm(2.6)
-        for run in row.cells[0].paragraphs[0].runs:
-            run.font.size = Pt(18)
-            run.bold = True
-
-    add_heading(doc, "Cartões de pedido (recortar)", level=2)
-    pedidos = ["google.com.br", "youtube.com", "bb.com.br", "itapiranga.sc.gov.br", "mercadolivre.com.br",
-               "google.com.br", "youtube.com", "bb.com.br", "mercadolivre.com.br", "itapiranga.sc.gov.br",
-               "gogle.com.br", "youtub.com"]
-    tbl = add_table(doc, [[f"Abrir\n{pedidos[i]}" for i in range(r, r + 4)] for r in range(0, 12, 4)],
-                    header=False, col_widths=[4.1] * 4)
-    for row in tbl.rows:
-        row.height = Cm(1.8)
 
     # ANEXO 2 — cartões de links
     doc.add_page_break()
-    add_heading(doc, "ANEXO 2 — CLÍNICA DE LINKS (1 jogo por equipe, recortar)")
+    add_heading(doc, "ANEXO — CLÍNICA DE LINKS (1 jogo por equipe, recortar)")
     add_para(doc, "Só no papel. Ninguém digita estes links.", bold=True, size=10, color=COR_ALERTA)
     tbl = add_table(doc, [[f"#{i + 1}\n{LINKS[i][0]}", f"#{i + 2}\n{LINKS[i + 1][0]}"] for i in range(0, 16, 2)],
                     header=False, col_widths=[8.3, 8.3])
@@ -549,24 +509,6 @@ def build_slides():
 
     frase("O SINTOMA DE CAMPO", "\"Tá conectado, o WhatsApp manda mensagem,\nmas nenhum site abre.\"\n\nO número responde. O nome não.", size=30)
 
-    lista("PRÁTICA · 25 MIN", "A agenda viva", [
-        "•  Um é a AGENDA, com a folha de nomes e números",
-        "•  Cinco são SITES: placa com o número no peito, página na mão",
-        "•  O resto é NAVEGADOR: um pedido e um papelzinho (a memória)",
-        "",
-        "Navegador:  \"Qual o número de google.com.br?\"",
-    ], size=20, nota="Seis rodadas. Cada uma é um problema de verdade.")
-
-    tabela("AS RODADAS", "O que cada uma mostra", [
-        ["Rodada", "Na vida real"],
-        ["1. O pedido", "O DNS transforma o nome no número"],
-        ["2. A memória", "O cache: a segunda vez é mais rápida"],
-        ["3. Nome errado", "\"Não é possível acessar esse site\""],
-        ["4. Agenda fora do ar", "O WhatsApp funciona, os sites não abrem"],
-        ["5. Agenda adulterada", "Nome certo, lugar errado: golpe"],
-        ["6. O selo", "O que o cadeado faz (depois do intervalo)"],
-    ], col_widths=[3.9, 8.0], size=16, height=3.8)
-
     link("COMO SE LÊ UM ENDEREÇO", "https://  www.caixa.gov.br  /beneficios/bolsa", [
         "https://  →  como a conversa acontece (com S = lacrada)",
         "www.caixa.gov.br  →  o DONO. É isso que a agenda traduz",
@@ -597,6 +539,23 @@ def build_slides():
         "•  Três montes: VERDADEIRO · GOLPE · NÃO DÁ PRA SABER",
         "•  Laudo na página 2 da folha",
     ], size=22, nota="Os links ficam NO PAPEL. Ninguém digita no celular.", nota_cor=R)
+
+    lista("PRÁTICA · 25 MIN", "Caça ao golpe de verdade", [
+        "•  Procure no SEU celular um golpe que você recebeu:",
+        "    SMS, WhatsApp, grupo da família, spam do e-mail",
+        "•  NÃO toque no link: segure o dedo em cima pra ver o endereço",
+        "•  Na equipe: os 2 melhores vão pra ficha (página 1)",
+        "•  Depois: o melhor de cada equipe vai pro quadro",
+    ], size=21, nota="Só o link e a mensagem do golpista. Conversa pessoal fica no seu celular.", nota_cor=R)
+
+    tabela("OS TRUQUES DA MENSAGEM", "Qual a sua usou?", [
+        ["Truque", "Como aparece"],
+        ["Pressa", "\"Regularize em 24h\", \"último aviso\""],
+        ["Medo", "\"Seu CPF foi bloqueado\", \"compra suspeita\""],
+        ["Prêmio", "\"Você ganhou\", \"valor a receber\""],
+        ["Autoridade", "Banco, Correios, Receita, gov.br, Detran"],
+        ["Conhecido", "\"Oi mãe, troquei de número\""],
+    ], col_widths=[3.4, 8.5], size=17, height=3.8, nota="Pressa é o sinal de parar.")
 
     frase("", "INTERVALO\n15 minutos", cor=K)
 
@@ -737,8 +696,15 @@ def build_folha():
     for row in tbl.rows[1:]:
         row.height = Cm(0.9)
 
-    pergunta(doc, "Na agenda viva, como o navegador caiu no golpista mesmo digitando o nome certo?")
-    linhas(doc, 2)
+    add_heading(doc, "4  Caça ao golpe de verdade (em equipe)", level=2)
+    add_para(doc, "Não toque no link: segure o dedo em cima pra ver o endereço. Truques: pressa, medo, prêmio, autoridade, conhecido.", italic=True, size=10, color=COR_CINZA)
+    tbl = add_table(doc, [
+        ["O link (até a primeira barra)", "Quem é o dono?", "Truque do link", "Truque da mensagem"],
+        ["", "", "", ""],
+        ["", "", "", ""],
+    ], col_widths=[6.2, 4, 3.6, 3.7])
+    for row in tbl.rows[1:]:
+        row.height = Cm(1.1)
 
     # PÁGINA 2 — Clínica de links
     doc.add_page_break()
@@ -925,64 +891,15 @@ def build_anexos():
     add_heading(doc, "O que imprimir", level=2)
     add_table(doc, [
         ["Páginas", "O quê", "Quantas cópias"],
-        ["2", "Anexo 1 — A Agenda (fica na mesa do aluno-Agenda)", "1"],
-        ["3 a 8", "Anexo 1 — Placa + página de cada site (uma folha por site, cortar no meio)", "1 jogo"],
-        ["9", "Anexo 1 — Cartões de pedido (recortar)", "1 (2 se a turma for grande)"],
-        ["10", "Anexo 2 — Clínica de links, 16 cartões (recortar)", "1 por equipe"],
-        ["11", "Gabarito da clínica — SÓ PRO PROFESSOR", "1"],
+        ["2", "Clínica de links, 16 cartões (recortar)", "1 por equipe"],
+        ["3", "Gabarito da clínica — SÓ PRO PROFESSOR", "1"],
     ], col_widths=[2.5, 11, 4.5])
-    add_para(doc, "Fita crepe pra prender as placas no peito. Os links do Anexo 2 são SÓ NO PAPEL: ninguém digita no celular.",
+    add_para(doc, "Os links são SÓ NO PAPEL: ninguém digita no celular.",
              italic=True, size=10, color=COR_CINZA)
-
-    # A Agenda
-    doc.add_page_break()
-    add_heading(doc, "ANEXO 1 — A AGENDA (o DNS)")
-    add_para(doc, "Números inventados pra brincadeira. Na rodada 5 o professor risca o número do bb.com.br e escreve 66.66.0.66.",
-             italic=True, size=10, color=COR_CINZA)
-    tbl = add_table(doc, [["Nome", "Número (IP)"]] + [[n, ip] for n, ip, _ in SITES_VIVOS],
-                    col_widths=[10, 8])
-    for row in tbl.rows:
-        row.height = Cm(2.2)
-        for cell in row.cells:
-            for run in cell.paragraphs[0].runs:
-                run.font.size = Pt(24)
-
-    # Placa (metade de cima) + página (metade de baixo), uma folha por site
-    for nome, ip, pagina in SITES_VIVOS + [GOLPISTA]:
-        doc.add_page_break()
-        golpista = nome == GOLPISTA[0]
-        tbl = add_table(doc, [[""], [""]], header=False, col_widths=[18])
-        tbl.rows[0].height = Cm(12)
-        tbl.rows[1].height = Cm(12)
-        _cel_texto(tbl.rows[0].cells[0], [
-            ("PLACA (no peito)", 10, False),
-            (ip, 54, True),
-            ("o golpista — não mostre até a rodada 5" if golpista else nome, 20 if golpista else 28, not golpista),
-        ])
-        titulo, _, resto = pagina.partition(":")
-        _cel_texto(tbl.rows[1].cells[0], [
-            ("PÁGINA (na mão) — corte aqui em cima", 10, False),
-            (titulo, 30, True),
-            (resto.strip(), 20, False),
-        ])
-
-    # Cartões de pedido
-    doc.add_page_break()
-    add_heading(doc, "ANEXO 1 — CARTÕES DE PEDIDO (recortar)")
-    add_para(doc, "Um por navegador. Os dois últimos são de propósito com o nome errado (rodada 3).",
-             italic=True, size=10, color=COR_CINZA)
-    pedidos = ["google.com.br", "youtube.com", "bb.com.br", "itapiranga.sc.gov.br", "mercadolivre.com.br",
-               "google.com.br", "youtube.com", "bb.com.br", "mercadolivre.com.br", "itapiranga.sc.gov.br",
-               "gogle.com.br", "youtub.com"]
-    tbl = add_table(doc, [[""] * 3 for _ in range(4)], header=False, col_widths=[6] * 3)
-    for i, pedido in enumerate(pedidos):
-        row = tbl.rows[i // 3]
-        row.height = Cm(5.2)
-        _cel_texto(row.cells[i % 3], [("Abrir", 14, False), (pedido, 16, True)])
 
     # Clínica de links
     doc.add_page_break()
-    add_heading(doc, "ANEXO 2 — CLÍNICA DE LINKS (1 jogo por equipe, recortar)")
+    add_heading(doc, "ANEXO — CLÍNICA DE LINKS (1 jogo por equipe, recortar)")
     add_para(doc, "Só no papel. Ninguém digita estes links.", bold=True, size=10, color=COR_ALERTA)
     tbl = add_table(doc, [[""] * 2 for _ in range(8)], header=False, col_widths=[9, 9])
     for i, (url, _, _, _) in enumerate(LINKS):
