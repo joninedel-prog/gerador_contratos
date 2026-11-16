@@ -1,7 +1,7 @@
 """Gera o Plano Mensal 4 de Informática (curso de Redes) — 16/11/2026 a 15/12/2026.
 
 Mesmo layout do modelo SED/CEJA do Plano Mensal 3. Conteúdo: servidores Linux
-(Ubuntu Server 24.04) nas máquinas antigas preparadas pelo professor, ligados à
+(Ubuntu Server 24.04) instalados pelos próprios estudantes nas máquinas antigas, ligados à
 rede montada com os roteadores configurados nas noites anteriores. Encontros às
 sextas: 27/11, 04/12 e 11/12 (20/11 é feriado — Dia da Consciência Negra).
 """
@@ -34,6 +34,8 @@ OBJETIVOS = [
     "reconhecendo exemplos no cotidiano;",
     "Reconhecer o sistema operacional Linux e a distribuição Ubuntu Server como opção gratuita para "
     "reaproveitar computadores antigos;",
+    "Instalar o Ubuntu Server a partir de pendrive, interpretando as telas do instalador e registrando "
+    "cada escolha (rede, disco, usuário e acesso remoto);",
     "Operar o servidor pelo terminal: entrar no sistema, navegar entre pastas, criar, copiar, mover e "
     "apagar arquivos e consultar a ajuda dos comandos;",
     "Criar usuários e grupos e aplicar permissões, entendendo quem pode ler, alterar ou executar cada arquivo;",
@@ -69,6 +71,8 @@ HABILIDADE_IF = ("(EMIFFTP05) Selecionar e mobilizar intencionalmente recursos c
 CONTEUDOS = [
     "Cliente e servidor: o que é um serviço de rede; exemplos do cotidiano; por que um computador antigo "
     "serve de servidor; Linux, software livre e Ubuntu Server 24.04.",
+    "Instalação do sistema: requisitos da máquina; inicialização por pendrive; telas do instalador "
+    "(idioma, teclado, rede, disco, perfil e SSH); cuidado com o apagamento do disco e cópia de segurança.",
     "Terminal do Linux: entrada no sistema; estrutura de pastas; comandos de navegação e de manipulação "
     "de arquivos (pwd, ls, cd, mkdir, cp, mv, rm, cat, nano); ajuda dos comandos; desligar e reiniciar "
     "com segurança.",
@@ -87,9 +91,9 @@ METODOLOGIA = [
     "em blocos curtos, sempre seguidos de prática no terminal;",
     "A situação-problema antecede o conteúdo: cada encontro parte de uma demanda de cliente — guardar "
     "arquivos num lugar só, acessar sem ir até a máquina, ter uma página interna;",
-    "Trabalho em equipes, uma por servidor, com rodízio de quem digita e de quem confere, usando as "
-    "máquinas antigas já preparadas com Ubuntu Server e ligadas aos roteadores configurados na unidade "
-    "anterior;",
+    "Trabalho em equipes, uma por servidor, com rodízio de quem digita e de quem confere, usando "
+    "máquinas antigas nas quais as próprias equipes instalam o Ubuntu Server, ligadas aos roteadores "
+    "configurados na unidade anterior;",
     "Cartões de comandos impressos e passo a passo por serviço, com espaço para anotar o resultado obtido;",
     "Verificação objetiva permanente: o comando funciona ou devolve erro, a pasta aparece ou não aparece "
     "no outro computador, a página abre ou não abre no celular;",
@@ -103,7 +107,8 @@ METODOLOGIA = [
 
 RECURSOS = [
     "Laboratório de informática e projetor;",
-    "Computadores antigos reaproveitados com Ubuntu Server 24.04 instalado pelo professor;",
+    "Computadores antigos reaproveitados, conferidos pelo professor, e pendrives com o instalador do "
+    "Ubuntu Server 24.04;",
     "Roteadores configurados nas unidades anteriores, cabos de rede e régua de tomadas;",
     "Computadores do laboratório com Windows e celulares dos estudantes como clientes da rede, com "
     "aplicativo de terminal SSH;",
