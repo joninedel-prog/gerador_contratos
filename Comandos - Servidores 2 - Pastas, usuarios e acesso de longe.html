@@ -1,0 +1,376 @@
+<title>Bancada do Servidor · Encontro 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: uma coluna de bancada, na ordem da noite; cada passo diz se é DIGITAR ou COLAR */
+:root {
+  --bg: #f3f5f6;
+  --paper: #ffffff;
+  --ink: #15232b;
+  --muted: #56666f;
+  --line: #d5dde1;
+  --accent: #0b6e8a;
+  --accent-soft: #e2f0f4;
+  --type: #9a5a00;
+  --type-soft: #fbefd9;
+  --term-bg: #10181d;
+  --term-fg: #d7e6ea;
+  --warn: #b3261e;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1518; --paper: #162127; --ink: #e3ecef; --muted: #9aabb2; --line: #2b3a41;
+    --accent: #5cc3df; --accent-soft: #173540; --type: #f0b55a; --type-soft: #3a2c14;
+    --term-bg: #070b0d; --term-fg: #d7e6ea; --warn: #ff8a80; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1518; --paper: #162127; --ink: #e3ecef; --muted: #9aabb2; --line: #2b3a41;
+  --accent: #5cc3df; --accent-soft: #173540; --type: #f0b55a; --type-soft: #3a2c14;
+  --term-bg: #070b0d; --term-fg: #d7e6ea; --warn: #ff8a80; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.55;
+  margin: 0;
+}
+.wrap {
+  max-width: 820px; margin: 0 auto;
+  padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 28px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: 2.1rem; }
+h2 { font-size: 1.45rem; }
+h3 { font-size: 1.08rem; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-mono); font-size: .92em; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+header { display: flex; flex-direction: column; gap: 14px; }
+.bancada {
+  display: grid; grid-template-columns: auto 1fr; gap: 14px 22px; align-items: center;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+}
+.bancada label { font-weight: 600; }
+.bancada select {
+  font: inherit; font-weight: 600; padding: 6px 10px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+}
+.dados { display: flex; flex-wrap: wrap; gap: 8px 22px; min-width: 0; }
+.dados div { display: flex; flex-direction: column; }
+.dados span.k { font-size: .75rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+.dados span.v { font-family: var(--font-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.legenda { display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: .92rem; color: var(--muted); }
+.tag {
+  display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 4px; vertical-align: middle;
+}
+.tag.digite { background: var(--type-soft); color: var(--type); }
+.tag.cole { background: var(--accent-soft); color: var(--accent); }
+
+section.passo { display: flex; flex-direction: column; gap: 12px; padding-top: 22px; border-top: 1px solid var(--line); }
+.passo-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.num { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 1.45rem; }
+
+ol, ul { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 4px; }
+
+.cmds { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow-x: auto; }
+.cmds table { border-collapse: collapse; width: 100%; }
+.cmds td { padding: 7px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.cmds tr:first-child td { border-top: 0; }
+.cmds td:first-child { font-family: var(--font-mono); font-weight: 600; white-space: nowrap; color: var(--type); }
+.cmds td:last-child { color: var(--muted); font-size: .94rem; }
+
+.bloco { border-radius: 8px; background: var(--term-bg); color: var(--term-fg); overflow: hidden; }
+.bloco-top {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 8px 10px 8px 14px; border-bottom: 1px solid #ffffff1a; font-size: .85rem; color: #9fb4bb;
+}
+.bloco pre {
+  margin: 0; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: .9rem; line-height: 1.6;
+  white-space: pre;
+}
+.bloco pre.texto { white-space: pre-wrap; font-family: var(--font-body); font-size: .95rem; }
+button.copiar {
+  font: inherit; font-weight: 600; font-size: .85rem; cursor: pointer;
+  padding: 6px 14px; border-radius: 6px; border: 0; background: var(--accent); color: #fff;
+}
+:root:not([data-theme="light"]) button.copiar { color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.copiar { color: #06222b; } }
+:root[data-theme="dark"] button.copiar { color: #06222b; }
+button.copiar.ok { background: var(--type); }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--type); outline-offset: 2px; }
+
+.perg { background: var(--type-soft); border-radius: 8px; padding: 10px 14px; font-size: .95rem; }
+.perg strong { color: var(--type); }
+.aviso { border-left: 4px solid var(--warn); padding: 6px 0 6px 12px; font-size: .95rem; }
+.aviso strong { color: var(--warn); }
+
+.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo label { font-weight: 600; font-size: .95rem; }
+.campo input {
+  font: inherit; padding: 9px 12px; border-radius: 6px; border: 1px solid var(--line);
+  background: var(--paper); color: var(--ink); width: 100%;
+}
+.teclas { display: flex; flex-wrap: wrap; gap: 8px; }
+.teclas span { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: .92rem; }
+.teclas b { font-family: var(--font-mono); }
+
+.travou { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow-x: auto; }
+.travou table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+.travou th, .travou td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.travou th { border-top: 0; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.travou td:first-child { font-family: var(--font-mono); font-size: .86rem; color: var(--warn); min-width: 12em; }
+
+footer { color: var(--muted); font-size: .85rem; }
+@media (max-width: 520px) {
+  h1 { font-size: 1.7rem; }
+  .bancada { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Servidores com Linux · Encontro 2 · CEJA Itapiranga</span>
+  <h1>Bancada do servidor</h1>
+  <p>Tudo o que a equipe vai usar hoje no PuTTY e no ChatGPT, na ordem da aula. Escolha a sua equipe e os endereços se ajustam sozinhos.</p>
+  <div class="bancada">
+    <label for="equipe">Equipe</label>
+    <div class="dados">
+      <select id="equipe" aria-label="Número da equipe">
+        <option>1</option><option>2</option><option>3</option><option>4</option>
+        <option>5</option><option>6</option><option>7</option><option>8</option>
+      </select>
+      <div><span class="k">Servidor</span><span class="v">192.168.<i class="n1"></i>.10</span></div>
+      <div><span class="k">Usuário</span><span class="v">equipe<i class="n"></i></span></div>
+      <div><span class="k">Roteador</span><span class="v">192.168.<i class="n1"></i>.1</span></div>
+    </div>
+  </div>
+  <div class="legenda">
+    <span><span class="tag digite">Digite</span> você digita, letra por letra. É assim que se aprende.</span>
+    <span><span class="tag cole">Cole</span> copie aqui e cole no PuTTY. Leia antes de dar Enter.</span>
+  </div>
+</header>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">1</span><h2>Entrar no servidor pelo PuTTY</h2></div>
+  <ol>
+    <li>Abra o <b>PuTTY</b>. Em <i>Host Name</i>: <code>192.168.<i class="n1"></i>.10</code> · <i>Port</i>: <code>22</code> · <i>SSH</i> marcado.</li>
+    <li>Em <i>Saved Sessions</i> escreva <code>servidor-equipe<i class="n"></i></code> e clique <b>Save</b>. Depois <b>Open</b>.</li>
+    <li>Na primeira vez aparece <i>PuTTY Security Alert</i>: é a “impressão digital” do servidor. Clique <b>Accept</b>.</li>
+    <li><i>login as:</i> <code>equipe<i class="n"></i></code>. A senha não aparece enquanto você digita.</li>
+    <li>Entrou quando aparecer <code>equipe<i class="n"></i>@servidor-equipe<i class="n"></i>:~$</code></li>
+  </ol>
+  <div class="teclas">
+    <span>Copiar no PuTTY: <b>só selecionar</b> com o mouse</span>
+    <span>Colar no PuTTY: <b>botão direito</b></span>
+    <span><b>Ctrl+V</b> não cola</span>
+    <span><b>Ctrl+C</b> não copia: cancela o comando</span>
+  </div>
+  <p>A prova de que deu certo <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>wall Oi da equipe <i class="n"></i></td><td>O recado aparece na tela do servidor, do lado do PC</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">2</span><h2>Andando pelas pastas</h2><span class="tag digite">Digite</span></div>
+  <p>Estes comandos são o dia a dia do técnico. Nada de copiar aqui: digite e anote na folha o que apareceu.</p>
+  <h3>O passeio</h3>
+  <div class="cmds"><table>
+    <tr><td>pwd</td><td>Onde eu estou?</td></tr>
+    <tr><td>ls -a</td><td>O que tem aqui? (-a mostra os escondidos)</td></tr>
+    <tr><td>cd /</td><td>Vai para a raiz</td></tr>
+    <tr><td>ls</td><td>As pastas principais do sistema</td></tr>
+    <tr><td>cd /var/www/html</td><td>Vai para a pasta do site</td></tr>
+    <tr><td>cat index.html</td><td>Mostra a página do Encontro 1</td></tr>
+    <tr><td>cd ..</td><td>Sobe uma pasta</td></tr>
+    <tr><td>cat /etc/hostname</td><td>Onde fica guardado o nome do servidor</td></tr>
+    <tr><td>cd ~</td><td>Volta para casa</td></tr>
+  </table></div>
+  <h3>A pasta de treino</h3>
+  <div class="cmds"><table>
+    <tr><td>mkdir treino</td><td>Criar a pasta de treino</td></tr>
+    <tr><td>cd treino</td><td>Entrar nela</td></tr>
+    <tr><td>mkdir financeiro recepcao publico</td><td>Três pastas de uma vez</td></tr>
+    <tr><td>nano recepcao/recados.txt</td><td>Dois recados. Salvar: Ctrl+O, Enter, Ctrl+X</td></tr>
+    <tr><td>cp recepcao/recados.txt publico/</td><td>Copiar os recados para o público</td></tr>
+    <tr><td>nano financeiro/contas.txt</td><td>Três contas a pagar</td></tr>
+    <tr><td>mv financeiro/contas.txt financeiro/contas-dezembro.txt</td><td>Renomear</td></tr>
+    <tr><td>nano errado.txt</td><td>Um arquivo qualquer</td></tr>
+    <tr><td>rm errado.txt</td><td>Apagar. Não tem lixeira!</td></tr>
+    <tr><td>sudo apt install tree</td><td>O programa que desenha a árvore</td></tr>
+    <tr><td>tree ~/treino</td><td>Conferir com o desenho da folha</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">3</span><h2>Os funcionários do escritório</h2></div>
+  <p>Ana e Bruno são do financeiro. Carla é da recepção. Primeiro, cada um ganha seu usuário <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>sudo adduser ana</td><td>Senha duas vezes (a equipe escolhe, 10+ caracteres e anota). O resto Enter, Y no fim</td></tr>
+    <tr><td>sudo adduser bruno</td><td>Igual</td></tr>
+    <tr><td>sudo adduser carla</td><td>Igual</td></tr>
+  </table></div>
+  <p>Depois, os setores e quem trabalha em cada um <span class="tag cole">Cole</span></p>
+  <div class="bloco" data-bloco="setores">
+    <div class="bloco-top"><span>Os setores</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>sudo groupadd financeiro
+sudo groupadd recepcao
+sudo usermod -aG financeiro ana
+sudo usermod -aG financeiro bruno
+sudo usermod -aG recepcao carla
+groups ana bruno carla</pre>
+  </div>
+  <div class="perg"><strong>Na folha:</strong> o que a linha <code>usermod -aG</code> fez? E o que a última linha mostrou?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">4</span><h2>As gavetas do escritório</h2><span class="tag cole">Cole</span></div>
+  <div class="bloco" data-bloco="gavetas">
+    <div class="bloco-top"><span>As gavetas em /srv/escritorio</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>sudo mkdir -p /srv/escritorio/financeiro /srv/escritorio/recepcao /srv/escritorio/publico
+sudo chgrp financeiro /srv/escritorio/financeiro
+sudo chgrp recepcao /srv/escritorio/recepcao
+sudo chmod 770 /srv/escritorio/financeiro /srv/escritorio/recepcao
+sudo chmod 755 /srv/escritorio/publico
+ls -l /srv/escritorio</pre>
+  </div>
+  <div class="perg"><strong>Na folha:</strong> o que quer dizer o <code>770</code>? E o <code>755</code>? Use r = 4, w = 2, x = 1.</div>
+  <p>O teste: entre como cada funcionário e tente abrir as gavetas <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>su - ana</td><td>Vira a ana (pede a senha dela)</td></tr>
+    <tr><td>cd /srv/escritorio/financeiro</td><td>Deve entrar</td></tr>
+    <tr><td>nano teste-ana.txt</td><td>Deve salvar</td></tr>
+    <tr><td>cd /srv/escritorio/recepcao</td><td>Deve dar Permission denied</td></tr>
+    <tr><td>sudo apt update</td><td>Deve dar “ana is not in the sudoers file”</td></tr>
+    <tr><td>exit</td><td>Volta a ser equipe<i class="n"></i>. Depois repita com <code>su - carla</code></td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">5</span><h2>O site da equipe, feito com o ChatGPT</h2></div>
+  <p>Abra <b>chatgpt.com</b> no navegador do PC. Escolha o negócio do site, copie o pedido e cole na conversa.</p>
+  <div class="campo">
+    <label for="negocio">O site é de</label>
+    <input id="negocio" type="text" value="uma assistência técnica de celulares e computadores">
+  </div>
+  <div class="bloco" data-bloco="pedido">
+    <div class="bloco-top"><span>Pedido para o ChatGPT</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="texto" id="pedido"></pre>
+  </div>
+  <div class="aviso"><strong>Nunca</strong> cole senha, nome completo ou telefone de verdade no ChatGPT. O que vai para a IA sai da sala.</div>
+
+  <h3>Publicar no servidor <span class="tag cole">Cole</span></h3>
+  <p>Este bloco guarda a página do Encontro 1, apaga a antiga e abre o nano vazio:</p>
+  <div class="bloco" data-bloco="publicar">
+    <div class="bloco-top"><span>Primeira publicação</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>sudo cp /var/www/html/index.html ~/site-encontro1.html
+sudo rm /var/www/html/index.html
+sudo nano /var/www/html/index.html</pre>
+  </div>
+  <ol>
+    <li>No ChatGPT, clique em <b>Copiar código</b> (no canto do quadro do código).</li>
+    <li>No nano, <b>botão direito</b>: o código entra todo.</li>
+    <li>Salvar: <b>Ctrl+O</b>, <b>Enter</b>, <b>Ctrl+X</b>.</li>
+    <li>No navegador do PC: <code>http://192.168.<i class="n1"></i>.10</code></li>
+  </ol>
+  <div class="perg"><strong>Na folha:</strong> ache uma coisa que a IA inventou ou errou. Quem confere o site antes de entregar ao cliente é o técnico, não a IA.</div>
+
+  <h3>Pedir um ajuste e publicar de novo</h3>
+  <p>Escreva na mesma conversa o que quer mudar e termine com <i>“me mande o código completo de novo”</i>. Exemplos: trocar as cores, pôr uma promoção da semana em destaque, acrescentar perguntas frequentes.</p>
+  <div class="bloco" data-bloco="republicar">
+    <div class="bloco-top"><span>Publicar a versão nova</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>sudo rm /var/www/html/index.html
+sudo nano /var/www/html/index.html</pre>
+  </div>
+  <p>Colou e salvou? No navegador, <b>Ctrl+F5</b> para ver a versão nova.</p>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">!</span><h2>Se travar</h2></div>
+  <div class="travou"><table>
+    <tr><th>O que aparece</th><th>O que fazer</th></tr>
+    <tr><td>Network error: Connection timed out</td><td>O PC não está no roteador da equipe, ou o endereço está errado. Conferir o cabo e o Host Name</td></tr>
+    <tr><td>Network error: Connection refused</td><td>O SSH não está instalado. Na tela do servidor: sudo apt install openssh-server</td></tr>
+    <tr><td>Access denied</td><td>Usuário ou senha errados. Tudo minúsculo. A senha não aparece</td></tr>
+    <tr><td>POTENTIAL SECURITY BREACH</td><td>Aquele endereço já foi de outra máquina. Chame o professor antes de aceitar</td></tr>
+    <tr><td>Ctrl+V não fez nada</td><td>No PuTTY, cola com o botão direito do mouse</td></tr>
+    <tr><td>Pediu senha no meio do bloco colado</td><td>Ctrl+C, digite sudo -v, a senha, e cole o bloco de novo</td></tr>
+    <tr><td>Acentos estranhos no site (Ã©)</td><td>Faltou &lt;meta charset="UTF-8"&gt;. Peça ao ChatGPT para pôr e publique de novo</td></tr>
+    <tr><td>403 Forbidden</td><td>Não existe index.html: o nano fechou sem salvar. Rode o bloco “Publicar a versão nova” de novo</td></tr>
+    <tr><td>O site não mudou</td><td>Ctrl+F5 no navegador. Conferir se salvou no nano (Ctrl+O)</td></tr>
+  </table></div>
+</section>
+
+<footer>Curso FIC Montador e Reparador de Computadores · CEJA Itapiranga – SC</footer>
+</div>
+
+<script>
+(function () {
+  var sel = document.getElementById("equipe");
+  var neg = document.getElementById("negocio");
+  var pedido = document.getElementById("pedido");
+
+  function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function gravar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  function textoPedido(n, negocio) {
+    return "Crie o código de uma página de site em um único arquivo HTML.\n\n" +
+      "Regras:\n" +
+      "- Comece com <!DOCTYPE html> e coloque <meta charset=\"UTF-8\"> no <head>.\n" +
+      "- Todo o CSS dentro de <style>. Sem JavaScript.\n" +
+      "- Sem imagens de outros sites. Para enfeitar, use cores, emojis e formas feitas com CSS.\n" +
+      "- A página precisa ficar boa no celular.\n" +
+      "- Textos em português do Brasil.\n\n" +
+      "O site é de: " + (negocio.trim() || "um pequeno negócio") + ", em Itapiranga – SC.\n" +
+      "A página tem: o nome do negócio e um slogan, os serviços com preços inventados, o horário de atendimento e o contato (telefone e endereço inventados, que não sejam de verdade).\n" +
+      "No rodapé escreva: \"Site hospedado no servidor-equipe" + n + " · Curso FIC CEJA Itapiranga\".\n\n" +
+      "Responda só com o código, sem explicação.";
+  }
+
+  function aplicar() {
+    var n = sel.value;
+    document.querySelectorAll("i.n").forEach(function (el) { el.textContent = n; });
+    document.querySelectorAll("i.n1").forEach(function (el) { el.textContent = "1" + n; });
+    pedido.textContent = textoPedido(n, neg.value);
+  }
+
+  var salvo = ler("equipe");
+  if (salvo && /^[1-8]$/.test(salvo)) sel.value = salvo;
+  var negSalvo = ler("negocio");
+  if (negSalvo) neg.value = negSalvo;
+  aplicar();
+
+  sel.addEventListener("change", function () { gravar("equipe", sel.value); aplicar(); });
+  neg.addEventListener("input", function () { gravar("negocio", neg.value); aplicar(); });
+
+  document.querySelectorAll("button.copiar").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.closest(".bloco").querySelector("pre");
+      var txt = pre.textContent;
+      function feito() {
+        btn.textContent = "Copiado";
+        btn.classList.add("ok");
+        setTimeout(function () { btn.textContent = "Copiar"; btn.classList.remove("ok"); }, 1800);
+      }
+      function selecionar() {
+        var r = document.createRange(); r.selectNodeContents(pre);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = "Ctrl+C para copiar";
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(feito, selecionar);
+      } else { selecionar(); }
+    });
+  });
+})();
+</script>

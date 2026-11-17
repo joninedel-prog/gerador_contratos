@@ -3,11 +3,16 @@
 Servidores 2 — Pastas, usuários e acesso de longe
 Continua das máquinas instaladas pelos alunos no Encontro 1 (usuário equipeN,
 servidor servidor-equipeN, Nginx com a página da equipe, OpenSSH instalado).
-Hoje: andar pelas pastas, montar uma pasta de treino do escritório (mkdir, nano,
-cp, mv, rm, tree), fixar o endereço do servidor por reserva no roteador da
-Noite 8, entrar pelo celular e pelo Windows (SSH), criar os usuários e grupos
-dos funcionários e travar as pastas do escritório com permissões. A pasta
-/srv/escritorio criada hoje é a que vira pasta compartilhada (Samba) no
+
+Versão "bancada" (2026-11-17): cada equipe monta servidor + PC com Windows no
+roteador da equipe (o roteador traz a internet da escola pela WAN). O PC tem o
+PuTTY (instalado pelo professor) e abre a página de comandos publicada
+(LINK_COMANDOS). A noite inteira é feita pelo PuTTY:
+- endereço fixo do servidor (reserva 192.168.1N.10) antes do primeiro acesso;
+- pastas e pasta de treino DIGITADAS (é ali que se aprende o comando);
+- grupos e gavetas COLADOS da página, com pergunta na folha sobre cada linha;
+- site da equipe gerado com o ChatGPT no PC e colado no nano pelo PuTTY.
+Os usuários ana, bruno, carla e /srv/escritorio continuam: base do Samba no
 Encontro 3. Padrão prática-pesada, sem role-play e sem duelo.
 """
 import os
@@ -31,7 +36,34 @@ from pptx.enum.text import PP_ALIGN
 OUTDIR = "/home/nedel/curso"
 TITULO_ARQ = "Servidores 2 - Pastas, usuarios e acesso de longe"
 FOOTER = "Servidores com Linux · Encontro 2"
+LINK_COMANDOS = "https://claude.ai/artifact/7kZVEZKi9rJSuGs35weUj5"
+ARQ_COMANDOS = f"Comandos - {TITULO_ARQ}.html"
 
+
+# A bancada da equipe
+BANCADA = [
+    "Internet da escola ──cabo──► WAN do roteador da equipe",
+    "                                   │ LAN",
+    "                    ┌──────────────┴──────────────┐",
+    "             Servidor (Ubuntu)              PC da equipe (Windows)",
+    "             192.168.1N.10                  PuTTY + navegador",
+]
+
+# PuTTY
+PUTTY = [
+    ("Host Name", "192.168.1N.10   ·   Port 22   ·   SSH marcado"),
+    ("Saved Sessions", "servidor-equipeN → Save → Open"),
+    ("PuTTY Security Alert", "Primeira vez: a impressão digital do servidor → Accept"),
+    ("login as:", "equipeN, depois a senha (não aparece)"),
+    ("Entrou", "equipeN@servidor-equipeN:~$"),
+]
+
+TECLAS = [
+    ("Copiar no PuTTY", "Só selecionar com o mouse"),
+    ("Colar no PuTTY", "Botão direito do mouse"),
+    ("Ctrl+V", "Não cola"),
+    ("Ctrl+C", "Não copia: CANCELA o comando que está rodando"),
+]
 
 # O passeio pelas pastas
 PASSEIO = [
@@ -89,11 +121,21 @@ FUNCIONARIOS = [
     ("carla", "Carla", "recepcao"),
 ]
 
-USUARIOS_CMD = [
-    ("sudo adduser ana", "Cria a usuária ana (pede senha 2 vezes, o resto Enter, Y no fim)"),
-    ("sudo groupadd financeiro", "Cria o grupo financeiro"),
-    ("sudo usermod -aG financeiro ana", "Põe a ana no grupo financeiro (-aG: acrescenta)"),
-    ("groups ana", "Mostra em quais grupos a ana está"),
+# Digitados: o adduser é interativo (pede senha), não vai em bloco colado
+ADDUSER_CMD = [
+    ("sudo adduser ana", "Senha 2 vezes (a equipe escolhe, 10+), o resto Enter, Y no fim"),
+    ("sudo adduser bruno", "Igual"),
+    ("sudo adduser carla", "Igual"),
+]
+
+# Colados da página
+SETORES_CMD = [
+    "sudo groupadd financeiro",
+    "sudo groupadd recepcao",
+    "sudo usermod -aG financeiro ana",
+    "sudo usermod -aG financeiro bruno",
+    "sudo usermod -aG recepcao carla",
+    "groups ana bruno carla",
 ]
 
 PASTAS_CMD = [
@@ -103,6 +145,16 @@ PASTAS_CMD = [
     "sudo chmod 770 /srv/escritorio/financeiro /srv/escritorio/recepcao",
     "sudo chmod 755 /srv/escritorio/publico",
     "ls -l /srv/escritorio",
+]
+
+# Na folha: "o que essa linha fez?"
+LINHAS_EXPLICAR = [
+    "sudo groupadd financeiro",
+    "sudo usermod -aG financeiro ana",
+    "groups ana bruno carla",
+    "sudo mkdir -p /srv/escritorio/financeiro …",
+    "sudo chgrp financeiro /srv/escritorio/financeiro",
+    "sudo chmod 770 … financeiro … recepcao",
 ]
 
 # Os números das permissões
@@ -123,36 +175,44 @@ TESTE = [
     ("carla", "entra em financeiro", "Permission denied"),
 ]
 
-# SSH
-SSH_CMD = [
-    ("ip a", "Na linha link/ether: o MAC do servidor"),
-    ("sudo reboot", "Reinicia para pegar o endereço reservado"),
-    ("ssh equipeN@192.168.1N.10", "Entrar de longe (Windows: no Prompt de Comando)"),
-    ("yes", "Na primeira vez: \"confia nesta máquina?\""),
-    ("wall Oi da equipe N", "Manda um recado pra tela do servidor"),
-    ("exit", "Sai do servidor (a sessão de longe acaba)"),
+# O site com o ChatGPT
+PEDIDO_IA = [
+    "Crie o código de uma página de site em um único arquivo HTML.",
+    "Regras: comece com <!DOCTYPE html> e coloque <meta charset=\"UTF-8\"> no <head>. Todo o CSS dentro de <style>. Sem JavaScript. Sem imagens de outros sites (use cores, emojis e formas com CSS). Fica boa no celular. Textos em português do Brasil.",
+    "O site é de: [o negócio], em Itapiranga – SC. Tem: nome e slogan, serviços com preços inventados, horário, contato (telefone e endereço inventados).",
+    "No rodapé: \"Site hospedado no servidor-equipeN · Curso FIC CEJA Itapiranga\". Responda só com o código.",
+]
+
+PUBLICAR_CMD = [
+    "sudo cp /var/www/html/index.html ~/site-encontro1.html",
+    "sudo rm /var/www/html/index.html",
+    "sudo nano /var/www/html/index.html",
 ]
 
 TRAVOU = [
-    ("Connection timed out", "O celular ou o computador não está na rede da equipe, ou o endereço está errado. Wi-Fi da equipe, dados móveis desligados"),
-    ("Connection refused", "O SSH não ficou instalado. No servidor: sudo apt install openssh-server"),
-    ("Permission denied, please try again", "Usuário ou senha errados. Tudo minúsculo. A senha não aparece"),
-    ("REMOTE HOST IDENTIFICATION HAS CHANGED", "Aquele endereço já foi de outra máquina. No Windows: ssh-keygen -R 192.168.1N.10"),
-    ("O endereço não mudou depois da reserva", "Conferir o MAC digitado no roteador, salvar e sudo reboot de novo. Se insistir, ver nota do professor no Bloco 5"),
+    ("Network error: Connection timed out", "O PC não está no roteador da equipe (cabo na WAN em vez da LAN?) ou o Host Name está errado. ipconfig no cmd do PC: tem que ser 192.168.1N.x"),
+    ("Network error: Connection refused", "O SSH não ficou instalado. Na tela do servidor: sudo apt install openssh-server"),
+    ("Access denied", "Usuário ou senha errados. Tudo minúsculo. A senha não aparece"),
+    ("POTENTIAL SECURITY BREACH", "Aquele endereço já foi de outra máquina (a reserva mudou). Se você sabe por quê, Accept. Se não sabe, pare e investigue: é para isso que o aviso existe"),
+    ("O endereço não mudou depois da reserva", "Conferir o MAC digitado no roteador, salvar e sudo reboot de novo. Se insistir, ver nota do professor no Bloco 2"),
+    ("Ctrl+V não fez nada / Ctrl+C parou o comando", "No PuTTY: selecionar copia, botão direito cola. Ctrl+C cancela"),
+    ("Pediu senha no meio de um bloco colado", "Ctrl+C, digitar sudo -v e a senha, colar o bloco de novo"),
     ("No such file or directory", "Caminho errado. Use pwd para ver onde está e Tab para completar"),
-    ("tree: command not found", "Falta instalar: sudo apt install tree"),
     ("ana is not in the sudoers file", "Esperado: funcionário não é administrador. É o teste dando certo"),
-    ("Permission denied numa pasta que devia abrir", "Usuário entrou antes de ser posto no grupo. exit e entrar de novo"),
-    ("Apagou com rm o que não devia", "Não tem lixeira. Refazer. Por isso o treino é numa pasta só de treino"),
+    ("Permission denied numa pasta que devia abrir", "Usuário entrou antes de ser posto no grupo. exit e su - ana de novo"),
+    ("Acentos estranhos no site (Ã©, Ã§)", "Faltou <meta charset=\"UTF-8\">. Pedir ao ChatGPT e publicar de novo"),
+    ("403 Forbidden no navegador", "Não existe index.html: o nano fechou sem salvar. Rodar de novo o bloco Publicar a versão nova"),
+    ("O site não mudou", "Ctrl+F5 no navegador. Conferir se salvou no nano (Ctrl+O, Enter)"),
+    ("chatgpt.com não abre", "O PC está sem internet: o roteador da equipe está com a WAN ligada? Se a rede da escola bloquear, usar copilot.microsoft.com com o mesmo pedido"),
 ]
 
 FICHA_NOVA = [
     "Endereço fixo do servidor (reserva)",
     "MAC do servidor",
-    "Como entrar de longe (SSH)",
+    "Como entrar de longe (PuTTY)",
     "Usuários criados e grupos",
     "Pastas do escritório e quem acessa",
-    "Testado por / data",
+    "O site: de quê, testado por / data",
 ]
 
 
@@ -170,178 +230,182 @@ def build_roteiro():
     )
 
     add_heading(doc, "A IDEIA DESTE ENCONTRO")
-    add_para(doc, "No Encontro 1 a turma instalou o servidor e publicou a página. Hoje ela aprende a morar no terminal e prepara a máquina para o escritório: as pastas, os funcionários e quem pode mexer em quê. E descobre que não precisa mais ficar na frente do servidor: entra nele pelo celular, do outro lado da sala.")
-    add_para(doc, "O fio da noite é a demanda do escritório. Tudo que a turma cria hoje (os usuários ana, bruno e carla, os grupos e a pasta /srv/escritorio) é usado no Encontro 3, quando essa pasta vira pasta compartilhada no Windows e no celular.")
+    add_para(doc, "No Encontro 1 a turma instalou o servidor e publicou a página. Hoje cada equipe monta a bancada do técnico: o servidor e um PC com Windows no mesmo roteador, e o roteador trazendo a internet da escola. A partir daí, a turma não usa mais o teclado do servidor: faz tudo do PC, pelo PuTTY (SSH), como o técnico faz com o servidor do cliente.")
+    add_para(doc, "O PC tem internet, então a noite tem duas ferramentas novas: a página de comandos (para copiar e colar os blocos longos) e o ChatGPT, que escreve o site da equipe. A regra que segura a aprendizagem: o que é comando do dia a dia (pastas, arquivos, adduser) se DIGITA; o que é bloco longo de configuração se COLA, mas a equipe explica na folha o que cada linha fez.")
+    add_para(doc, "O fio da noite continua sendo a demanda do escritório. Os usuários ana, bruno e carla, os grupos e a pasta /srv/escritorio são usados no Encontro 3, quando essa pasta vira pasta compartilhada no Windows. E o PC da bancada já é o computador da ana.")
     add_para(doc, "A frase da noite: \"Cada um entra com o seu nome e só abre a gaveta que é sua.\"", bold=True, color=COR_PRIMARIA)
 
     add_heading(doc, "O que se resolve neste encontro", level=2)
-    add_para(doc, "Cada aluno sai sabendo onde está e como andar entre as pastas (pwd, ls, cd), criar, ler, copiar, renomear e apagar arquivos (mkdir, nano, cat, cp, mv, rm), pedir ajuda a um comando, fixar o endereço do servidor com reserva no roteador, entrar no servidor de longe pelo celular e pelo Windows (SSH), criar usuários e grupos e ler e aplicar permissões em pastas.")
+    add_para(doc, "Cada aluno sai sabendo montar a rede de bancada (servidor e PC no mesmo roteador), fixar o endereço do servidor com reserva, entrar no servidor de longe pelo PuTTY, copiar e colar com segurança no terminal, andar entre as pastas e mexer em arquivos (pwd, ls, cd, mkdir, nano, cat, cp, mv, rm), criar usuários e grupos, ler e aplicar permissões, e publicar um site feito com IA, conferindo o que a IA entregou.")
 
     add_heading(doc, "Onde este encontro fica no módulo", level=2)
-    add_para(doc, "Usa as máquinas do Encontro 1 sem reinstalar. Retoma a reserva por MAC da Noite 8 (agora para o servidor, não para a \"impressora\") e o gateway e o ping da Noite 6. A senha forte é a da Noite 10. A pasta /srv/escritorio e os usuários de hoje são a base do Encontro 3 (Samba e entrega ao cliente).")
-    add_para(doc, "Não entre em: chave SSH no lugar de senha, editar o arquivo sudoers, permissões especiais (setgid, sticky), ACL, netplan e IP fixo configurado no próprio servidor, redirecionamento de portas. O endereço fixo de hoje é pela reserva no roteador, que eles já sabem fazer.", italic=True, color=COR_ALERTA)
+    add_para(doc, "Usa as máquinas do Encontro 1 sem reinstalar. Retoma a WAN e a LAN do roteador (Noites 2 e 8), a reserva por MAC (Noite 8), o gateway e o ping (Noite 6), os cabos testados (Noite 5) e a senha forte (Noite 10). A pasta /srv/escritorio e os usuários são a base do Encontro 3 (Samba e entrega ao cliente).")
+    add_para(doc, "Não entre em: chave SSH no lugar de senha, editar o sudoers, permissões especiais (setgid, sticky), ACL, netplan e IP fixo configurado no próprio servidor, redirecionamento de portas, HTML e CSS linha por linha (o site é da IA; a turma confere e ajusta pedindo). O endereço fixo de hoje é pela reserva no roteador.", italic=True, color=COR_ALERTA)
 
     add_hr(doc)
 
     add_heading(doc, "ANTES DA AULA")
-    add_heading(doc, "As máquinas e a rede", level=2)
-    add_bullet(doc, "Cada equipe volta para a MESMA máquina e o MESMO roteador do Encontro 1. Ligue tudo e confira se o login com equipeN funciona (as senhas estão nas fotos das fichas técnicas que você tirou)")
-    add_bullet(doc, "Internet nos roteadores: hoje se instala o tree pelo apt")
-    add_bullet(doc, "Separe as fichas de entrega da Noite 8: a reserva do Bloco 5 precisa da senha de administrador de cada roteador")
+    add_heading(doc, "A bancada de cada equipe", level=2)
+    for l in BANCADA:
+        add_cmd(doc, l, size=9)
+    add_bullet(doc, "Cada equipe volta para a MESMA máquina e o MESMO roteador do Encontro 1. Ao lado, um PC do laboratório com Windows. Dois cabos testados (Noite 5): servidor → LAN 1, PC → LAN 2")
+    add_bullet(doc, "A porta WAN (azul) de cada roteador ligada na rede da escola, como na Noite 8. Confira num PC: ligado só no roteador da equipe, ele abre chatgpt.com? Então o roteador está passando a internet")
+    add_bullet(doc, "Os PCs largam a rede da escola e passam a receber endereço do roteador da equipe (192.168.1N.1xx). Se algum PC tiver IP fixo configurado pela escola, troque para automático (DHCP) ou use outro PC")
     add_bullet(doc, "Plano de endereço fixo: o servidor da equipe N fica em 192.168.1N.10 (fora da faixa .100 a .150 da Noite 8, como foi a reserva da \"impressora\" em .50)")
+    add_bullet(doc, "Separe as fichas de entrega da Noite 8: a reserva do Bloco 2 precisa da senha de administrador de cada roteador. Separe também as fotos das fichas técnicas do Encontro 1 (senha do equipeN)")
 
-    add_heading(doc, "O SSH do lado do cliente", level=2)
-    add_bullet(doc, "Celular Android: ConnectBot (gratuito, sem cadastro). iPhone: Termius. Peça no grupo da turma, durante a semana, que instalem. Na aula, quem não instalou usa o Wi-Fi da equipe para baixar")
-    add_bullet(doc, "Windows: o Prompt de Comando do Windows 10 e 11 já tem o comando ssh. O computador precisa estar na rede da equipe: um computador do laboratório (ou o seu notebook) ligado por cabo numa porta LAN do roteador da equipe, com os cabos testados da Noite 5")
-    add_bullet(doc, "Teste antes num computador do laboratório: abra o Prompt e digite ssh. Se aparecer \"usage: ssh…\", está pronto")
+    add_heading(doc, "Em cada PC", level=2)
+    add_bullet(doc, "Instale o PuTTY (putty.org → Download PuTTY → instalador 64-bit x86 .msi). No Windows, Iniciar → PuTTY")
+    add_bullet(doc, "Abra a página de comandos e deixe nos favoritos: " + LINK_COMANDOS + ". A página é PRIVADA até você mudar: no menu Compartilhar, libere para quem tiver o link. Plano B: o arquivo \"" + ARQ_COMANDOS + "\" (na pasta do curso) num pendrive, aberto direto no navegador")
+    add_bullet(doc, "Abra chatgpt.com e confira se abre sem login (o ChatGPT gratuito funciona sem conta). Se a rede bloquear, o plano B é copilot.microsoft.com com o mesmo pedido")
+    add_bullet(doc, "Ensaio de 10 minutos numa bancada: entre pelo PuTTY, cole o bloco \"Os setores\" da página e veja como ele se comporta. No Ubuntu 24.04 o bloco colado costuma aparecer inteiro na linha e esperar o Enter. Saber isso antes evita susto na turma")
+    add_bullet(doc, "No ensaio, peça ao ChatGPT o site, cole no nano pelo PuTTY e veja se os acentos aparecem certos no navegador. Se vierem estranhos: no PuTTY, Window → Translation → UTF-8")
 
     add_heading(doc, "Imprima", level=2)
-    add_bullet(doc, "Folha do aluno (3 páginas), uma por pessoa")
+    add_bullet(doc, "Folha do aluno (4 páginas), uma por pessoa")
     add_bullet(doc, "Resumo do aluno, uma por pessoa")
-    add_bullet(doc, "As folhas do Encontro 1 voltam: a ficha técnica (página 3) é completada hoje")
+    add_bullet(doc, "As folhas do Encontro 1 voltam: a ficha técnica é completada hoje")
 
     add_hr(doc)
 
     add_heading(doc, "QUADRO DE TEMPO — 210 MINUTOS")
     add_table(doc, [
         ["Bloco", "Tempo", "O que acontece"],
-        ["1. Retomada: ligar, entrar, a página ainda abre?", "15 min", "Login, a tarefa dos serviços, o que vem hoje"],
-        ["2. O armário de pastas", "10 min", "A raiz, as pastas principais, caminho completo e caminho curto"],
-        ["3. PRÁTICA — O passeio pelas pastas", "25 min", "pwd, ls, cd, cat, a pasta do site, ajuda dos comandos"],
-        ["4. PRÁTICA — A pasta de treino do escritório", "30 min", "mkdir, nano, cp, mv, rm, tree. Conferir com o desenho"],
+        ["1. Retomada + montar a bancada", "20 min", "Servidor e PC no roteador da equipe, a internet chega no PC, a página ainda abre?"],
+        ["2. PRÁTICA — Endereço fixo + entrar pelo PuTTY", "25 min", "MAC, reserva .10, reboot, PuTTY, wall. Copiar e colar no PuTTY"],
+        ["3. PRÁTICA — As pastas (digitando)", "40 min", "O armário (5 min de fala), o passeio, a pasta de treino, tree"],
         ["INTERVALO", "15 min", ""],
-        ["5. PRÁTICA — Endereço fixo do servidor", "15 min", "O MAC do servidor, reserva no roteador, reboot, conferir"],
-        ["6. PRÁTICA — Entrar de longe (SSH)", "35 min", "Pelo celular e pelo Windows. Recado na tela, mudar o site de longe"],
-        ["7. PRÁTICA — Os funcionários", "30 min", "adduser, groupadd, usermod. A ana tenta usar sudo"],
-        ["8. PRÁTICA — As gavetas do escritório", "25 min", "/srv/escritorio, chgrp, chmod, ls -l. O teste de quem abre o quê"],
-        ["9. Fechamento + ficha técnica", "10 min", "Completar a ficha, três frases, o Encontro 3"],
+        ["4. PRÁTICA — Funcionários e gavetas (colando)", "40 min", "adduser digitado, setores e gavetas colados, o que cada linha fez, o teste de quem abre o quê"],
+        ["5. PRÁTICA — O site da equipe com o ChatGPT", "45 min", "O pedido, publicar no nano pelo PuTTY, conferir o que a IA inventou, um ajuste"],
+        ["6. Visita aos sites + ficha técnica", "25 min", "Celular no Wi-Fi das outras equipes, ficha técnica, três frases, Encontro 3"],
     ], col_widths=[6.8, 2, 7.7])
-    add_para(doc, "Blocos 3 a 8: 160 min de atividade do aluno (76% do total). Exposição: os Blocos 1 e 2 (25 min) e falas curtas dentro das práticas. Mantenha o rodízio do Encontro 1: digitador, leitor, anotador.", italic=True, color=COR_CINZA)
+    add_para(doc, "Blocos 2 a 5 e a visita: cerca de 160 min de atividade do aluno (76% do total). Exposição: a retomada, os 5 min do armário de pastas e o fechamento. Rodízio com duas telas: um no PC (digitador), um lendo a folha e conferindo antes do Enter (leitor), um na folha (anotador). Troca a cada bloco.", italic=True, color=COR_CINZA)
 
     add_hr(doc)
 
     # BLOCO 1
-    add_heading(doc, "BLOCO 1 — RETOMADA · 15 MIN")
-    add_bullet(doc, "Cada equipe liga o servidor e entra com equipeN. \"O que acontece quando digita a senha?\" (nada aparece)")
-    add_bullet(doc, "Um celular por equipe no Wi-Fi da equipe: a página do Encontro 1 ainda abre? (sim: o Nginx liga sozinho junto com o servidor)")
-    add_bullet(doc, "A tarefa: cada um diz um serviço que usou na semana e que depende de servidor. Anote no quadro. Pergunte de dois deles: \"o que aconteceria se esse servidor desligasse?\"")
-    add_para(doc, "\"Hoje o servidor vai ganhar funcionários. Cada um vai entrar com o próprio nome e só vai abrir a gaveta que é dele. E vocês vão mandar no servidor pelo celular, sem encostar no teclado.\"", italic=True, color=COR_PRIMARIA)
+    add_heading(doc, "BLOCO 1 — RETOMADA + MONTAR A BANCADA · 20 MIN")
+    add_bullet(doc, "A tarefa: cada um diz um serviço que usou na semana e que depende de servidor. Anote no quadro. \"O que aconteceria se esse servidor desligasse?\"")
+    add_bullet(doc, "Desenhe a bancada no quadro (está na página 1 da folha). \"Onde entra a internet no roteador? E onde ligam o servidor e o PC?\" (WAN e LAN, Noite 2)")
+    add_bullet(doc, "As equipes montam: servidor e PC por cabo nas portas LAN. Liga o servidor, entra com equipeN na tela dele")
+    add_bullet(doc, "No PC: Iniciar → cmd → ipconfig. O endereço tem que ser 192.168.1N.algo: o PC está na rede da equipe. Abre chatgpt.com: a internet chega pelo roteador")
+    add_bullet(doc, "No navegador do PC: http:// e o endereço antigo do servidor (o da ficha técnica). A página do Encontro 1 ainda abre?")
+    add_para(doc, "\"Hoje o teclado do servidor vai ficar parado. Vocês vão mandar nele do PC, como o técnico faz com o servidor do cliente, que fica trancado numa sala. E no fim o servidor vai ter um site de verdade, feito com ajuda de uma IA.\"", italic=True, color=COR_PRIMARIA)
 
     add_hr(doc)
 
     # BLOCO 2
-    add_heading(doc, "BLOCO 2 — O ARMÁRIO DE PASTAS · 10 MIN")
-    add_para(doc, "Desenhe no quadro uma árvore de cabeça para baixo: a raiz / em cima, as pastas principais embaixo.")
-    add_table(doc, [["Pasta", "O que guarda"]] + [list(r) for r in RAIZ], col_widths=[3.5, 13])
-    add_bullet(doc, "No Linux não tem C: nem D:. Tudo começa na raiz /. O pendrive e o segundo disco aparecem como pastas dentro dela")
-    add_bullet(doc, "Caminho completo é o endereço inteiro: /var/www/html (\"Rua X, 123, Itapiranga\"). Funciona de qualquer lugar")
-    add_bullet(doc, "Caminho curto parte de onde você está: recepcao/recados.txt (\"a casa do lado\"). Só funciona se você estiver no lugar certo")
-    add_bullet(doc, ".. é a pasta de cima. ~ é a sua casa")
+    add_heading(doc, "BLOCO 2 — PRÁTICA · ENDEREÇO FIXO + ENTRAR PELO PUTTY · 25 MIN")
+    add_para(doc, "\"Para entrar de longe, o PuTTY precisa do endereço do servidor. Se o roteador der outro número amanhã, ninguém acha o servidor: nem o PuTTY, nem o site, nem a pasta do Encontro 3. Servidor tem endereço fixo. Vocês já sabem fazer: a reserva da Noite 8.\"", italic=True, color=COR_PRIMARIA)
+    add_heading(doc, "Endereço fixo — 10 min", level=2)
+    add_bullet(doc, "Na tela do servidor: ip a. Na placa que não é lo, a linha link/ether mostra o MAC (ex.: 00:1a:2b:3c:4d:5e). Anotar com cuidado")
+    add_bullet(doc, "No navegador do PC: painel do roteador (192.168.1N.1, senha da ficha de entrega) → DHCP → Reserva de endereço → MAC do servidor → 192.168.1N.10. Salvar")
+    add_bullet(doc, "No servidor: sudo reboot. Depois de ligar, ip a: tem que ser .10. No navegador do PC: http://192.168.1N.10 abre a página")
+    add_para(doc, "Nota do professor: se a reserva não pegar mesmo com o MAC certo, o servidor está se identificando pro roteador por outro código (client-id). Conserto, feito por você: em /etc/netplan/50-cloud-init.yaml, abaixo de dhcp4: true, acrescente a linha dhcp-identifier: mac (mesmo recuo), depois sudo netplan apply. Não mostre para a turma.", italic=True, color=COR_CINZA)
+    add_heading(doc, "O PuTTY — 15 min", level=2)
+    add_para(doc, "SSH é uma conexão segura (tudo embaralhado no caminho) até o terminal do servidor. O PuTTY é o programa que faz isso no Windows. Página 1 da folha e passo 1 da página de comandos.")
+    add_table(doc, [["Onde", "O que fazer"]] + [list(r) for r in PUTTY], col_widths=[4.5, 12])
+    add_bullet(doc, "O Security Alert só aparece na primeira vez. Explique: \"o PuTTY guardou a impressão digital do servidor. Se um dia outra máquina se passar por ele, o aviso volta, e aí o técnico desconfia\"")
+    add_bullet(doc, "A prova: pelo PuTTY, digitar wall Oi da equipe N. O recado aparece na tela do servidor, do lado do PC")
+    add_bullet(doc, "Desligue o monitor do servidor de propósito (ou vire para a parede). \"De agora em diante, a tela do servidor é o PuTTY.\"")
+    add_para(doc, "Pare a turma nas teclas, antes de qualquer cópia:", bold=True)
+    add_table(doc, [["Tecla", "No PuTTY"]] + [list(r) for r in TECLAS], col_widths=[4.5, 12])
+    add_para(doc, "Fale da segurança: \"Agora qualquer um ligado no roteador da equipe pode TENTAR entrar no servidor. O que segura é a senha. Por isso ela é longa e não fica colada no monitor.\" Liga com a Noite 10.", bold=True, color=COR_ALERTA)
 
     add_hr(doc)
 
     # BLOCO 3
-    add_heading(doc, "BLOCO 3 — PRÁTICA · O PASSEIO PELAS PASTAS · 25 MIN")
-    add_para(doc, "Página 1 da folha. O anotador escreve o que apareceu em cada passo.")
+    add_heading(doc, "BLOCO 3 — PRÁTICA · AS PASTAS (DIGITANDO) · 40 MIN")
+    add_para(doc, "Diga antes: \"Isto aqui não se cola. É o dia a dia do técnico, tem que estar na mão.\" Na página de comandos esses passos estão marcados como DIGITE e não têm botão de copiar.", bold=True, color=COR_PRIMARIA)
+    add_heading(doc, "O armário de pastas — 5 min de fala", level=2)
+    add_para(doc, "Desenhe no quadro uma árvore de cabeça para baixo: a raiz / em cima, as pastas principais embaixo.")
+    add_table(doc, [["Pasta", "O que guarda"]] + [list(r) for r in RAIZ], col_widths=[3.5, 13])
+    add_bullet(doc, "No Linux não tem C: nem D:. Tudo começa na raiz /")
+    add_bullet(doc, "Caminho completo: /var/www/html (\"Rua X, 123, Itapiranga\"), funciona de qualquer lugar. Caminho curto: recepcao/recados.txt (\"a casa do lado\"), só funciona se você estiver no lugar certo. .. é a pasta de cima, ~ é a sua casa")
+    add_heading(doc, "O passeio — 15 min", level=2)
+    add_para(doc, "Página 2 da folha. O anotador escreve o que apareceu em cada passo.")
     add_table(doc, [["Comando", "Para quê"]] + [list(r) for r in PASSEIO], col_widths=[5, 11.5])
-    add_bullet(doc, "Em ls -a, as linhas com ponto na frente (.bashrc, .profile) são arquivos escondidos de configuração. Não mexer hoje")
-    add_bullet(doc, "Em cat index.html, a equipe vê a página dela como texto: \"o navegador lê exatamente isso e desenha\"")
-    add_bullet(doc, "Depois do passeio, ajuda: ls --help (a lista de opções) e man ls (o manual, sai com q). Peça que achem na ajuda o que faz ls -l e ls -h")
-    add_bullet(doc, "Erro de propósito: cd /pasta-que-nao-existe. Lê a mensagem: No such file or directory = não tem esse arquivo ou pasta")
-    add_para(doc, "Onde dilatar: o leitor fala só o destino (\"vai pra pasta do site\", \"volta pra casa\", \"sobe uma\") e o digitador tem que achar o comando sozinho. Depois trocam.", italic=True, color=COR_DESTAQUE)
-
-    add_hr(doc)
-
-    # BLOCO 4
-    add_heading(doc, "BLOCO 4 — PRÁTICA · A PASTA DE TREINO DO ESCRITÓRIO · 30 MIN")
-    add_para(doc, "Antes de mexer no escritório de verdade, a equipe treina numa pasta que pode estragar. Página 1, a lista de 12 passos. O digitador troca a cada 4 passos.")
+    add_bullet(doc, "Em cat index.html, a equipe vê a página dela como texto: \"o navegador lê exatamente isso e desenha\". Daqui a pouco esse arquivo vai ser trocado pelo site da IA")
+    add_bullet(doc, "Ajuda: ls --help e man ls (sai com q). Peça que achem o que faz ls -l e ls -h")
+    add_bullet(doc, "A tecla Tab completa nomes de pastas: cd /va + Tab. Mostre. Evita metade dos erros")
+    add_heading(doc, "A pasta de treino — 20 min", level=2)
+    add_para(doc, "Antes de mexer no escritório de verdade, a equipe treina numa pasta que pode estragar. O digitador troca a cada 4 passos.")
     add_table(doc, [["Comando", "Para quê"]] + [list(r) for r in PEDIDO], col_widths=[7.5, 9])
     add_para(doc, "No fim, tree ~/treino tem que desenhar exatamente isto (também está na folha):")
     for l in ARVORE:
         add_cmd(doc, l, size=10)
-    add_bullet(doc, "Pare a turma no rm: \"No Linux não tem lixeira. O rm apaga de vez. Na casa do cliente, antes de apagar, o técnico confere duas vezes com ls e pwd onde está.\"")
-    add_bullet(doc, "rm -r apaga pasta com tudo dentro. Mostre, mas não deixe usar fora da pasta treino")
+    add_bullet(doc, "Pare a turma no rm: \"No Linux não tem lixeira. O rm apaga de vez. Antes de apagar, o técnico confere com ls e pwd onde está.\"")
     add_bullet(doc, "Desenho diferente? A equipe descobre sozinha o que faltou e conserta. É o laudo da atividade")
-    add_para(doc, "Onde dilatar: a equipe desenha no papel uma estrutura nova (o escritório com uma pasta de clientes e uma de modelos de contrato, por exemplo), troca o desenho com a equipe do lado, e cada uma constrói o desenho da outra no próprio servidor. Confere com tree.", italic=True, color=COR_DESTAQUE)
+    add_para(doc, "Onde dilatar: o leitor fala só o destino (\"vai pra pasta do site\", \"volta pra casa\") e o digitador acha o comando sozinho. Ou a equipe desenha uma estrutura nova no papel, troca com a do lado, e cada uma constrói o desenho da outra. Confere com tree.", italic=True, color=COR_DESTAQUE)
 
     add_heading(doc, "INTERVALO — 15 MIN", level=2)
 
     add_hr(doc)
 
+    # BLOCO 4
+    add_heading(doc, "BLOCO 4 — PRÁTICA · FUNCIONÁRIOS E GAVETAS (COLANDO) · 40 MIN")
+    add_para(doc, "Página 3 da folha. O escritório tem três funcionários:")
+    add_table(doc, [["Usuário", "Nome", "Grupo (setor)"]] + [list(f) for f in FUNCIONARIOS], col_widths=[4, 5, 7.5])
+    add_heading(doc, "Os usuários — digitados (10 min)", level=2)
+    add_table(doc, [["Comando", "Para quê"]] + [list(r) for r in ADDUSER_CMD], col_widths=[5, 11.5])
+    add_bullet(doc, "Por que digitado: o adduser faz perguntas (senha, nome, telefone). Comando que pergunta não vai em bloco colado")
+    add_bullet(doc, "Senha: a equipe escolhe uma para cada funcionário (10+ caracteres) e anota na folha. Nome e telefones: só Enter. No fim, Y")
+    add_heading(doc, "Os setores e as gavetas — colados (15 min)", level=2)
+    add_para(doc, "Na página de comandos, passos 3 e 4: botão Copiar → no PuTTY, botão direito. O bloco aparece na tela: o leitor lê linha por linha em voz alta ANTES do Enter.")
+    add_para(doc, "Os setores:", bold=True)
+    for c in SETORES_CMD:
+        add_cmd(doc, c, size=9.5)
+    add_para(doc, "As gavetas:", bold=True)
+    for c in PASTAS_CMD:
+        add_cmd(doc, c, size=9.5)
+    add_para(doc, "\"Colar é rápido, mas o servidor é seu. Na casa do cliente, o técnico não cola nada que não saiba explicar. Comando de internet colado sem ler já apagou muito servidor.\" A folha tem uma linha para a equipe explicar cada comando colado: sem a explicação, o bloco não vale.", bold=True, color=COR_ALERTA)
+    add_heading(doc, "Lendo o ls -l", level=2)
+    add_cmd(doc, "drwxrwx--- 2 root financeiro 4096 dez  4 21:10 financeiro", size=9.5)
+    add_bullet(doc, "d = é pasta. Depois três trios: o que o DONO pode, o que o GRUPO pode, o que os OUTROS podem")
+    add_bullet(doc, "r = ler, w = alterar, x = entrar na pasta. - = não pode. root é o dono, financeiro é o grupo")
+    add_table(doc, [["Número", "Letras", "Conta", "Quer dizer"]] + [list(n) for n in NUMEROS], col_widths=[2, 2.2, 2.5, 9.8])
+    add_bullet(doc, "r vale 4, w vale 2, x vale 1. 770 = dono 7, grupo 7, outros 0. 755 no publico: todo mundo lê (é o mural), só o dono altera. Matemática")
+    add_para(doc, "Nunca use 777 para \"resolver\" um Permission denied: é deixar a gaveta aberta para qualquer um.", bold=True, color=COR_ALERTA)
+    add_heading(doc, "O teste — digitado (15 min)", level=2)
+    add_para(doc, "No PuTTY: su - ana (senha da ana). whoami → ana. pwd → /home/ana. Depois as gavetas. exit volta para equipeN. Repetir com su - carla.")
+    add_table(doc, [["Quem", "Tenta", "O certo é"]] + [list(t) for t in TESTE], col_widths=[2.5, 8.5, 5.5])
+    add_bullet(doc, "Ainda como ana: sudo apt update → ana is not in the sudoers file. \"A ana não está na lista de administradores.\" É o certo: funcionário usa, não administra")
+    add_para(doc, "\"Por que não deixar todo mundo entrar com equipeN, que é mais fácil?\" Deixe a turma responder: senha compartilhada vaza, não dá pra saber quem fez o quê, e se a ana sair do escritório, troca a senha de todo mundo.", italic=True, color=COR_PRIMARIA)
+    add_para(doc, "Onde dilatar: abrir uma SEGUNDA janela do PuTTY e entrar direto como ana (login as: ana). Duas pessoas no servidor ao mesmo tempo: who mostra as duas.", italic=True, color=COR_DESTAQUE)
+
+    add_hr(doc)
+
     # BLOCO 5
-    add_heading(doc, "BLOCO 5 — PRÁTICA · ENDEREÇO FIXO DO SERVIDOR · 15 MIN")
-    add_para(doc, "\"Hoje vocês vão entrar no servidor pelo endereço dele. Se o roteador der outro número amanhã, ninguém acha o servidor: nem o SSH, nem o site, nem a pasta do Encontro 3. Servidor tem que ter endereço fixo. Vocês já sabem fazer isso: a reserva da Noite 8.\"", italic=True, color=COR_PRIMARIA)
-    add_bullet(doc, "No servidor: ip a. Na placa que não é lo, a linha link/ether mostra o MAC (ex.: 00:1a:2b:3c:4d:5e). Anotar com cuidado")
-    add_bullet(doc, "No celular, painel do roteador da equipe (192.168.1N.1, senha da ficha de entrega da Noite 8) → DHCP → Reserva de endereço → MAC do servidor → 192.168.1N.10. Salvar")
-    add_bullet(doc, "No servidor: sudo reboot. Depois de ligar, ip a: o endereço tem que ser .10")
-    add_bullet(doc, "O site mudou de endereço: abrir http://192.168.1N.10 no celular. Atualizar a ficha técnica")
-    add_para(doc, "Nota do professor: se a reserva não pegar mesmo com o MAC certo, o servidor está se identificando pro roteador por outro código (client-id). Conserto, feito por você: em /etc/netplan/50-cloud-init.yaml, abaixo de dhcp4: true, acrescente a linha dhcp-identifier: mac (mesmo recuo), depois sudo netplan apply. Não mostre para a turma.", italic=True, color=COR_CINZA)
+    add_heading(doc, "BLOCO 5 — PRÁTICA · O SITE DA EQUIPE COM O CHATGPT · 45 MIN")
+    add_para(doc, "Página 4 da folha e passo 5 da página de comandos. A equipe escolhe um negócio fictício (a página já vem com \"assistência técnica de celulares e computadores\", mas pode ser a oficina, a padaria, o salão, a loja de peças). Na página, o pedido se monta sozinho com o negócio e o número da equipe.")
+    add_heading(doc, "O pedido — 10 min", level=2)
+    for l in PEDIDO_IA:
+        add_cmd(doc, l, size=9)
+    add_bullet(doc, "Leia o pedido com a turma antes de mandar: \"cada regra está ali por um motivo\". Um arquivo só: é o que cabe no nano. charset UTF-8: os acentos. Sem imagem de fora: se o outro site sair do ar, a imagem some. Telefone inventado: o site é de treino")
+    add_para(doc, "\"Nunca cole senha, nome completo ou telefone de verdade no ChatGPT. O que vai para a IA sai da sala.\" Vale para o técnico na casa do cliente também: não se cola configuração do cliente com senha dentro.", bold=True, color=COR_ALERTA)
+    add_heading(doc, "Publicar — 15 min", level=2)
+    for c in PUBLICAR_CMD:
+        add_cmd(doc, c, size=9.5)
+    add_bullet(doc, "O bloco guarda a página do Encontro 1 (cp, que eles acabaram de aprender), apaga a antiga e abre o nano vazio")
+    add_bullet(doc, "No ChatGPT, Copiar código. No nano, botão direito: o código entra todo. Ctrl+O, Enter, Ctrl+X")
+    add_bullet(doc, "No navegador do PC: http://192.168.1N.10. Um celular no Wi-Fi da equipe também abre")
+    add_heading(doc, "Conferir o que a IA fez — 10 min", level=2)
+    add_bullet(doc, "Cada equipe acha pelo menos UMA coisa que a IA inventou, errou ou que não serve (preço absurdo, rua que não existe em Itapiranga, texto em inglês, serviço que o negócio não faz). Anota na folha")
+    add_para(doc, "\"A IA escreve rápido, mas não assina. Quem entrega o site ao cliente e responde por ele é o técnico.\"", italic=True, color=COR_PRIMARIA)
+    add_heading(doc, "Um ajuste — 10 min", level=2)
+    add_bullet(doc, "A equipe pede uma mudança na mesma conversa (cores, promoção da semana, perguntas frequentes) e termina com \"me mande o código completo de novo\"")
+    add_bullet(doc, "Publica pelo bloco \"Publicar a versão nova\" (rm + nano) e recarrega com Ctrl+F5")
+    add_bullet(doc, "Pergunta para a folha: \"o site é feito pela IA. Quem está servindo ele para o navegador?\" (o Nginx, no servidor da equipe. A IA não está no caminho)")
+    add_para(doc, "Onde dilatar: ls -l /var/www/html (quem é o dono do index.html?). cat ~/site-encontro1.html (a página antiga está guardada). Pedir à IA uma segunda página, contato.html, publicar com sudo nano /var/www/html/contato.html e ligar as duas com um link.", italic=True, color=COR_DESTAQUE)
 
     add_hr(doc)
 
     # BLOCO 6
-    add_heading(doc, "BLOCO 6 — PRÁTICA · ENTRAR DE LONGE (SSH) · 35 MIN")
-    add_para(doc, "Página 2 da folha. SSH é uma conexão segura (com tudo embaralhado no caminho) até o terminal do servidor. É o mesmo terminal, só que dentro do celular.")
-    add_heading(doc, "Pelo celular — 15 min", level=2)
-    add_bullet(doc, "Celular no Wi-Fi da equipe. No ConnectBot (ou Termius): novo host, equipeN@192.168.1N.10, porta 22")
-    add_bullet(doc, "Na primeira vez ele pergunta se confia nessa máquina e mostra um código (a \"impressão digital\" do servidor). Aceitar. Ele guarda e, se um dia outra máquina se passar por essa, ele avisa")
-    add_bullet(doc, "Senha da equipe. Entrou: o mesmo equipeN@servidor-equipeN:~$")
-    add_bullet(doc, "A prova: pelo celular, wall Oi da equipe N. O recado aparece na tela do servidor, do outro lado da mesa")
-    add_bullet(doc, "Agora cada um da equipe entra pelo próprio celular. O servidor aceita várias pessoas ao mesmo tempo (a cozinha atende todas as mesas)")
-    add_heading(doc, "Pelo Windows — 10 min", level=2)
-    add_bullet(doc, "No computador ligado por cabo no roteador da equipe: Iniciar → cmd → ssh equipeN@192.168.1N.10")
-    add_bullet(doc, "Pergunta Are you sure you want to continue connecting (yes/no)? Escrever yes por extenso")
-    add_bullet(doc, "Mesmo terminal. Para sair: exit")
-    add_heading(doc, "Mudar o site de longe — 10 min", level=2)
-    add_bullet(doc, "Pelo SSH (celular ou Windows): sudo nano /var/www/html/index.html, acrescentar uma linha: <p>Alterado de longe pela equipe N</p>")
-    add_bullet(doc, "Outro celular recarrega a página. \"O técnico arrumou o site do escritório sem sair da cadeira.\"")
-    add_para(doc, "Fale da segurança: \"Agora qualquer um que esteja no Wi-Fi da equipe pode TENTAR entrar no servidor. O que segura é a senha. Por isso a senha do servidor é longa e não fica colada no monitor.\" Liga com a Noite 10.", bold=True, color=COR_ALERTA)
-    add_para(doc, "Onde dilatar: last mostra quem entrou e de onde. sudo grep Failed /var/log/auth.log mostra as tentativas com senha errada. Peça que alguém erre a senha de propósito e a equipe ache o registro.", italic=True, color=COR_DESTAQUE)
-
-    add_hr(doc)
-
-    # BLOCO 7
-    add_heading(doc, "BLOCO 7 — PRÁTICA · OS FUNCIONÁRIOS · 30 MIN")
-    add_para(doc, "Página 3 da folha. Pode ser feito pelo SSH ou na tela do servidor. O escritório tem três funcionários:")
-    add_table(doc, [["Usuário", "Nome", "Grupo (setor)"]] + [list(f) for f in FUNCIONARIOS], col_widths=[4, 5, 7.5])
-    add_table(doc, [["Comando", "Para quê"]] + [list(r) for r in USUARIOS_CMD], col_widths=[6.5, 10])
-    add_bullet(doc, "Repetir para bruno e carla. O grupo recepcao também precisa ser criado (sudo groupadd recepcao)")
-    add_bullet(doc, "adduser pergunta senha (duas vezes), nome completo e telefones. Senha: a equipe escolhe uma para cada funcionário (10+ caracteres) e anota. Telefones: só Enter. No fim, Y")
-    add_bullet(doc, "No usermod é -aG, com o a. Sem o a, a pessoa sai de todos os outros grupos. Erro clássico")
-    add_bullet(doc, "Teste: entrar como ana, pelo celular: ssh ana@192.168.1N.10. whoami responde ana. pwd responde /home/ana: cada um tem a sua casa")
-    add_bullet(doc, "Ainda como ana: sudo apt update. Resposta: ana is not in the sudoers file. Leia com a turma: \"a ana não está na lista de administradores\". É o certo: funcionário usa, não administra")
-    add_para(doc, "\"Por que não deixar todo mundo entrar com equipeN, que é mais fácil?\" Deixe a turma responder: senha compartilhada vaza, não dá pra saber quem fez o quê, e se a ana sair do escritório, troca a senha de todo mundo. Com um usuário por pessoa, é só apagar o dela.", italic=True, color=COR_PRIMARIA)
-    add_para(doc, "Onde dilatar: cada aluno cria um usuário com o próprio nome (minúsculo, sem acento), entra pelo próprio celular e deixa um arquivo na casa dele com nano. Depois tenta ler a casa do colega: ls /home/colega → Permission denied.", italic=True, color=COR_DESTAQUE)
-
-    add_hr(doc)
-
-    # BLOCO 8
-    add_heading(doc, "BLOCO 8 — PRÁTICA · AS GAVETAS DO ESCRITÓRIO · 25 MIN")
-    add_para(doc, "Agora o escritório de verdade, em /srv/escritorio. De volta como equipeN (exit para sair da ana).")
-    for c in PASTAS_CMD:
-        add_cmd(doc, c, size=9.5)
-    add_heading(doc, "Lendo o ls -l", level=2)
-    add_cmd(doc, "drwxrwx--- 2 root financeiro 4096 dez  4 21:10 financeiro", size=9.5)
-    add_bullet(doc, "d = é pasta. Depois, três trios: o que o DONO pode, o que o GRUPO pode, o que os OUTROS podem")
-    add_bullet(doc, "r = ler, w = alterar (escrever), x = entrar na pasta (ou executar). - = não pode")
-    add_bullet(doc, "root é o dono, financeiro é o grupo. rwx rwx --- = o dono e o grupo tudo, os outros nada")
-    add_heading(doc, "Os números (Matemática)", level=2)
-    add_table(doc, [["Número", "Letras", "Conta", "Quer dizer"]] + [list(n) for n in NUMEROS], col_widths=[2, 2.2, 2.5, 9.8])
-    add_bullet(doc, "r vale 4, w vale 2, x vale 1. Soma em cada trio. 770 = dono 7, grupo 7, outros 0")
-    add_bullet(doc, "755 no publico: todo mundo lê (é o mural), só o dono altera")
-    add_para(doc, "Nunca use 777 para \"resolver\" um Permission denied: é deixar a gaveta aberta para qualquer um. O técnico descobre quem precisa de acesso e põe no grupo certo.", bold=True, color=COR_ALERTA)
-    add_heading(doc, "O teste (página 3 da folha)", level=2)
-    add_para(doc, "Entrar como ana (su - ana, ou SSH) e depois como carla. A equipe marca o que aconteceu. exit volta:")
-    add_table(doc, [["Quem", "Tenta", "O certo é"]] + [list(t) for t in TESTE], col_widths=[2.5, 8.5, 5.5])
-
-    add_hr(doc)
-
-    # BLOCO 9
-    add_heading(doc, "BLOCO 9 — FECHAMENTO + FICHA TÉCNICA · 10 MIN")
-    add_bullet(doc, "A equipe completa a ficha técnica (página 3 da folha de hoje): endereço fixo, MAC, como entrar por SSH, usuários e grupos, pastas e quem acessa")
-    add_bullet(doc, "As três frases (slide)")
-    add_bullet(doc, "Encontro 3: a pasta /srv/escritorio aparece no Windows como uma pasta de rede, e a ana abre a gaveta do financeiro do computador dela. E a entrega do servidor: outra equipe vai testar tudo só com a ficha técnica")
-    add_bullet(doc, "sudo poweroff. Pelo SSH também funciona: e aí a sessão cai, claro")
+    add_heading(doc, "BLOCO 6 — VISITA AOS SITES + FICHA TÉCNICA · 25 MIN")
+    add_bullet(doc, "Visita (15 min): como no Encontro 1, cada um conecta o celular no Wi-Fi de outra equipe (dados móveis desligados) e abre http://192.168.1M.10. Anota na folha de quê é o site e uma coisa boa")
+    add_bullet(doc, "\"Por que o PC da equipe 1 não abre o site da equipe 2?\" (cada roteador é uma rede separada. Do lado de fora, só se vê o roteador. Liga com a Noite 6)")
+    add_bullet(doc, "Ficha técnica (5 min): endereço fixo, MAC, como entrar pelo PuTTY, usuários e grupos, pastas e quem acessa, o site")
+    add_bullet(doc, "As três frases e o Encontro 3: \"a pasta /srv/escritorio vai aparecer neste PC como pasta de rede, e a ana abre a gaveta do financeiro dele\". Desligar: sudo poweroff pelo PuTTY (a janela avisa que a conexão caiu)")
 
     add_hr(doc)
 
@@ -353,42 +417,43 @@ def build_roteiro():
     add_heading(doc, "SE PERGUNTAREM")
     add_para(doc, "\"Dá pra entrar por SSH de casa?\"", bold=True)
     add_para(doc, "> \"Tecnicamente dá, mas aí o servidor fica de frente pra internet inteira, e tem gente testando senhas o dia todo, automaticamente. Para isso se usa chave em vez de senha e VPN. É assunto para quando vocês forem administrar servidor de verdade.\"", italic=True)
+    add_para(doc, "\"Dá pra pôr esse site na internet de verdade?\"", bold=True)
+    add_para(doc, "> \"Dá: precisa de um domínio (o nome, tipo .com.br, que se paga por ano) e de um servidor que fique ligado com internet o tempo todo, que normalmente se aluga. O arquivo é o mesmo que vocês fizeram hoje.\"", italic=True)
+    add_para(doc, "\"Se a IA faz o site, pra que aprender?\"", bold=True)
+    add_para(doc, "> \"A IA escreveu a página. Quem montou a rede, fixou o endereço, instalou o Nginx, publicou e achou o erro da IA foram vocês. É isso que o cliente paga.\"", italic=True)
     add_para(doc, "\"Qual a diferença entre o equipeN e o root?\"", bold=True)
     add_para(doc, "> \"O root é o administrador total. No Ubuntu ninguém entra como root: o equipeN pede o poder emprestado com sudo, um comando por vez, e fica registrado. É mais seguro.\"", italic=True)
-    add_para(doc, "\"Se eu apagar um arquivo do sistema, estraga?\"", bold=True)
-    add_para(doc, "> \"Pode estragar. Por isso o sistema não deixa usuário comum apagar nada fora da casa dele, e o sudo pede senha. Com sudo, o sistema obedece: confira antes de dar Enter.\"", italic=True)
     add_para(doc, "\"Por que o comando se chama mv se ele renomeia?\"", bold=True)
     add_para(doc, "> \"Porque renomear é mover para outro nome no mesmo lugar. Para o Linux é a mesma coisa.\"", italic=True)
-    add_para(doc, "\"No Windows também tem usuário e permissão?\"", bold=True)
-    add_para(doc, "> \"Tem: botão direito na pasta → Propriedades → Segurança. A ideia é a mesma: quem pode ler, quem pode alterar. No Encontro 3 os dois se encontram.\"", italic=True)
 
     add_hr(doc)
 
     add_heading(doc, "DEPOIS DA AULA")
     add_bullet(doc, "NÃO apague usuários, grupos nem /srv/escritorio: o Encontro 3 usa tudo")
-    add_bullet(doc, "NÃO mexa nas reservas dos roteadores: o endereço .10 é o que vai na ficha técnica")
+    add_bullet(doc, "NÃO mexa nas reservas dos roteadores nem desmonte as bancadas se der: no Encontro 3 o PC vira o computador da ana")
+    add_bullet(doc, "Se os PCs precisarem voltar para a rede da escola, anote em qual porta de qual roteador cada um estava")
     add_bullet(doc, "Tire foto das fichas técnicas atualizadas (agora com as senhas dos funcionários)")
-    add_bullet(doc, "Anote quantas equipes passaram no teste das gavetas (Bloco 8) sem ajuda. É o indicador do encontro")
+    add_bullet(doc, "Anote quantas equipes passaram no teste das gavetas sem ajuda e quantas explicaram todas as linhas coladas. São os indicadores do encontro")
 
     add_hr(doc)
 
     add_heading(doc, "DESCRITIVO PARA O DIÁRIO")
-    add_para(doc, "Dei continuidade ao estudo de servidores com Linux nas máquinas instaladas pelos estudantes no encontro anterior. Apresentei a estrutura de pastas do sistema e a diferença entre caminho completo e relativo. Em equipes, os estudantes navegaram pelo sistema e consultaram a ajuda dos comandos, criaram, leram, copiaram, renomearam e apagaram arquivos e pastas em uma estrutura de treino, conferindo o resultado com a representação em árvore. Fixaram o endereço do servidor por reserva no roteador a partir do endereço físico (MAC) e acessaram o servidor a distância por conexão segura (SSH) a partir do celular e do computador com Windows, discutindo a importância da senha forte. Criaram usuários e grupos para os funcionários de um escritório fictício, verificaram que usuários comuns não têm poder de administração e aplicaram permissões às pastas de cada setor, interpretando a notação em letras e em números. Testaram o acesso de cada usuário e atualizaram a ficha técnica do servidor.")
+    add_para(doc, "Dei continuidade ao estudo de servidores com Linux nas máquinas instaladas pelos estudantes no encontro anterior. Em equipes, os estudantes montaram uma rede de bancada com o servidor e um computador com Windows ligados ao roteador da equipe, fixaram o endereço do servidor por reserva no roteador a partir do endereço físico (MAC) e passaram a administrá-lo a distância por conexão segura (SSH) com o programa PuTTY, discutindo a importância da senha forte. Apresentei a estrutura de pastas do sistema e a diferença entre caminho completo e relativo; os estudantes navegaram pelo sistema, consultaram a ajuda dos comandos e criaram, copiaram, renomearam e apagaram arquivos e pastas, conferindo o resultado com a representação em árvore. Criaram usuários e grupos para os funcionários de um escritório fictício e aplicaram permissões às pastas de cada setor a partir de blocos de comandos copiados, explicando por escrito a função de cada linha e interpretando a notação em letras e em números. Utilizaram uma ferramenta de inteligência artificial para gerar o site de um negócio fictício, publicaram-no no servidor, identificaram erros e informações inventadas pela ferramenta e discutiram o cuidado com dados pessoais. Visitaram os sites das outras equipes e atualizaram a ficha técnica do servidor.")
 
     add_hr(doc)
 
     add_heading(doc, "CAIXA DE FERRAMENTAS DIDÁTICAS", color=COR_DESTAQUE)
     add_para(doc, "Se sobrar tempo, ou pra usar em outro encontro:", italic=True, color=COR_CINZA)
     add_para(doc, "1. O arquivo escondido", bold=True)
-    add_para(doc, "Pelo SSH, você entra no servidor de cada equipe e esconde um arquivo tesouro.txt em alguma pasta funda (sudo cp para /var/lib/… ou /usr/share/…), com uma frase dentro. A equipe acha com find / -name tesouro.txt 2>/dev/null e lê com cat. Ganha quem disser a frase e o caminho completo. 15 min.")
+    add_para(doc, "Pelo PuTTY, você entra no servidor de cada equipe e esconde um arquivo tesouro.txt numa pasta funda (/var/lib/… ou /usr/share/…), com uma frase dentro. A equipe acha com find / -name tesouro.txt 2>/dev/null e lê com cat. Ganha quem disser a frase e o caminho completo. 15 min.")
     add_para(doc, "2. Tradutor de permissões", bold=True)
-    add_para(doc, "No quadro, 8 permissões em letras (rwxr-x---, rw-r--r--…) e 8 em números (640, 750…). As equipes traduzem de um lado para o outro e dizem quem pode o quê em cada uma. Matemática. 15 min.")
+    add_para(doc, "No quadro, 8 permissões em letras (rwxr-x---, rw-r--r--…) e 8 em números (640, 750…). As equipes traduzem de um lado para o outro e dizem quem pode o quê. Matemática. 15 min.")
     add_para(doc, "3. O que digitamos hoje", bold=True)
-    add_para(doc, "history mostra todos os comandos da equipe na noite, numerados. A equipe escolhe os 10 mais importantes e escreve, em linguagem de vó, o que cada um faz: vira o cartão de comandos da equipe para o Encontro 3. Linguagens. 20 min.")
+    add_para(doc, "history mostra todos os comandos da noite, numerados. A equipe escolhe os 10 mais importantes e escreve, em linguagem de vó, o que cada um faz: vira o cartão de comandos da equipe para o Encontro 3. Linguagens. 20 min.")
     add_para(doc, "4. O funcionário que saiu", bold=True)
-    add_para(doc, "O bruno saiu do escritório. A equipe tira ele do grupo (sudo gpasswd -d bruno financeiro), testa que ele não abre mais a gaveta e depois decide: apagar o usuário (sudo deluser bruno) ou só bloquear (sudo passwd -l bruno)? Discuta o que acontece com os arquivos dele. 15 min.")
-    add_para(doc, "5. Guia de acesso para o cliente", bold=True)
-    add_para(doc, "Cada equipe escreve uma folha para a ana: como entrar no servidor pelo celular, passo a passo, com o nome do aplicativo, o endereço e onde fica a gaveta dela. Outra equipe tenta seguir o guia num celular que nunca entrou no servidor. 25 min.")
+    add_para(doc, "O bruno saiu do escritório. A equipe tira ele do grupo (sudo gpasswd -d bruno financeiro), testa que ele não abre mais a gaveta e decide: apagar (sudo deluser bruno) ou só bloquear (sudo passwd -l bruno)? E os arquivos dele? 15 min.")
+    add_para(doc, "5. Pergunte à IA, confira no servidor", bold=True)
+    add_para(doc, "A equipe pergunta ao ChatGPT \"como vejo quanto espaço livre tem no disco do Ubuntu?\" e \"como vejo quem está logado?\". Antes de rodar a resposta no PuTTY, explica o que o comando vai fazer. Depois roda e confere se a IA acertou. Mostra o hábito certo: ler antes de colar. 15 min.")
 
     path = os.path.join(OUTDIR, f"Roteiro - {TITULO_ARQ}.docx")
     doc.save(path)
@@ -405,7 +470,8 @@ def build_slides():
     def mono(tb):
         for para in tb.text_frame.paragraphs:
             for run in para.runs:
-                if run.text.startswith("$ ") or run.text[:1] in "<│├└" or run.text.startswith("treino") or run.text.startswith("drwx"):
+                t = run.text
+                if t.startswith("$ ") or t[:1] in "<│├└┌ " or t.startswith("treino") or t.startswith("drwx") or t.startswith("Internet da escola"):
                     run.font.name = MONO
 
     def lista(kicker, titulo, linhas, subtitulo=None, size=20, nota=None, nota_cor=None):
@@ -436,37 +502,56 @@ def build_slides():
         return s
 
     add_slide_cover(prs, "SERVIDORES COM LINUX · ENCONTRO 2", "PASTAS, USUÁRIOS", "E ACESSO DE LONGE",
-                    "O servidor ganha funcionários. E vocês mandam nele pelo celular",
+                    "A bancada do técnico: o servidor, o PC, o PuTTY. E um site feito com IA",
                     "Curso FIC · Montador e Reparador de Computadores · CEJA Itapiranga – SC")
 
     lista("RETOMADA", "Do Encontro 1 pra hoje", [
-        "•  Liguem o servidor e entrem com equipeN. O que acontece com a senha?",
-        "•  A página da equipe ainda abre no celular?",
-        "•  A tarefa: um serviço que você usou e que depende de servidor",
+        "•  Um serviço que você usou na semana e que depende de servidor",
         "•  E se esse servidor desligasse?",
-    ], size=22)
+        "•  A página da equipe ainda abre?",
+    ], size=24)
 
     frase("A FRASE DA NOITE", "Cada um entra com o seu nome\ne só abre a gaveta\nque é sua.", size=36)
 
+    lista("PRÁTICA · MONTAR", "A bancada da equipe", BANCADA + [
+        "",
+        "•  PC: Iniciar → cmd → ipconfig → tem que ser 192.168.1N.algo",
+        "•  PC: abre chatgpt.com? A internet chega pelo roteador",
+    ], size=17)
+
+    frase("POR QUE ENDEREÇO FIXO", "O PuTTY precisa achar o servidor.\nSe o roteador der outro número amanhã,\nninguém acha: nem o PuTTY, nem o site.", size=30)
+
+    lista("PRÁTICA · 10 MIN", "A reserva da Noite 8, agora pro servidor", [
+        "1.  No servidor: ip a → linha link/ether = o MAC",
+        "2.  Navegador do PC: 192.168.1N.1 → DHCP → Reserva de endereço",
+        "3.  MAC do servidor → 192.168.1N.10 → Salvar",
+        "4.  No servidor: sudo reboot",
+        "5.  ip a de novo: ficou .10? O site abre no .10?",
+    ], size=22, nota="A senha do painel está na ficha de entrega da Noite 8.")
+
+    tabela("PRÁTICA · 15 MIN", "Entrar de longe: PuTTY", [["Onde", "O que fazer"]] + [list(r) for r in PUTTY],
+           col_widths=[3.6, 8.3], size=17, height=3.4,
+           nota="SSH: uma conexão segura até o terminal do servidor.")
+
+    tabela("ANTES DE COPIAR", "As teclas mudam no PuTTY", [["Tecla", "No PuTTY"]] + [list(r) for r in TECLAS],
+           col_widths=[3.6, 8.3], size=20, height=2.8,
+           nota="Ctrl+C no PuTTY = parar. Não é copiar.", nota_cor=R)
+
+    frase("A PROVA", "$ wall Oi da equipe N\n\nO recado aparece na tela do servidor.\nDe agora em diante, a tela é o PuTTY.", size=30)
+
+    frase("SEGURANÇA", "Agora qualquer um no roteador\npode TENTAR entrar.\nO que segura é a senha.", cor=R, size=34)
+
+    frase("A REGRA DA NOITE", "DIGITE o que é do dia a dia.\nCOLE o que é bloco longo,\nmas só depois de saber explicar.", size=32)
+
     tabela("O ARMÁRIO DE PASTAS", "Tudo começa na raiz  /", [["Pasta", "O que guarda"]] + [list(r) for r in RAIZ],
            col_widths=[2.8, 9.1], size=17, height=3.6,
-           nota="No Linux não tem C: nem D:. Tudo é pasta dentro da raiz.")
+           nota="Caminho completo: /var/www/html · curto: recepcao/recados.txt · .. sobe · ~ casa")
 
-    lista("O CAMINHO", "Endereço completo e endereço curto", [
-        "$ /var/www/html",
-        "   Completo: \"Rua X, 123, Itapiranga\". Funciona de qualquer lugar",
-        "",
-        "$ recepcao/recados.txt",
-        "   Curto: \"a casa do lado\". Só funciona se você estiver no lugar certo",
-        "",
-        "•   ..  = a pasta de cima          ~  = a sua casa",
-    ], size=21)
-
-    tabela("PRÁTICA · 25 MIN", "O passeio pelas pastas", [["Comando", "Para quê"]] + [list(r) for r in PASSEIO],
+    tabela("PRÁTICA · DIGITE", "O passeio pelas pastas", [["Comando", "Para quê"]] + [list(r) for r in PASSEIO],
            col_widths=[3.6, 8.3], size=15, height=4.0, top=2.3,
-           nota="Ajuda: ls --help  ·  man ls (sai com q)")
+           nota="Ajuda: ls --help · man ls (sai com q) · Tab completa")
 
-    tabela("PRÁTICA · 30 MIN", "A pasta de treino do escritório", [["Comando", "Para quê"]] + [list(r) for r in PEDIDO],
+    tabela("PRÁTICA · DIGITE", "A pasta de treino do escritório", [["Comando", "Para quê"]] + [list(r) for r in PEDIDO],
            col_widths=[6.3, 5.6], size=12, height=4.2, top=2.2,
            nota="O digitador troca a cada 4 passos.")
 
@@ -477,61 +562,18 @@ def build_slides():
 
     frase("", "INTERVALO\n15 minutos", cor=K)
 
-    frase("POR QUE ENDEREÇO FIXO", "Se o roteador der outro número amanhã,\nninguém acha o servidor:\nnem o SSH, nem o site, nem a pasta.", size=30)
-
-    lista("PRÁTICA · 15 MIN", "A reserva da Noite 8, agora pro servidor", [
-        "1.  No servidor: ip a → linha link/ether = o MAC",
-        "2.  Painel do roteador → DHCP → Reserva de endereço",
-        "3.  MAC do servidor → 192.168.1N.10 → Salvar",
-        "4.  No servidor: sudo reboot",
-        "5.  ip a de novo: ficou .10? O site abre no .10?",
-    ], size=22, nota="A senha do painel está na ficha de entrega da Noite 8.")
-
-    lista("PRÁTICA · 35 MIN", "Entrar de longe: SSH", [
-        "Celular (Wi-Fi da equipe):  ConnectBot (Android) · Termius (iPhone)",
-        "$ equipeN@192.168.1N.10   porta 22",
-        "",
-        "Windows (cabo no roteador da equipe):  Iniciar → cmd",
-        "$ ssh equipeN@192.168.1N.10",
-        "",
-        "Primeira vez: \"confia nesta máquina?\" → yes",
-    ], size=20)
-
-    frase("A PROVA", "$ wall Oi da equipe N\n\nO recado aparece na tela do servidor,\ndo outro lado da mesa.", size=30)
-
-    lista("DE LONGE", "Mudar o site sem levantar da cadeira", [
-        "$ sudo nano /var/www/html/index.html",
-        "",
-        "<p>Alterado de longe pela equipe N</p>",
-        "",
-        "•  Outro celular recarrega a página",
-        "•  Cada um da equipe entra pelo próprio celular, ao mesmo tempo",
-    ], size=21)
-
-    frase("SEGURANÇA", "Agora qualquer um no Wi-Fi\npode TENTAR entrar.\nO que segura é a senha.", cor=R, size=34)
-
-    tabela("PRÁTICA · 30 MIN", "Os funcionários do escritório", [["Usuário", "Nome", "Grupo (setor)"]] + [list(f) for f in FUNCIONARIOS],
+    tabela("PRÁTICA · DIGITE", "Os funcionários do escritório", [["Usuário", "Nome", "Grupo (setor)"]] + [list(f) for f in FUNCIONARIOS],
            col_widths=[3.5, 3.5, 4.9], size=20, height=2.0, top=2.4)
     s = prs.slides[-1]
-    tb = add_text(s, ["$ " + c for c, _ in USUARIOS_CMD] + ["", "adduser: senha 2 vezes, o resto Enter, Y no fim.  -aG: com o a!"],
+    tb = add_text(s, ["$ " + c for c, _ in ADDUSER_CMD] + ["", "Senha 2 vezes, o resto Enter, Y no fim. Comando que pergunta não se cola."],
                   0.7, 4.6, 11.9, 2.2, size=17, color=K)
-    for para in tb.text_frame.paragraphs:
-        for run in para.runs:
-            if run.text.startswith("$ "):
-                run.font.name = MONO
+    mono(tb)
 
-    lista("O TESTE", "Entrar como ana", [
-        "$ ssh ana@192.168.1N.10",
-        "$ whoami        → ana",
-        "$ pwd           → /home/ana",
-        "$ sudo apt update",
-        "",
-        "ana is not in the sudoers file",
-        "Certo: funcionário usa, não administra.",
-    ], size=21)
+    lista("PRÁTICA · COLE", "Os setores", ["$ " + c for c in SETORES_CMD], size=19,
+          nota="O leitor lê cada linha em voz alta antes do Enter.")
 
-    lista("PRÁTICA · 25 MIN", "As gavetas do escritório", ["$ " + c for c in PASTAS_CMD], size=15,
-          nota="O escritório mora em /srv/escritorio. No Encontro 3 ela vira pasta de rede.")
+    lista("PRÁTICA · COLE", "As gavetas do escritório", ["$ " + c for c in PASTAS_CMD], size=15,
+          nota="Na folha: o que cada linha fez. Sem explicação, o bloco não vale.")
 
     lista("LENDO O ls -l", "Quem pode o quê", [
         "drwxrwx--- 2 root financeiro  financeiro",
@@ -545,19 +587,52 @@ def build_slides():
            col_widths=[1.8, 1.8, 2.0, 6.3], size=18, height=2.8,
            nota="770 = dono 7, grupo 7, outros 0.  Nunca 777.", nota_cor=R)
 
-    tabela("O TESTE DAS GAVETAS", "su - ana  ·  su - carla  ·  exit volta", [["Quem", "Tenta", "O certo é"]] + [list(t) for t in TESTE],
-           col_widths=[1.8, 6.4, 3.7], size=16, height=3.6)
+    tabela("O TESTE · DIGITE", "su - ana  ·  su - carla  ·  exit volta", [["Quem", "Tenta", "O certo é"]] + [list(t) for t in TESTE],
+           col_widths=[1.8, 6.4, 3.7], size=16, height=3.6,
+           nota="sudo como ana: \"not in the sudoers file\". Certo: funcionário usa, não administra.")
+
+    lista("PRÁTICA · 45 MIN", "O site da equipe com o ChatGPT", [
+        "1.  chatgpt.com no PC",
+        "2.  Página de comandos, passo 5: escolha o negócio, Copiar o pedido",
+        "3.  Cole no ChatGPT. Ele responde com o código",
+        "4.  Leia as regras do pedido: um arquivo só, UTF-8, sem imagem de fora",
+    ], size=21, nota="Nunca cole senha, nome ou telefone de verdade na IA.", nota_cor=R)
+
+    lista("PRÁTICA · COLE", "Publicar no servidor", ["$ " + c for c in PUBLICAR_CMD] + [
+        "",
+        "•  ChatGPT: Copiar código → nano: botão direito",
+        "•  Ctrl+O, Enter, Ctrl+X → navegador: http://192.168.1N.10",
+    ], size=18)
+
+    frase("QUEM ASSINA", "A IA escreve rápido,\nmas não assina.\nQuem entrega o site é o técnico.", size=34)
+
+    lista("CONFERIR E AJUSTAR", "O que a IA inventou?", [
+        "•  Achem UMA coisa errada ou inventada: preço, rua, serviço, inglês",
+        "•  Peçam um ajuste: cores, promoção da semana, perguntas frequentes",
+        "•  Terminem com: \"me mande o código completo de novo\"",
+        "$ sudo rm /var/www/html/index.html",
+        "$ sudo nano /var/www/html/index.html",
+        "•  Ctrl+F5 no navegador",
+    ], size=19)
+
+    lista("A VISITA", "Os sites das outras equipes", [
+        "•  Celular no Wi-Fi de outra equipe, dados móveis desligados",
+        "•  http://192.168.1M.10",
+        "•  De quê é o site? Uma coisa boa nele",
+        "",
+        "Por que o PC da equipe 1 não abre o site da equipe 2?",
+    ], size=22)
 
     lista("O QUE FICA", "Três frases pra guardar", [
         "\"Cada um entra com o seu nome e só abre a gaveta que é sua.\"",
         "",
         "\"Servidor tem endereço fixo.\"",
         "",
-        "\"rm não tem lixeira. 777 não é solução.\"",
+        "\"Só cole o que você sabe explicar.\"",
     ], size=23)
 
     lista("NO ENCONTRO 3", "A entrega do servidor", [
-        "•  A pasta /srv/escritorio aparece no Windows como pasta de rede",
+        "•  A pasta /srv/escritorio aparece neste PC como pasta de rede",
         "•  A ana abre a gaveta do financeiro do computador dela",
         "•  Outra equipe testa o seu servidor só com a ficha técnica",
         "",
@@ -577,13 +652,51 @@ def build_folha():
     doc = Document()
     setup_page(doc, margem=Cm(1.6))
 
-    # PÁGINA 1 — Pastas e treino
+    # PÁGINA 1 — Bancada, endereço fixo, PuTTY
+    cabecalho_documento(
+        doc,
+        "A BANCADA DO TÉCNICO",
+        "Servidores com Linux · Encontro 2 · Curso FIC · CEJA Itapiranga · 1 de 4",
+    )
+    campo(doc, "Nome: _____________________________________________     Equipe: ______   Servidor: servidor-equipe____", space_after=6, size=10)
+
+    add_heading(doc, "1  A bancada", level=2)
+    for l in BANCADA:
+        add_cmd(doc, l, size=8.5)
+    campo(doc, "O servidor está na porta LAN ____ e o PC na porta LAN ____.   A internet entra na porta ________", size=10)
+    campo(doc, "ipconfig no PC mostrou: 192.168.____.____      O PC abriu chatgpt.com?  ☐ Sim  ☐ Não", size=10)
+
+    add_heading(doc, "2  Endereço fixo do servidor", level=2)
+    campo(doc, "MAC do servidor (ip a → link/ether): ____ : ____ : ____ : ____ : ____ : ____", size=10)
+    campo(doc, "Endereço antes da reserva: 192.168.____.____      Depois do sudo reboot: 192.168.____.____", size=10)
+    campo(doc, "Por que servidor precisa de endereço fixo e o PC não precisa?", bold=True, size=10)
+    linha(doc)
+
+    add_heading(doc, "3  Entrar pelo PuTTY", level=2)
+    tbl = add_table(doc, [["Onde", "O que fazer"]] + [list(r) for r in PUTTY], col_widths=[4.2, 13.2])
+    small_table(tbl, size=9)
+    tbl = add_table(doc, [
+        ["Teste", "Funcionou?", "Se deu erro, o que dizia"],
+        ["Entrar pelo PuTTY como equipeN", "☐ Sim  ☐ Não", ""],
+        ["O recado do wall apareceu na tela do servidor", "☐ Sim  ☐ Não", ""],
+        ["Abrir http://192.168.1N.10 no navegador do PC", "☐ Sim  ☐ Não", ""],
+    ], col_widths=[7.4, 3, 7])
+    small_table(tbl, size=9)
+    for row in tbl.rows[1:]:
+        row.height = Cm(0.75)
+    campo(doc, "No PuTTY:  copiar = ______________________   colar = ______________________   Ctrl+C = ______________________", size=10)
+    campo(doc, "Na primeira vez o PuTTY mostrou um Security Alert. Por que ele avisa?", bold=True, size=10)
+    linha(doc)
+    campo(doc, "Agora qualquer um ligado no roteador da equipe pode tentar entrar no servidor. O que protege ele?", bold=True, size=10)
+    linha(doc)
+
+    # PÁGINA 2 — Pastas e treino
+    doc.add_page_break()
     cabecalho_documento(
         doc,
         "ANDANDO PELAS PASTAS",
-        "Servidores com Linux · Encontro 2 · Curso FIC · CEJA Itapiranga · 1 de 3",
+        "Pastas, usuários e acesso de longe · Encontro 2 · 2 de 4 · tudo DIGITADO",
     )
-    campo(doc, "Nome: _____________________________________________     Equipe: ______   Servidor: servidor-equipe____", space_after=6, size=10)
 
     add_heading(doc, "1  O passeio", level=2)
     tbl = add_table(doc, [["Comando", "Para quê", "O que apareceu"]] + [[c, d, ""] for c, d in PASSEIO],
@@ -591,7 +704,7 @@ def build_folha():
     small_table(tbl, size=9)
     mono_col(tbl, 0, size=9)
     campo(doc, "Na ajuda (ls --help), o que faz ls -l? _____________________   E ls -h? _____________________", size=10)
-    campo(doc, "cd /pasta-que-nao-existe mostrou: _____________________________   Quer dizer: ____________________", size=10)
+    campo(doc, "Diferença entre cd /var e cd var: ____________________________________________________________", size=10)
 
     add_heading(doc, "2  A pasta de treino do escritório", level=2)
     tbl = add_table(doc, [["Comando", "Para quê", "✓"]] + [[c, d, "☐"] for c, d in PEDIDO],
@@ -603,87 +716,98 @@ def build_folha():
         add_cmd(doc, l, size=9)
     campo(doc, "Saiu igual?  ☐ Sim, de primeira  ☐ Não: o que faltou e como a equipe consertou? ______________________", size=10)
 
-    # PÁGINA 2 — Endereço fixo e SSH
-    doc.add_page_break()
-    cabecalho_documento(
-        doc,
-        "ENDEREÇO FIXO E ACESSO DE LONGE",
-        "Pastas, usuários e acesso de longe · Encontro 2 · 2 de 3",
-    )
-
-    add_heading(doc, "1  Endereço fixo do servidor (reserva no roteador)", level=2)
-    campo(doc, "MAC do servidor (ip a → link/ether): ____ : ____ : ____ : ____ : ____ : ____", size=10)
-    campo(doc, "Endereço antes da reserva: 192.168.____.____      Endereço reservado: 192.168.____.10", size=10)
-    campo(doc, "Depois do sudo reboot, o ip a mostrou: 192.168.____.____     Ficou o reservado?  ☐ Sim  ☐ Não", size=10)
-    campo(doc, "O site abriu no endereço novo (http://192.168.____.10)?  ☐ Sim  ☐ Não", size=10)
-    campo(doc, "Por que servidor precisa de endereço fixo e celular não precisa?", bold=True, size=10)
-    linha(doc)
-    linha(doc)
-
-    add_heading(doc, "2  Entrar de longe (SSH)", level=2)
-    tbl = add_table(doc, [["Comando", "Para quê"]] + [list(r) for r in SSH_CMD], col_widths=[6.4, 11])
-    small_table(tbl, size=9)
-    mono_col(tbl, 0, size=9)
-    tbl = add_table(doc, [
-        ["Teste", "Funcionou?", "Se deu erro, o que dizia"],
-        ["Entrar pelo celular (aplicativo: ____________)", "☐ Sim  ☐ Não", ""],
-        ["O recado do wall apareceu na tela do servidor", "☐ Sim  ☐ Não", ""],
-        ["Quantos da equipe entraram ao mesmo tempo: ____", "", ""],
-        ["Entrar pelo Windows (Prompt de Comando)", "☐ Sim  ☐ Não", ""],
-        ["Mudar o site de longe e ver no outro celular", "☐ Sim  ☐ Não", ""],
-    ], col_widths=[7.4, 3, 7])
-    small_table(tbl, size=9)
-    for row in tbl.rows[1:]:
-        row.height = Cm(0.75)
-    campo(doc, "Na primeira vez, o SSH perguntou se você confia na máquina. Por que ele pergunta isso?", bold=True, size=10)
-    linha(doc)
-    campo(doc, "Agora qualquer pessoa no Wi-Fi da equipe pode tentar entrar no servidor. O que protege ele?", bold=True, size=10)
-    linha(doc)
-
-    # PÁGINA 3 — Usuários, gavetas, ficha
+    # PÁGINA 3 — Usuários, gavetas
     doc.add_page_break()
     cabecalho_documento(
         doc,
         "OS FUNCIONÁRIOS E AS GAVETAS",
-        "Pastas, usuários e acesso de longe · Encontro 2 · 3 de 3",
+        "Pastas, usuários e acesso de longe · Encontro 2 · 3 de 4",
     )
 
-    add_heading(doc, "1  Os funcionários", level=2)
+    add_heading(doc, "1  Os funcionários (DIGITADO)", level=2)
     tbl = add_table(doc, [["Usuário", "Grupo", "Senha (a equipe escolhe, 10+)", "Criado", "No grupo (groups)"]] +
                     [[u, g, "", "☐", "☐"] for u, _, g in FUNCIONARIOS], col_widths=[2.4, 3, 6.4, 2, 3.6])
     small_table(tbl, size=9)
     for row in tbl.rows[1:]:
-        row.height = Cm(0.7)
-    campo(doc, "Como ana, sudo apt update respondeu: _______________________________   Isso está certo?  ☐ Sim  ☐ Não", size=10)
+        row.height = Cm(0.65)
+    campo(doc, "Por que o adduser é digitado e não colado? ____________________________________________________", size=10)
 
-    add_heading(doc, "2  As gavetas: ls -l /srv/escritorio", level=2)
+    add_heading(doc, "2  O que cada linha colada fez", level=2)
+    tbl = add_table(doc, [["Linha colada", "O que ela fez (com as suas palavras)"]] + [[c, ""] for c in LINHAS_EXPLICAR],
+                    col_widths=[7, 10.4])
+    small_table(tbl, size=9)
+    mono_col(tbl, 0, size=8.5)
+    for row in tbl.rows[1:]:
+        row.height = Cm(0.7)
+
+    add_heading(doc, "3  ls -l /srv/escritorio", level=2)
     tbl = add_table(doc, [["Pasta", "Permissão (letras)", "Número", "Grupo", "Quem pode entrar"],
                           ["financeiro", "", "", "", ""], ["recepcao", "", "", "", ""], ["publico", "", "", "", ""]],
                     col_widths=[2.8, 4, 2, 3, 5.6])
     small_table(tbl, size=9)
     for row in tbl.rows[1:]:
-        row.height = Cm(0.7)
+        row.height = Cm(0.6)
     add_para(doc, "r = 4 · w = 2 · x = 1 · soma em cada trio: dono, grupo, outros", italic=True, size=9, color=COR_CINZA)
 
-    add_heading(doc, "3  O teste das gavetas", level=2)
+    add_heading(doc, "4  O teste das gavetas (DIGITADO: su - ana, su - carla)", level=2)
     tbl = add_table(doc, [["Quem", "Tenta", "O que aconteceu", "Certo?"]] + [[q, t, "", "☐"] for q, t, _ in TESTE],
                     col_widths=[1.8, 7, 6.6, 2])
     small_table(tbl, size=9)
     for row in tbl.rows[1:]:
+        row.height = Cm(0.6)
+    campo(doc, "Como ana, sudo apt update respondeu: _______________________________   Isso está certo?  ☐ Sim  ☐ Não", size=10)
+    campo(doc, "Por que não usar chmod 777 quando dá Permission denied? _______________________________________", size=10)
+
+    # PÁGINA 4 — O site, visita, ficha
+    doc.add_page_break()
+    cabecalho_documento(
+        doc,
+        "O SITE DA EQUIPE",
+        "Pastas, usuários e acesso de longe · Encontro 2 · 4 de 4",
+    )
+
+    add_heading(doc, "1  O pedido para o ChatGPT", level=2)
+    campo(doc, "O site é de: _____________________________________________   Nome do negócio: ______________________", size=10)
+    campo(doc, "Cada regra do pedido tem um motivo. Explique:", bold=True, size=10)
+    tbl = add_table(doc, [["Regra", "Por quê?"],
+                          ["Um arquivo só", ""],
+                          ["<meta charset=\"UTF-8\">", ""],
+                          ["Sem imagens de outros sites", ""],
+                          ["Telefone e endereço inventados", ""]], col_widths=[5.6, 11.8])
+    small_table(tbl, size=9)
+    for row in tbl.rows[1:]:
         row.height = Cm(0.65)
-    campo(doc, "Por que não usar chmod 777 quando dá Permission denied?", bold=True, size=10)
-    linha(doc)
+
+    add_heading(doc, "2  Publicar e conferir", level=2)
+    tbl = add_table(doc, [["Passo", "✓"],
+                          ["Colei o bloco Primeira publicação (guardou a página do Encontro 1 em ~/site-encontro1.html)", "☐"],
+                          ["Copiei o código do ChatGPT e colei no nano com o botão direito", "☐"],
+                          ["Salvei: Ctrl+O, Enter, Ctrl+X", "☐"],
+                          ["Abriu em http://192.168.1____.10 no PC", "☐"],
+                          ["Abriu no celular (Wi-Fi da equipe)", "☐"]], col_widths=[15.8, 1.6])
+    small_table(tbl, size=9)
+    campo(doc, "Uma coisa que a IA inventou, errou ou que não serve: _______________________________________________", size=10)
+    campo(doc, "O ajuste que a equipe pediu: _____________________________________   Apareceu depois do Ctrl+F5?  ☐ Sim", size=10)
+    campo(doc, "A IA fez a página. Quem entrega a página para o navegador? ___________________________________", size=10)
+
+    add_heading(doc, "3  A visita", level=2)
+    tbl = add_table(doc, [["Equipe visitada", "Endereço", "O site é de quê", "Uma coisa boa"],
+                          ["", "192.168.1___.10", "", ""], ["", "192.168.1___.10", "", ""]],
+                    col_widths=[3, 3.6, 5.2, 5.6])
+    small_table(tbl, size=9)
+    for row in tbl.rows[1:]:
+        row.height = Cm(0.65)
+    campo(doc, "Por que o PC da equipe não abre o site das outras equipes? ____________________________________", size=10)
 
     add_heading(doc, "4  Ficha técnica: o que entra hoje (passe para a folha do Encontro 1)", level=2)
     rows = [[FICHA_NOVA[i], "", FICHA_NOVA[i + 3], ""] for i in range(3)]
     tbl = add_table(doc, [["Item", "Como ficou", "Item", "Como ficou"]] + rows, col_widths=[3.8, 4.9, 3.8, 4.9])
     small_table(tbl, size=9)
     for row in tbl.rows[1:]:
-        row.height = Cm(0.8)
+        row.height = Cm(0.75)
 
     add_heading(doc, "TAREFA DA SEMANA", level=2, color=COR_DESTAQUE)
-    campo(doc, "Pergunte a alguém que trabalha em escritório ou comércio: onde ficam os arquivos? ____________________", size=10)
-    campo(doc, "Todo mundo vê tudo, ou cada um tem a sua parte? ________________________________________________", size=10)
+    campo(doc, "Pergunte a alguém que trabalha em escritório ou comércio: onde ficam os arquivos? Todo mundo vê tudo? ______", size=10)
     add_para(doc, "Traga esta folha e a do Encontro 1 no Encontro 3 · CEJA Itapiranga – SC", italic=True, size=9, color=COR_CINZA, align=WD_ALIGN_PARAGRAPH.CENTER)
 
     path = os.path.join(OUTDIR, f"Folha do Aluno - {TITULO_ARQ}.docx")
@@ -705,12 +829,18 @@ def build_resumo():
     )
 
     add_heading(doc, "A ideia principal", level=2)
-    add_para(doc, "Um servidor de escritório tem pastas organizadas, um usuário para cada funcionário e regras de quem abre o quê. Ele tem endereço fixo e é administrado de longe, pelo celular ou pelo computador, com SSH.")
+    add_para(doc, "O técnico não fica na frente do servidor: ele monta o servidor e o computador na mesma rede e administra de longe, pelo SSH. O servidor tem endereço fixo, pastas organizadas, um usuário para cada funcionário e regras de quem abre o quê. E o que a IA entrega, o técnico confere antes de publicar.")
+
+    add_heading(doc, "A bancada e o PuTTY", level=2)
+    add_bullet(doc, "Internet na porta WAN do roteador. Servidor e PC nas portas LAN: ficam na mesma rede")
+    add_bullet(doc, "Endereço fixo: reserva no roteador com o MAC do servidor (ip a → link/ether), depois sudo reboot")
+    add_bullet(doc, "PuTTY: Host Name = endereço do servidor, porta 22, SSH. Na primeira vez, Accept. Para sair: exit")
+    add_bullet(doc, "No PuTTY, selecionar copia e o botão direito cola. Ctrl+C cancela o comando")
+    add_bullet(doc, "Qualquer um na rede pode tentar entrar. O que protege é a senha longa")
 
     add_heading(doc, "As pastas", level=2)
     add_table(doc, [["Pasta", "O que guarda"]] + [list(r) for r in RAIZ], col_widths=[3.5, 12])
-    add_bullet(doc, "Caminho completo começa com / e funciona de qualquer lugar. Caminho curto parte de onde você está")
-    add_bullet(doc, ".. é a pasta de cima. ~ é a sua casa")
+    add_bullet(doc, "Caminho completo começa com / e funciona de qualquer lugar. Caminho curto parte de onde você está. .. sobe, ~ é a sua casa")
 
     add_heading(doc, "Os comandos de arquivo", level=2)
     tbl = add_table(doc, [["Comando", "O que faz"],
@@ -727,31 +857,34 @@ def build_resumo():
                           ], col_widths=[6, 9.5])
     mono_col(tbl, 0, size=9.5)
 
-    add_heading(doc, "Endereço fixo e SSH", level=2)
-    add_bullet(doc, "Servidor precisa de endereço fixo: reserva no roteador com o MAC do servidor (ip a → link/ether), depois sudo reboot")
-    add_bullet(doc, "Entrar de longe: ssh usuario@endereco. No celular, ConnectBot (Android) ou Termius (iPhone). No Windows, no Prompt de Comando")
-    add_bullet(doc, "Na primeira vez, ele pergunta se você confia na máquina: yes. Para sair: exit")
-    add_bullet(doc, "Qualquer um na rede pode tentar entrar. O que protege é a senha longa")
-
     add_heading(doc, "Usuários, grupos e permissões", level=2)
-    tbl = add_table(doc, [["Comando", "O que faz"]] + [list(r) for r in USUARIOS_CMD] +
-                    [["sudo chgrp grupo pasta", "Muda o grupo dono da pasta"],
-                     ["sudo chmod 770 pasta", "Muda as permissões"]], col_widths=[6.5, 9])
+    tbl = add_table(doc, [["Comando", "O que faz"],
+                          ["sudo adduser ana", "Cria a usuária (pergunta senha: digitar, não colar)"],
+                          ["sudo groupadd financeiro", "Cria o grupo"],
+                          ["sudo usermod -aG financeiro ana", "Põe a ana no grupo (-aG, com o a!)"],
+                          ["groups ana", "Mostra os grupos da ana"],
+                          ["sudo chgrp grupo pasta", "Muda o grupo dono da pasta"],
+                          ["sudo chmod 770 pasta", "Muda as permissões"],
+                          ["su - ana  ·  exit", "Vira a ana · volta"]], col_widths=[6.5, 9])
     mono_col(tbl, 0, size=9.5)
     add_para(doc, "Em ls -l: drwxrwx--- → d (pasta), depois três trios: DONO, GRUPO, OUTROS. r = ler (4), w = alterar (2), x = entrar (1). 770 = dono e grupo tudo, outros nada. 755 = todos leem, só o dono altera. Nunca 777.", size=10)
     add_bullet(doc, "Funcionário não é administrador: \"is not in the sudoers file\" é o certo")
-    add_bullet(doc, "No usermod é -aG, com o a. Sem ele, a pessoa sai dos outros grupos")
-    add_bullet(doc, "Pôs alguém num grupo e não funcionou? A pessoa precisa sair (exit) e entrar de novo")
+
+    add_heading(doc, "O site com IA", level=2)
+    add_bullet(doc, "O pedido certo: um arquivo HTML só, com <meta charset=\"UTF-8\">, sem imagens de outros sites, dados inventados")
+    add_bullet(doc, "Publicar: sudo nano /var/www/html/index.html, colar com o botão direito, Ctrl+O, Enter, Ctrl+X. No navegador, Ctrl+F5")
+    add_bullet(doc, "A IA inventa e erra. Quem confere e entrega é o técnico")
+    add_bullet(doc, "Nunca cole senha, nome ou telefone de verdade na IA")
 
     add_heading(doc, "Três frases pra guardar", level=2)
     add_para(doc, "\"Cada um entra com o seu nome e só abre a gaveta que é sua.\"", bold=True, color=COR_PRIMARIA)
     add_para(doc, "\"Servidor tem endereço fixo.\"", bold=True, color=COR_PRIMARIA)
-    add_para(doc, "\"rm não tem lixeira. 777 não é solução.\"", bold=True, color=COR_PRIMARIA)
+    add_para(doc, "\"Só cole o que você sabe explicar.\"", bold=True, color=COR_PRIMARIA)
 
     add_heading(doc, "Pra se testar em casa", level=2)
-    add_bullet(doc, "Qual a diferença entre cd /var e cd var?")
+    add_bullet(doc, "Por que o PC e o servidor precisam estar no mesmo roteador para o PuTTY funcionar?")
     add_bullet(doc, "Uma pasta está com rwxr-x---. Quanto dá em número? Quem pode alterar e quem só lê?")
-    add_bullet(doc, "Por que é melhor cada funcionário ter o próprio usuário, em vez de todos usarem a mesma senha?")
+    add_bullet(doc, "Alguém te manda um comando pelo WhatsApp dizendo \"cola isso no servidor que resolve\". O que você faz antes?")
 
     doc.add_paragraph()
     p = doc.add_paragraph()
