@@ -1,0 +1,336 @@
+<title>Pasta na Rede · Encontro 3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: uma coluna de bancada, na ordem da noite; cada passo diz se é DIGITAR ou COLAR (mesma cara do Encontro 2) */
+:root {
+  --bg: #f3f5f6;
+  --paper: #ffffff;
+  --ink: #15232b;
+  --muted: #56666f;
+  --line: #d5dde1;
+  --accent: #0b6e8a;
+  --accent-soft: #e2f0f4;
+  --type: #9a5a00;
+  --type-soft: #fbefd9;
+  --term-bg: #10181d;
+  --term-fg: #d7e6ea;
+  --warn: #b3261e;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1518; --paper: #162127; --ink: #e3ecef; --muted: #9aabb2; --line: #2b3a41;
+    --accent: #5cc3df; --accent-soft: #173540; --type: #f0b55a; --type-soft: #3a2c14;
+    --term-bg: #070b0d; --term-fg: #d7e6ea; --warn: #ff8a80; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1518; --paper: #162127; --ink: #e3ecef; --muted: #9aabb2; --line: #2b3a41;
+  --accent: #5cc3df; --accent-soft: #173540; --type: #f0b55a; --type-soft: #3a2c14;
+  --term-bg: #070b0d; --term-fg: #d7e6ea; --warn: #ff8a80; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.55;
+  margin: 0;
+}
+.wrap {
+  max-width: 820px; margin: 0 auto;
+  padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 28px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: 2.1rem; }
+h2 { font-size: 1.45rem; }
+h3 { font-size: 1.08rem; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-mono); font-size: .92em; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+header { display: flex; flex-direction: column; gap: 14px; }
+.bancada {
+  display: grid; grid-template-columns: auto 1fr; gap: 14px 22px; align-items: center;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+}
+.bancada label { font-weight: 600; }
+.bancada select {
+  font: inherit; font-weight: 600; padding: 6px 10px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+}
+.dados { display: flex; flex-wrap: wrap; gap: 8px 22px; min-width: 0; }
+.dados div { display: flex; flex-direction: column; }
+.dados span.k { font-size: .75rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+.dados span.v { font-family: var(--font-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.legenda { display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: .92rem; color: var(--muted); }
+.tag {
+  display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 4px; vertical-align: middle;
+}
+.tag.digite { background: var(--type-soft); color: var(--type); }
+.tag.cole { background: var(--accent-soft); color: var(--accent); }
+
+section.passo { display: flex; flex-direction: column; gap: 12px; padding-top: 22px; border-top: 1px solid var(--line); }
+.passo-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.num { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 1.45rem; }
+
+ol, ul { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 4px; }
+
+.cmds { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow-x: auto; }
+.cmds table { border-collapse: collapse; width: 100%; }
+.cmds td { padding: 7px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.cmds tr:first-child td { border-top: 0; }
+.cmds td:first-child { font-family: var(--font-mono); font-weight: 600; white-space: nowrap; color: var(--type); }
+.cmds td:last-child { color: var(--muted); font-size: .94rem; }
+
+.bloco { border-radius: 8px; background: var(--term-bg); color: var(--term-fg); overflow: hidden; }
+.bloco-top {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 8px 10px 8px 14px; border-bottom: 1px solid #ffffff1a; font-size: .85rem; color: #9fb4bb;
+}
+.bloco pre {
+  margin: 0; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: .9rem; line-height: 1.6;
+  white-space: pre;
+}
+.bloco pre.texto { white-space: pre-wrap; font-family: var(--font-body); font-size: .95rem; }
+button.copiar {
+  font: inherit; font-weight: 600; font-size: .85rem; cursor: pointer;
+  padding: 6px 14px; border-radius: 6px; border: 0; background: var(--accent); color: #fff;
+}
+:root:not([data-theme="light"]) button.copiar { color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.copiar { color: #06222b; } }
+:root[data-theme="dark"] button.copiar { color: #06222b; }
+button.copiar.ok { background: var(--type); }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--type); outline-offset: 2px; }
+
+.perg { background: var(--type-soft); border-radius: 8px; padding: 10px 14px; font-size: .95rem; }
+.perg strong { color: var(--type); }
+.aviso { border-left: 4px solid var(--warn); padding: 6px 0 6px 12px; font-size: .95rem; }
+.aviso strong { color: var(--warn); }
+
+.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo label { font-weight: 600; font-size: .95rem; }
+.campo input {
+  font: inherit; padding: 9px 12px; border-radius: 6px; border: 1px solid var(--line);
+  background: var(--paper); color: var(--ink); width: 100%;
+}
+.teclas { display: flex; flex-wrap: wrap; gap: 8px; }
+.teclas span { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: .92rem; }
+.teclas b { font-family: var(--font-mono); }
+
+.travou { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow-x: auto; }
+.travou table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+.travou th, .travou td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.travou th { border-top: 0; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.travou td:first-child { font-family: var(--font-mono); font-size: .86rem; color: var(--warn); min-width: 12em; }
+
+footer { color: var(--muted); font-size: .85rem; }
+@media (max-width: 520px) {
+  h1 { font-size: 1.7rem; }
+  .bancada { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Servidores com Linux · Encontro 3 · CEJA Itapiranga</span>
+  <h1>Pasta na rede</h1>
+  <p>Hoje as gavetas do escritório aparecem no Windows e no celular. Os comandos estão na ordem da aula. Escolha a sua equipe e os endereços se ajustam sozinhos.</p>
+  <div class="bancada">
+    <label for="equipe">Equipe</label>
+    <div class="dados">
+      <select id="equipe" aria-label="Número da equipe">
+        <option>1</option><option>2</option><option>3</option><option>4</option>
+        <option>5</option><option>6</option><option>7</option><option>8</option>
+      </select>
+      <div><span class="k">Servidor</span><span class="v">192.168.<i class="n1"></i>.10</span></div>
+      <div><span class="k">Na rede</span><span class="v">\\192.168.<i class="n1"></i>.10</span></div>
+      <div><span class="k">Usuário</span><span class="v">equipe<i class="n"></i></span></div>
+    </div>
+  </div>
+  <div class="legenda">
+    <span><span class="tag digite">Digite</span> você digita, letra por letra. É assim que se aprende.</span>
+    <span><span class="tag cole">Cole</span> copie aqui e cole no PuTTY. Leia antes de dar Enter.</span>
+  </div>
+</header>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">1</span><h2>Entrar pelo PuTTY</h2></div>
+  <ol>
+    <li>Abra o <b>PuTTY</b>, clique em <code>servidor-equipe<i class="n"></i></code> em <i>Saved Sessions</i>, depois <b>Load</b> e <b>Open</b>.</li>
+    <li><i>login as:</i> <code>equipe<i class="n"></i></code> e a senha (ela não aparece).</li>
+    <li>No navegador do PC, confira se o site da equipe ainda abre: <code>http://192.168.<i class="n1"></i>.10</code></li>
+  </ol>
+  <div class="teclas">
+    <span>Copiar no PuTTY: <b>só selecionar</b></span>
+    <span>Colar no PuTTY: <b>botão direito</b></span>
+    <span><b>Ctrl+C</b> cancela o comando</span>
+  </div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">2</span><h2>Instalar o Samba</h2><span class="tag digite">Digite</span></div>
+  <p>O Samba é o programa que faz uma pasta do Linux aparecer no Windows como pasta de rede.</p>
+  <div class="cmds"><table>
+    <tr><td>sudo apt update</td><td>Atualiza a lista de programas</td></tr>
+    <tr><td>sudo apt install samba</td><td>Instala o Samba. Na pergunta [Y/n], Enter</td></tr>
+    <tr><td>sudo -v</td><td>Pede a senha agora, para o bloco colado do passo 3 não parar no meio</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">3</span><h2>As gavetas na rede</h2><span class="tag cole">Cole</span></div>
+  <p>A primeira linha guarda uma cópia da configuração original. O resto acrescenta as três gavetas no fim do arquivo de configuração do Samba.</p>
+  <div class="bloco" data-bloco="compartilhar">
+    <div class="bloco-top"><span>Compartilhar /srv/escritorio</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.original
+sudo tee -a /etc/samba/smb.conf &gt; /dev/null &lt;&lt;'FIM'
+
+[financeiro]
+   path = /srv/escritorio/financeiro
+   valid users = @financeiro
+   read only = no
+   force group = financeiro
+   create mask = 0660
+   directory mask = 0770
+
+[recepcao]
+   path = /srv/escritorio/recepcao
+   valid users = @recepcao
+   read only = no
+   force group = recepcao
+   create mask = 0660
+   directory mask = 0770
+
+[publico]
+   path = /srv/escritorio/publico
+   valid users = @financeiro @recepcao
+   read only = yes
+FIM</pre>
+  </div>
+  <div class="perg"><strong>Na folha:</strong> o que quer dizer <code>valid users = @financeiro</code>? E por que o <code>publico</code> tem <code>read only = yes</code>?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">4</span><h2>Conferir e ligar</h2><span class="tag digite">Digite</span></div>
+  <div class="cmds"><table>
+    <tr><td>tail -25 /etc/samba/smb.conf</td><td>Mostra o fim do arquivo: as três gavetas têm que estar lá</td></tr>
+    <tr><td>testparm</td><td>Confere a configuração. Procure <i>Loaded services file OK</i>. Depois, Enter</td></tr>
+    <tr><td>sudo systemctl restart smbd</td><td>Reinicia o Samba com a configuração nova</td></tr>
+    <tr><td>systemctl status smbd</td><td>Tem que aparecer <i>active (running)</i>. Sai com q</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">5</span><h2>As senhas da rede</h2><span class="tag digite">Digite</span></div>
+  <p>O Samba tem a sua própria lista de senhas. Use a <b>mesma senha</b> que cada funcionário já tem no Linux (está na folha do Encontro 2).</p>
+  <div class="cmds"><table>
+    <tr><td>sudo smbpasswd -a ana</td><td>Senha da ana duas vezes. Termina com <i>Added user ana</i></td></tr>
+    <tr><td>sudo smbpasswd -a bruno</td><td>Igual</td></tr>
+    <tr><td>sudo smbpasswd -a carla</td><td>Igual</td></tr>
+    <tr><td>sudo cp ~/treino/recepcao/recados.txt /srv/escritorio/publico/</td><td>Põe um arquivo no mural, para ter o que ver</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">6</span><h2>Abrir no Windows, como ana</h2></div>
+  <ol>
+    <li>Abra o <b>Explorador de Arquivos</b> (Windows + E).</li>
+    <li>Na barra de endereço, digite <code>\\192.168.<i class="n1"></i>.10</code> e Enter. Aparecem <b>financeiro</b>, <b>publico</b> e <b>recepcao</b>.</li>
+    <li>Abra <b>financeiro</b>. O Windows pede usuário e senha: <code>ana</code> e a senha dela. <b>Desmarque</b> “Lembrar minhas credenciais”.</li>
+    <li>Dentro do financeiro: botão direito → Novo → Documento de Texto. Escreva algo e salve. Funcionou?</li>
+    <li>Tente abrir <b>recepcao</b>: tem que ser negado.</li>
+    <li>Abra <b>publico</b> e o <i>recados.txt</i>. Tente mudar e salvar: tem que ser negado.</li>
+  </ol>
+  <h3>Do jeito que o funcionário usa: unidade de rede</h3>
+  <ol>
+    <li>Botão direito em <b>Este Computador</b> → <b>Mapear unidade de rede</b>.</li>
+    <li>Unidade <b>Z:</b> · Pasta <code>\\192.168.<i class="n1"></i>.10\financeiro</code> · marque <i>Reconectar ao entrar</i>.</li>
+    <li>Concluir. Agora o financeiro é o “disco Z:” da ana, como um pendrive que nunca sai do computador.</li>
+  </ol>
+  <h3>Trocar de funcionário no mesmo PC <span class="tag digite">Digite</span></h3>
+  <p>O Windows lembra quem entrou naquele servidor. Para entrar como outra pessoa, feche as janelas do Explorador e, no <b>Prompt de Comando</b> (cmd) do PC:</p>
+  <div class="cmds"><table>
+    <tr><td>net use * /delete /y</td><td>Esquece todas as conexões de rede. Depois abra o \\ de novo e entre como bruno</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">7</span><h2>Abrir no celular, como carla</h2></div>
+  <p>Celular no Wi-Fi da equipe, com os dados móveis desligados.</p>
+  <ul>
+    <li><b>iPhone:</b> app <b>Arquivos</b> → os três pontinhos → <b>Conectar ao Servidor</b> → <code>smb://192.168.<i class="n1"></i>.10</code> → Usuário Registrado → <code>carla</code> e a senha.</li>
+    <li><b>Android:</b> app <b>CX Explorador de Arquivos</b> (gratuito) → aba Rede → <b>Novo local</b> → Remoto → <b>SMB</b> → Host <code>192.168.<i class="n1"></i>.10</code>, usuário <code>carla</code> e a senha.</li>
+  </ul>
+  <div class="perg"><strong>Na folha:</strong> a carla abriu a recepção? E o financeiro? Ela conseguiu ler o mural?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">8</span><h2>Conferir pelo servidor</h2><span class="tag digite">Digite</span></div>
+  <div class="cmds"><table>
+    <tr><td>sudo smbstatus</td><td>Quem está conectado agora, de qual endereço e em qual gaveta</td></tr>
+    <tr><td>ls -l /srv/escritorio/financeiro</td><td>O arquivo que a ana criou pelo Windows. Quem é o dono? E o grupo?</td></tr>
+  </table></div>
+  <div class="perg"><strong>Na folha:</strong> o arquivo da ana ficou com o grupo <code>financeiro</code>. Qual linha do passo 3 fez isso? Por que é bom para o bruno?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">!</span><h2>Se travar</h2></div>
+  <div class="travou"><table>
+    <tr><th>O que aparece</th><th>O que fazer</th></tr>
+    <tr><td>O Windows não encontra \\192.168…</td><td>O PC está no roteador da equipe? No servidor: systemctl status smbd. Escreva com barras invertidas \\</td></tr>
+    <tr><td>Nome de usuário ou senha incorretos</td><td>Faltou o smbpasswd -a daquele funcionário, ou a senha é outra. Tente também servidor-equipe<i class="n"></i>\ana</td></tr>
+    <tr><td>Várias conexões… mais de um nome de usuário (erro 1219)</td><td>O Windows já entrou com outro usuário. Feche o Explorador e rode net use * /delete /y no cmd</td></tr>
+    <tr><td>O Windows não pede senha e já nega</td><td>Ficou lembrado um usuário errado. net use * /delete /y</td></tr>
+    <tr><td>testparm: Unknown parameter</td><td>Uma linha do bloco entrou cortada. sudo nano /etc/samba/smb.conf, vá ao fim (Ctrl+W, procure financeiro) e confira com a página</td></tr>
+    <tr><td>As gavetas apareceram duas vezes</td><td>O bloco foi colado duas vezes. Volte ao original: sudo cp /etc/samba/smb.conf.original /etc/samba/smb.conf e cole uma vez só</td></tr>
+    <tr><td>Abre a pasta mas não salva</td><td>O funcionário não está no grupo: groups ana. Ou a gaveta é o publico, que é só leitura</td></tr>
+    <tr><td>Pediu senha no meio do bloco</td><td>Ctrl+C, sudo -v, a senha, e cole o bloco de novo (antes, volte ao original como acima)</td></tr>
+  </table></div>
+</section>
+
+<footer>Curso FIC Montador e Reparador de Computadores · CEJA Itapiranga – SC</footer>
+</div>
+
+<script>
+(function () {
+  var sel = document.getElementById("equipe");
+  function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function gravar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function aplicar() {
+    var n = sel.value;
+    document.querySelectorAll("i.n").forEach(function (el) { el.textContent = n; });
+    document.querySelectorAll("i.n1").forEach(function (el) { el.textContent = "1" + n; });
+  }
+  var salvo = ler("equipe");
+  if (salvo && /^[1-8]$/.test(salvo)) sel.value = salvo;
+  aplicar();
+  sel.addEventListener("change", function () { gravar("equipe", sel.value); aplicar(); });
+
+  document.querySelectorAll("button.copiar").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.closest(".bloco").querySelector("pre");
+      var txt = pre.textContent;
+      function feito() {
+        btn.textContent = "Copiado";
+        btn.classList.add("ok");
+        setTimeout(function () { btn.textContent = "Copiar"; btn.classList.remove("ok"); }, 1800);
+      }
+      function selecionar() {
+        var r = document.createRange(); r.selectNodeContents(pre);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = "Ctrl+C para copiar";
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(feito, selecionar);
+      } else { selecionar(); }
+    });
+  });
+})();
+</script>
