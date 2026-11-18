@@ -42,10 +42,13 @@ OBJETIVOS = [
     "Identificar e fixar o endereço de rede do servidor, relacionando-o à reserva de endereço feita no "
     "roteador, e testar a comunicação entre as máquinas;",
     "Instalar e atualizar programas pelo gerenciador de pacotes;",
-    "Acessar e administrar o servidor a distância por conexão segura (SSH);",
+    "Acessar e administrar o servidor a distância por conexão segura (SSH) a partir de um computador com "
+    "Windows, distinguindo os comandos que se digitam dos blocos de configuração que se copiam e "
+    "conferindo cada linha antes de executar;",
     "Configurar uma pasta compartilhada na rede, acessível a partir de computadores com Windows e de celulares;",
-    "Publicar uma página interna em servidor web e acessá-la pelos aparelhos da rede local;",
-    "Documentar o servidor entregue em ficha técnica e reconhecer a administração de pequenos servidores "
+    "Publicar uma página interna em servidor web, incluindo o site de um negócio fictício gerado com "
+    "ferramenta de inteligência artificial e conferido pela equipe, e acessá-la pelos aparelhos da rede local;",
+    "Documentar o servidor entregue em ficha técnica validada por outra equipe e reconhecer a administração de pequenos servidores "
     "como frente de prestação de serviço.",
 ]
 
@@ -54,13 +57,16 @@ INTERACAO_INTRO = ("O componente segue integrado ao tema gerador pelo viés do t
 
 INTERACAO = [
     ("LINGUAGENS — ", "leitura de comandos e de mensagens do sistema em inglês técnico, escrita de "
-                      "instruções passo a passo para outra pessoa executar e produção da página interna "
-                      "e da ficha técnica do servidor (EM13LGG701 e EM13LGG703)."),
+                      "instruções passo a passo para outra pessoa executar, elaboração de pedido a uma "
+                      "ferramenta de inteligência artificial com leitura crítica do texto produzido e "
+                      "produção da página interna e da ficha técnica do servidor (EM13LGG701 e EM13LGG703)."),
     ("MATEMÁTICA — ", "unidades de armazenamento, cálculo de espaço em disco ocupado e livre, e leitura "
-                      "do sistema de permissões por combinação de números (EM13MAT101 e EM13MAT405)."),
+                      "do sistema de permissões por combinação de números, nas permissões das pastas e "
+                      "nas máscaras dos arquivos criados pela rede (EM13MAT101 e EM13MAT405)."),
     ("CIÊNCIAS HUMANAS — ", "software livre e trabalho colaborativo, reaproveitamento de equipamentos e "
-                            "lixo eletrônico, e responsabilidade de quem administra dados de outras "
-                            "pessoas (EM13CHS106 e EM13CHS304)."),
+                            "lixo eletrônico, responsabilidade de quem administra dados de outras "
+                            "pessoas e cuidado com dados pessoais no uso de ferramentas de inteligência "
+                            "artificial (EM13CHS106 e EM13CHS304)."),
     ("CIÊNCIAS DA NATUREZA — ", "consumo de energia de um computador ligado o tempo todo e descarte "
                                 "adequado de componentes eletrônicos (EM13CNT309)."),
 ]
@@ -80,10 +86,14 @@ CONTEUDOS = [
     "permissões de leitura, escrita e execução.",
     "Servidor na rede: endereço de rede do servidor (ip a); endereço fixo e reserva por MAC no roteador; "
     "teste de comunicação (ping); instalação e atualização de programas (apt).",
-    "Acesso remoto: conexão segura (SSH) a partir do Windows e do celular; senha forte para o servidor.",
-    "Serviços: pasta compartilhada na rede (Samba) com usuários e permissões; servidor web (Nginx) com "
-    "página interna; verificação do funcionamento a partir de outros aparelhos.",
-    "Registro do serviço: ficha técnica do servidor (endereço, usuários, serviços ativos e como acessar).",
+    "Acesso remoto: conexão segura (SSH) a partir do Windows com o PuTTY; impressão digital do servidor; "
+    "copiar e colar no terminal com conferência linha a linha; senha forte para o servidor.",
+    "Serviços: pasta compartilhada na rede (Samba) por setor, com grupos, senha de rede e permissões dos "
+    "arquivos criados; acesso pelo Windows (endereço de rede e unidade mapeada) e pelo celular; servidor "
+    "web (Nginx) com página interna gerada com inteligência artificial e conferida pela equipe; "
+    "verificação das conexões ativas e do funcionamento a partir de outros aparelhos.",
+    "Registro do serviço: ficha técnica do servidor (endereço, usuários, serviços ativos e como acessar), "
+    "validada em conferência cruzada com laudo.",
 ]
 
 METODOLOGIA = [
@@ -93,16 +103,22 @@ METODOLOGIA = [
     "arquivos num lugar só, acessar sem ir até a máquina, ter uma página interna;",
     "Trabalho em equipes, uma por servidor, com rodízio de quem digita e de quem confere, usando "
     "máquinas antigas nas quais as próprias equipes instalam o Ubuntu Server, ligadas aos roteadores "
-    "configurados na unidade anterior;",
-    "Cartões de comandos impressos e passo a passo por serviço, com espaço para anotar o resultado obtido;",
+    "configurados na unidade anterior; a partir do segundo encontro, cada equipe monta uma bancada com o "
+    "servidor e um computador com Windows no mesmo roteador e administra o servidor somente a distância;",
+    "Página de comandos digital por encontro, ajustada ao número da equipe, que separa o que se digita "
+    "(comandos do dia a dia) do que se copia (blocos longos de configuração), com a explicação de cada "
+    "linha copiada registrada na folha do aluno, que traz espaço para anotar o resultado obtido;",
     "Verificação objetiva permanente: o comando funciona ou devolve erro, a pasta aparece ou não aparece "
     "no outro computador, a página abre ou não abre no celular;",
     "Leitura guiada das mensagens de erro como parte do método de diagnóstico;",
     "Conferência cruzada entre equipes: uma equipe acessa a pasta e a página do servidor da outra apenas "
     "com a ficha técnica entregue;",
     "Retomada nos minutos iniciais de cada encontro e atendimento individual nos minutos finais;",
-    "Encontros previstos às sextas-feiras 27/11, 04/12 e 11/12 (20/11 é feriado), com o último encontro "
-    "dedicado à entrega e apresentação do servidor da equipe.",
+    "Encontros previstos às sextas-feiras (20/11 é feriado): 27/11 — instalação do Ubuntu Server pelas "
+    "equipes, primeiros comandos e primeira página no Nginx; 04/12 — bancada com acesso remoto (PuTTY), "
+    "endereço fixo, pastas e arquivos, usuários, grupos e permissões, e site gerado com inteligência "
+    "artificial; 11/12 — pasta compartilhada (Samba) no Windows e no celular, ficha técnica, conferência "
+    "cruzada e apresentação do servidor da equipe.",
 ]
 
 RECURSOS = [
@@ -110,20 +126,24 @@ RECURSOS = [
     "Computadores antigos reaproveitados, conferidos pelo professor, e pendrives com o instalador do "
     "Ubuntu Server 24.04;",
     "Roteadores configurados nas unidades anteriores, cabos de rede e régua de tomadas;",
-    "Computadores do laboratório com Windows e celulares dos estudantes como clientes da rede, com "
-    "aplicativo de terminal SSH;",
-    "Material impresso produzido pelo professor: roteiros, folhas do aluno, cartões de comandos, passo "
-    "a passo de cada serviço e modelo de ficha técnica do servidor.",
+    "Computadores do laboratório com Windows e o programa PuTTY, ligados por cabo ao roteador de cada "
+    "equipe, e celulares dos estudantes como clientes da rede (navegador e aplicativo de arquivos);",
+    "Acesso à internet pelos roteadores das equipes e ferramenta gratuita de inteligência artificial "
+    "(ChatGPT) no navegador;",
+    "Material produzido pelo professor: roteiros, slides, folhas do aluno, resumos, páginas de comandos "
+    "digitais por encontro e modelo de ficha técnica do servidor.",
 ]
 
 AVALIACAO = [
     "Portfólio profissional: ficha técnica do servidor entregue pela equipe;",
     "Produto verificável: servidor em funcionamento com acesso remoto, pasta compartilhada com "
     "permissões corretas e página interna, validado por outra equipe somente com a ficha técnica;",
-    "Atividades práticas de aula, com ficha de acompanhamento por encontro (comandos executados, "
-    "usuários criados, testes de acesso);",
-    "Avaliação prática integradora no encontro de 11/12: entrega e apresentação do servidor da equipe "
-    "como se fosse para o cliente;",
+    "Atividades práticas de aula, registradas na folha do aluno de cada encontro (resultados dos "
+    "comandos, explicação das linhas de configuração copiadas, testes de acesso de cada usuário);",
+    "Avaliação prática integradora no encontro de 11/12: entrega e apresentação do servidor da equipe, "
+    "com critérios de funcionamento, permissões corretas, ficha técnica, laudo da conferência cruzada, "
+    "apresentação e participação no rodízio de funções;",
+    "Autoavaliação do estudante ao final do módulo;",
     "Participação e frequência, com atenção permanente ao risco de evasão;",
     "Recomposição imediata das aprendizagens não atingidas, com repetição do procedimento até a "
     "execução correta.",
