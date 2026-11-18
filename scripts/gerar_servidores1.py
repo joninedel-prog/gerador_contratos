@@ -13,7 +13,10 @@ Versão 2026-11-18 (aula dada nesse dia): abertura completa antes da prática �
 o módulo, o que é servidor (tipos, data center), sistema operacional (síndico),
 história do Linux e software livre, distribuições, como o computador liga —
 intercalada com práticas curtas (cliente ou servidor, kernel Linux no Android).
-Na espera da cópia, o dicionário do técnico (inglês das telas). Folha com 4 páginas.
+Ajuste do mesmo dia: o raio-x é só demonstrado (sem ficha), sai o dicionário do
+técnico, e a página da equipe passa a ser gerada com IA a partir de um pedido
+pronto, por nicho, publicada pelo PC da equipe via ssh no cmd. Na espera da
+cópia, a equipe escolhe o nicho e preenche o pedido. Folha com 4 páginas.
 As funções add_cmd, mono_col, small_table, campo e linha são usadas pelos
 scripts dos Encontros 2 e 3: não mudar a assinatura delas.
 """
@@ -113,7 +116,12 @@ TRAVOU = [
     ("/ ou : não saem no teclado", "Teclado ficou errado: sudo dpkg-reconfigure keyboard-configuration"),
     ("Could not get lock (no apt)", "O servidor está se atualizando sozinho no primeiro boot. Esperar 5 minutos e repetir"),
     ("Celular não abre a página", "Celular no Wi-Fi da EQUIPE (não 4G), http:// e não https, número certo. systemctl status nginx"),
-    ("Ainda aparece Welcome to nginx", "O arquivo não se chama index.html ou não está em /var/www/html. Recarregar a página"),
+    ("Ainda aparece Welcome to nginx", "O arquivo não se chama index.html ou não está em /var/www/html. Ctrl+F5 no navegador"),
+    ("ssh: Connection timed out (no cmd)", "O PC não está no roteador da equipe ou o endereço está errado. ipconfig no cmd: tem que ser 192.168.1N.x"),
+    ("'ssh' não é reconhecido", "Windows antigo, sem ssh. Usar o PuTTY (Host Name = endereço do servidor) ou o plano B do celular"),
+    ("Acentos estranhos no site (Ã©, Ã§)", "Faltou <meta charset=\"UTF-8\">. Pedir ao ChatGPT para pôr e publicar de novo"),
+    ("403 Forbidden no navegador", "O nano fechou sem salvar e não existe index.html. sudo nano de novo, colar, Ctrl+O, Enter"),
+    ("chatgpt.com não abre", "A WAN do roteador da equipe está ligada? Se a escola bloquear: copilot.microsoft.com com o mesmo pedido"),
 ]
 
 # Ficha técnica: os campos que começam hoje (continua nos próximos encontros)
@@ -126,7 +134,7 @@ FICHA = [
     "Ligado no roteador / Wi-Fi",
     "Memória (RAM) e disco",
     "Serviços instalados",
-    "Como acessar o site",
+    "O site: de quê e como acessar",
     "Instalado por / data",
 ]
 
@@ -257,6 +265,47 @@ DICIONARIO = [
 ]
 
 
+# O site com IA: os nichos para escolher
+NICHOS = [
+    ("Assistência técnica de celulares e computadores", "TecCel Conserta", "troca de tela, formatação, limpeza interna"),
+    ("Padaria e confeitaria", "Padaria Pão Quentinho", "cuca, pão caseiro, bolo sob encomenda"),
+    ("Oficina mecânica", "Oficina Motor Forte", "troca de óleo, freios, revisão completa"),
+    ("Salão de beleza e barbearia", "Studio Corte & Estilo", "corte, barba, coloração"),
+    ("Produtos coloniais", "Sabor da Colônia", "salame, queijo, schmier e mel"),
+    ("Pet shop", "Amigo Pet", "banho e tosa, ração, consulta"),
+]
+
+# O pedido pronto (as lacunas a equipe preenche na folha)
+PROMPT_IA = [
+    "Crie uma página de site completa, em um único arquivo HTML.",
+    "Regras: coloque <meta charset=\"UTF-8\">. Todo o CSS dentro de <style>. Sem JavaScript. "
+    "Sem imagens de outros sites: use cores, emojis e formas feitas com CSS. "
+    "A página precisa ficar bonita no celular. Textos em português do Brasil.",
+    "O site é de: ______________________________ (o nicho), chamado ______________________________, em Itapiranga – SC.",
+    "Slogan: ________________________________________________.",
+    "Mostre: os serviços ou produtos (______________________, ______________________, ______________________) "
+    "com preços inventados, o horário de atendimento e um contato com telefone e endereço inventados.",
+    "Cores principais: ______________________.",
+    "No rodapé escreva: \"Site hospedado no servidor-equipe____ · Curso FIC CEJA Itapiranga\".",
+    "Responda só com o código, sem explicação.",
+]
+
+# Publicar o site da IA pelo PC da equipe
+PUBLICAR_IA = [
+    ("No PC (cabo no roteador da equipe)", "Abrir chatgpt.com, digitar o pedido preenchido e enviar"),
+    ("Iniciar → cmd", "ssh equipeN@192.168.1N.1xx (o endereço da instalação). Primeira vez: yes. Senha (não aparece)"),
+    ("sudo nano /var/www/html/index.html", "Abre o nano vazio, no servidor, de dentro do PC"),
+    ("No ChatGPT: Copiar código", "No cmd: botão direito do mouse cola o código inteiro"),
+    ("Ctrl+O, Enter · Ctrl+X", "Salvar e sair do nano"),
+    ("http://192.168.1N.1xx", "No celular e no navegador do PC: o site da equipe no lugar do Welcome"),
+]
+
+REPUBLICAR = [
+    "sudo rm /var/www/html/index.html",
+    "sudo nano /var/www/html/index.html",
+]
+
+
 # ============================================================
 # ROTEIRO
 # ============================================================
@@ -272,15 +321,15 @@ def build_roteiro():
 
     add_heading(doc, "A IDEIA DESTE ENCONTRO")
     add_para(doc, "É o primeiro contato da turma com Linux e com servidor. Quase ninguém viu uma tela só de texto, e muitos não sabem o que é um sistema operacional, mesmo usando um todo dia. Por isso a noite abre com uma introdução de verdade: o que vamos construir no módulo, o que é um servidor, o que é um sistema operacional, de onde vem o Linux e o que acontece quando o computador liga.")
-    add_para(doc, "A introdução não é um bloco só de fala. Ela vem em três partes curtas, cada uma seguida de uma atividade em que o aluno faz alguma coisa (classificar cliente e servidor, achar o Linux no próprio celular). Depois, a parte prática: cada equipe instala o Ubuntu Server com as próprias mãos e termina a noite abrindo no celular um site que está rodando naquela máquina.")
+    add_para(doc, "A introdução não é um bloco só de fala. Ela vem em três partes curtas, cada uma seguida de uma atividade em que o aluno faz alguma coisa (classificar cliente e servidor, achar o Linux no próprio celular). Depois, a parte prática: cada equipe instala o Ubuntu Server com as próprias mãos. No fim, a equipe escolhe um nicho de negócio, pede o site para uma IA com um pedido pronto da folha, publica no próprio servidor e abre no celular. O raio-x da máquina é só demonstrado: a turma roda junto, sem ficha.")
     add_para(doc, "A frase da noite: \"Servidor não é um computador especial. É um computador que trabalha para os outros.\"", bold=True, color=COR_PRIMARIA)
 
     add_heading(doc, "O que se resolve neste encontro", level=2)
-    add_para(doc, "Cada aluno sai sabendo diferenciar cliente de servidor com exemplos do dia a dia, dizer o que um sistema operacional faz, contar de onde vem o Linux e por que ele é gratuito, explicar o que acontece quando o computador liga, dar boot por pendrive, passar pelas telas do instalador do Ubuntu Server entendendo cada escolha, entrar no sistema, descobrir o endereço, a memória e o disco da máquina, instalar um programa com o apt e publicar uma página que abre nos celulares da rede.")
+    add_para(doc, "Cada aluno sai sabendo diferenciar cliente de servidor com exemplos do dia a dia, dizer o que um sistema operacional faz, contar de onde vem o Linux e por que ele é gratuito, explicar o que acontece quando o computador liga, dar boot por pendrive, passar pelas telas do instalador do Ubuntu Server entendendo cada escolha, entrar no sistema, descobrir o endereço, a memória e o disco da máquina, instalar um programa com o apt, pedir um site a uma IA, publicá-lo no servidor e conferir o que a IA inventou.")
 
     add_heading(doc, "Onde este encontro fica no módulo", level=2)
     add_para(doc, "Abre o Plano Mensal 4 (servidores com Linux). Usa os roteadores configurados na Noite 8 e a ficha de entrega deles. Retoma a Noite 1 (rede não é internet: o site só abre dentro da rede), a Noite 6 (endereço, gateway, ping, e a analogia do condomínio) e a Noite 7 (o ping em google.com só funciona porque a agenda, o DNS, responde). O SSH fica instalado hoje para o Encontro 2, em que a turma passa a mandar no servidor pelo PC com o PuTTY.")
-    add_para(doc, "Não entre em: partições e LVM, interface gráfica, comparação técnica entre distribuições, licenças (GPL) em detalhe, domínio na internet, redirecionamento de portas, HTML além das quatro linhas da página. Se alguém perguntar \"e pra abrir de casa?\", a resposta está em Se perguntarem.", italic=True, color=COR_ALERTA)
+    add_para(doc, "Não entre em: partições e LVM, interface gráfica, comparação técnica entre distribuições, licenças (GPL) em detalhe, domínio na internet, redirecionamento de portas, HTML linha por linha (o site é da IA: a turma confere e ajusta pedindo). Se alguém perguntar \"e pra abrir de casa?\", a resposta está em Se perguntarem.", italic=True, color=COR_ALERTA)
 
     add_hr(doc)
 
@@ -296,12 +345,18 @@ def build_roteiro():
     add_heading(doc, "Os pendrives", level=2)
     add_bullet(doc, "Imagem ubuntu-24.04.x-live-server-amd64.iso, de ubuntu.com/download/server")
     add_bullet(doc, "Gravada com o Rufus (Windows) ou o balenaEtcher, um pendrive de 4 GB ou mais por equipe")
-    add_bullet(doc, "Menos pendrives do que equipes: o pendrive fica preso na máquina até o fim da cópia. Comece as equipes em ondas e use o dicionário do técnico (Bloco 8) para quem espera")
+    add_bullet(doc, "Menos pendrives do que equipes: o pendrive fica preso na máquina até o fim da cópia. Comece as equipes em ondas e use o planejamento do site (Bloco 8) para quem espera")
 
     add_heading(doc, "A rede", level=2)
     add_bullet(doc, "Cada servidor vai no roteador da sua equipe (Noite 8), por cabo, numa porta LAN. A WAN do roteador vai num ponto de rede da escola")
     add_bullet(doc, "Teste a internet de cada roteador com um celular. Sem internet não instala o Nginx (plano B no Bloco 10)")
     add_bullet(doc, "Tenha as fichas de entrega da Noite 8 (Wi-Fi de cada roteador): usadas no Bloco 12")
+
+    add_heading(doc, "O PC de cada equipe (para o site com IA)", level=2)
+    add_bullet(doc, "Um computador com Windows por equipe, ligado por cabo numa porta LAN do roteador da equipe (cabos da Noite 5). É por ele que a equipe usa o ChatGPT e manda o código para o servidor")
+    add_bullet(doc, "Teste num PC: Iniciar → cmd → ssh. Se aparecer \"usage: ssh…\", o Windows já tem o ssh. Se não, use o PuTTY")
+    add_bullet(doc, "Abra chatgpt.com num PC da bancada: o ChatGPT gratuito funciona sem login. Se a rede da escola bloquear, copilot.microsoft.com com o mesmo pedido")
+    add_bullet(doc, "Sem PC para todas: o seu notebook circula pelas bancadas (5 min por equipe). Plano B do celular: ChatGPT no celular + aplicativo de SSH (ConnectBot ou Termius), colando no nano")
     add_bullet(doc, "Com os roteadores como a Noite 8 deixou, o servidor da equipe N ganha um endereço 192.168.1N.1xx. No Encontro 2 ele passa a ser fixo em 192.168.1N.10")
 
     add_heading(doc, "Imprima e projete", level=2)
@@ -320,17 +375,17 @@ def build_roteiro():
         ["5. PRÁTICA — O Linux no seu bolso", "10 min", "Achar a versão do kernel Linux no Android. Onde mais tem Linux na sala?"],
         ["6. Como o computador liga e como se instala", "10 min", "BIOS, boot, pendrive, o instalador sem mouse, o aviso do disco"],
         ["7. PRÁTICA — A instalação", "40 min", "As 15 telas, em equipe, com rodízio. Anotar o IP e o perfil"],
-        ["8. PRÁTICA — Enquanto copia", "15 min", "O dicionário do técnico (inglês das telas) e o palpite do raio-x"],
+        ["8. PRÁTICA — Enquanto copia: o site da equipe", "15 min", "Escolher o nicho e preencher o pedido pronto da folha"],
         ["INTERVALO", "15 min", "Coincide com o fim da cópia nas máquinas mais lentas"],
-        ["9. PRÁTICA — Primeiro login e raio-x", "20 min", "A senha invisível, o prompt, oito comandos, a ficha técnica"],
-        ["10. PRÁTICA — O primeiro site", "20 min", "apt update, instalar o Nginx, abrir no celular"],
-        ["11. PRÁTICA — A página da equipe", "15 min", "nano, quatro linhas, salvar, recarregar no celular"],
+        ["9. Primeiro login + raio-x mostrado", "10 min", "A senha invisível, o prompt. O professor mostra os comandos, a turma roda junto"],
+        ["10. PRÁTICA — O Nginx", "15 min", "apt update, instalar o Nginx, Welcome to nginx no celular"],
+        ["11. PRÁTICA — O site com IA", "35 min", "O pedido no ChatGPT, ssh pelo cmd do PC, colar no nano, conferir o que a IA inventou"],
         ["12. Visita, desligar e fechamento", "10 min", "O site de outra equipe, sudo poweroff, três frases, o Encontro 2"],
     ], col_widths=[6.5, 2, 8])
-    add_para(doc, "Introdução: 50 min de fala (Blocos 1, 2, 4 e 6), sempre intercalada com prática. Atividade do aluno: Blocos 3, 5 e 7 a 12, cerca de 145 min (69% do total). Nunca há dois blocos de fala seguidos.", italic=True, color=COR_CINZA)
+    add_para(doc, "Introdução: 50 min de fala (Blocos 1, 2, 4 e 6), sempre intercalada com prática. Atividade do aluno: Blocos 3, 5, 7, 8, 10, 11 e 12, cerca de 140 min (67% do total). Nunca há dois blocos de fala seguidos.", italic=True, color=COR_CINZA)
 
     add_heading(doc, "As equipes e o rodízio", level=2)
-    add_para(doc, "Forme as equipes no Bloco 1, uma por máquina, de 3 ou 4. Três papéis que trocam a cada bloco de prática (anotado na página 2 da folha):")
+    add_para(doc, "Forme as equipes no Bloco 1, uma por máquina, de 3 ou 4. Três papéis que trocam a cada bloco de prática (anotado na página 2 da folha). No site com IA, o digitador fica no PC:")
     add_bullet(doc, "Digitador: o único com a mão no teclado")
     add_bullet(doc, "Leitor: lê a folha e a tela em voz alta, traduz o inglês, confere antes do Enter")
     add_bullet(doc, "Anotador: preenche a folha da equipe (IP, usuário, resultados)")
@@ -454,11 +509,12 @@ def build_roteiro():
     add_hr(doc)
 
     # BLOCO 8
-    add_heading(doc, "BLOCO 8 — PRÁTICA · ENQUANTO COPIA · 15 MIN")
-    add_para(doc, "O anotador vigia a tela e chama quando aparecer Reboot Now. Os outros fazem a página 3 da folha:")
-    add_bullet(doc, "O dicionário do técnico: 18 palavras e expressões em inglês que apareceram nas telas. A equipe traduz sem celular primeiro, depois confere com a tabela abaixo. Linguagens: inglês técnico")
-    add_table(doc, [["Na tela", "Quer dizer"]] + [list(d) for d in DICIONARIO], col_widths=[6, 10.5])
-    add_bullet(doc, "O palpite do raio-x: a equipe lê os comandos que vão rodar depois do intervalo e escreve o que acha que cada um mostra")
+    add_heading(doc, "BLOCO 8 — PRÁTICA · ENQUANTO COPIA: O SITE DA EQUIPE · 15 MIN")
+    add_para(doc, "O anotador vigia a tela e chama quando aparecer Reboot Now. Os outros fazem a página 3 da folha: escolher o nicho do site e preencher as lacunas do pedido pronto.")
+    add_table(doc, [["Nicho", "Nome de exemplo", "Serviços ou produtos de exemplo"]] + [list(n) for n in NICHOS], col_widths=[5.5, 4, 7])
+    add_bullet(doc, "Os nomes da folha são só exemplo: a equipe pode inventar o próprio, ou escolher outro nicho (a loja de peças, a academia, a agropecuária). Tudo inventado: nada de telefone, endereço ou nome de gente de verdade")
+    add_bullet(doc, "Peça um slogan curto e as cores. \"Vocês são o cliente pedindo o site. Quanto mais claro o pedido, melhor o resultado\"")
+    add_para(doc, "\"Nunca coloquem senha, nome completo ou telefone de verdade num pedido para IA. O que vai para a IA sai da sala.\" Vale para o técnico na casa do cliente também.", bold=True, color=COR_ALERTA)
     add_para(doc, "A cópia terminou: Reboot Now. A tela pede \"Please remove the installation medium, then press ENTER\": tira o pendrive, Enter. Se não tirar, a máquina pode começar a instalação de novo.", italic=True, color=COR_ALERTA)
 
     add_heading(doc, "INTERVALO — 15 MIN", level=2)
@@ -466,55 +522,64 @@ def build_roteiro():
     add_hr(doc)
 
     # BLOCO 9
-    add_heading(doc, "BLOCO 9 — PRÁTICA · PRIMEIRO LOGIN E RAIO-X · 20 MIN")
+    add_heading(doc, "BLOCO 9 — PRIMEIRO LOGIN + RAIO-X MOSTRADO · 10 MIN")
     add_para(doc, "A tela mostra: servidor-equipeN login:")
     add_para(doc, "Antes de qualquer um digitar, pare a turma toda: \"Quando vocês digitarem a senha, NADA vai aparecer. Nem bolinha, nem asterisco. Não travou: ele está escondendo. Digitem com calma e Enter.\"", bold=True, color=COR_ALERTA)
     add_bullet(doc, "Mensagens depois do login: (cloud-init, chaves SSH) = o sistema terminando de ligar. Enter e o login: volta")
     add_bullet(doc, "Entrou: equipeN@servidor-equipeN:~$ . As partes: quem@qual-máquina:onde$. O $ quer dizer \"pode mandar\"")
+    add_para(doc, "O raio-x é só para mostrar: projete o slide, diga o comando, todas as equipes rodam juntas e você comenta o que apareceu. Ninguém anota. O único número que a equipe guarda é o endereço do ip a (vai na ficha técnica).")
     add_table(doc, [["Comando", "O que mostra"]] + [list(r) for r in RAIOX], col_widths=[5.5, 11])
-    add_bullet(doc, "Em ip a, ignorar o lo (127.0.0.1, a máquina falando com ela mesma). O endereço é o inet da outra placa (enp…, eno…)")
-    add_bullet(doc, "No primeiro ping, trocar o N pelo número da equipe. -c 4 manda 4 e para. Sem o -c, Ctrl+C")
-    add_bullet(doc, "Ping em google.com: \"Pra pingar um nome, o servidor perguntou pra quem?\" (pra agenda, o DNS da Noite 7)")
-    add_bullet(doc, "free -h e df -h: a equipe anota e faz a conta de quanto sobra. \"Cabem quantas fotos de 3 MB?\"")
+    add_bullet(doc, "ip a: ignorar o lo (127.0.0.1, a máquina falando com ela mesma). O endereço é o inet da outra placa (enp…, eno…). Tem que bater com o da tela de rede")
+    add_bullet(doc, "ping em google.com: \"pra pingar um nome, o servidor perguntou pra quem?\" (pra agenda, o DNS da Noite 7). Sem -c, o ping não para: Ctrl+C")
+    add_bullet(doc, "free -h e df -h: \"esse computador que ninguém queria tem quantos GB livres? Cabem quantas fotos?\"")
     add_bullet(doc, "Seta para cima repete o último comando; Tab completa a palavra. Errou? \"command not found\": leia a mensagem")
 
     add_hr(doc)
 
     # BLOCO 10
-    add_heading(doc, "BLOCO 10 — PRÁTICA · O PRIMEIRO SITE · 20 MIN")
+    add_heading(doc, "BLOCO 10 — PRÁTICA · O NGINX · 15 MIN")
     for c, _ in SITE[:3]:
         add_cmd(doc, c)
     add_bullet(doc, "sudo = \"faça como administrador\". Pede a senha da equipe (invisível de novo)")
-    add_bullet(doc, "apt é a \"loja de aplicativos\" do servidor, por texto. update atualiza a vitrine; install instala. Liga com o Bloco 4: quem mantém essa loja é a distribuição")
+    add_bullet(doc, "apt é a \"loja de aplicativos\" do servidor, por texto. update atualiza a vitrine; install instala. Quem mantém essa loja é a distribuição (Bloco 4)")
     add_bullet(doc, "Do you want to continue? [Y/n]: a maiúscula é o padrão, só Enter já é sim. status: active (running) em verde, sai com q")
-    add_para(doc, "Cada um conecta o celular no Wi-Fi da equipe (dados móveis desligados) e abre http:// e o endereço do servidor. Aparece \"Welcome to nginx!\". Deixe comemorar. \"Essa página não veio da internet. Veio daquela máquina velha, pelo cabo, pelo roteador, pelo Wi-Fi. Vocês são a cozinha agora.\"", italic=True, color=COR_PRIMARIA)
+    add_para(doc, "Cada um conecta o celular no Wi-Fi da equipe (dados móveis desligados) e abre http:// e o endereço do servidor. Aparece \"Welcome to nginx!\". Deixe comemorar. \"Essa página não veio da internet. Veio daquela máquina velha, pelo cabo, pelo roteador, pelo Wi-Fi. Vocês são a cozinha agora. Falta o prato: o site da equipe.\"", italic=True, color=COR_PRIMARIA)
     add_heading(doc, "Plano B: sem internet não instala o Nginx", level=2)
     add_cmd(doc, "mkdir site")
     add_cmd(doc, "nano site/index.html")
     add_cmd(doc, "sudo python3 -m http.server 80 --directory site")
-    add_para(doc, "O Ubuntu já vem com Python, que tem um servidor de páginas embutido. Fica ligado enquanto a tela estiver aberta; Ctrl+C desliga. Instale o Nginx no começo do Encontro 2.", italic=True, color=COR_CINZA)
+    add_para(doc, "O Ubuntu já vem com Python, que tem um servidor de páginas embutido. Mas sem internet também não tem ChatGPT: nesse caso a equipe digita no nano um título e dois parágrafos (<h1>Servidor da Equipe N</h1> e <p>…</p>) e o site com IA fica para o Encontro 2.", italic=True, color=COR_CINZA)
 
     add_hr(doc)
 
     # BLOCO 11
-    add_heading(doc, "BLOCO 11 — PRÁTICA · A PÁGINA DA EQUIPE · 15 MIN")
-    add_cmd(doc, SITE[3][0])
-    add_para(doc, "O nano é um editor de texto dentro do terminal. A equipe digita as quatro linhas da folha, trocando o N e os nomes. Hoje sem acento e sem ç:")
-    for l in PAGINA:
-        add_cmd(doc, l, size=10)
-    add_bullet(doc, "Salvar: Ctrl+O e Enter. Sair: Ctrl+X. No rodapé do nano, ^ quer dizer Ctrl")
-    add_bullet(doc, "<h1> é título grande, <p> é parágrafo. Abre com <h1> e fecha com </h1>")
-    add_bullet(doc, "Troca o digitador: cada um da equipe acrescenta uma linha (o time, a música, um recado)")
+    add_heading(doc, "BLOCO 11 — PRÁTICA · O SITE COM IA · 35 MIN")
+    add_para(doc, "Página 4 da folha. O digitador vai para o PC da equipe. Primeiro, a ponte: no PC, Iniciar → cmd → ipconfig. O endereço tem que ser 192.168.1N.algo: o PC está na mesma rede do servidor.")
+    add_heading(doc, "O pedido — 10 min", level=2)
+    add_bullet(doc, "chatgpt.com no navegador do PC. O leitor dita o pedido da página 3, com as lacunas preenchidas, e o digitador escreve. Enviar")
+    add_bullet(doc, "O ChatGPT devolve o código num quadro escuro. \"Isso é a mesma coisa que vocês viram no Welcome to nginx, só que maior: o navegador lê esse texto e desenha a página\"")
+    add_heading(doc, "Mandar para o servidor — 15 min", level=2)
+    add_table(doc, [["Onde / o quê", "O que fazer"]] + [list(p) for p in PUBLICAR_IA], col_widths=[5.5, 11])
+    add_bullet(doc, "O ssh no cmd abre o terminal do servidor dentro do PC: o mesmo equipeN@servidor-equipeN:~$. \"É uma prévia do Encontro 2: o servidor vai poder ficar trancado numa sala, e vocês mandam nele daqui\"")
+    add_bullet(doc, "No cmd, colar é com o botão direito do mouse. Ctrl+V pode não funcionar. Ctrl+C não copia: cancela")
+    add_bullet(doc, "O index.html novo tem prioridade sobre o Welcome do Nginx: basta recarregar o celular (Ctrl+F5 no PC)")
+    add_heading(doc, "Conferir o que a IA fez — 10 min", level=2)
+    add_bullet(doc, "Cada equipe acha pelo menos UMA coisa que a IA inventou, errou ou não serve (preço absurdo, rua que não existe em Itapiranga, texto em inglês, serviço que o negócio não faz) e anota na folha")
+    add_bullet(doc, "Um ajuste: a equipe pede, na mesma conversa, uma mudança (outra cor, uma promoção da semana, perguntas frequentes) e termina com \"me mande o código completo de novo\". Publicar a versão nova:")
+    for c in REPUBLICAR:
+        add_cmd(doc, c)
+    add_para(doc, "\"Quem confere o site antes de entregar para o cliente é o técnico, não a IA. A IA faz rápido; vocês respondem pelo resultado.\"", italic=True, color=COR_PRIMARIA)
 
     add_hr(doc)
 
     # BLOCO 12
     add_heading(doc, "BLOCO 12 — VISITA, DESLIGAR E FECHAMENTO · 10 MIN")
     add_bullet(doc, "Visita (5 min): cada um conecta o celular no Wi-Fi de outra equipe (ficha de entrega da Noite 8) e abre o site dela. No próprio Wi-Fi não abre: \"cada roteador é uma casa. Esse site está na REDE, não na INTERNET (Noite 1). Para o escritório, é isso que se quer: página interna\"")
+    add_bullet(doc, "No cmd do PC: exit (sai do servidor). Depois, na tela do servidor:")
     add_cmd(doc, "sudo poweroff")
     add_bullet(doc, "\"Servidor não se desliga no botão nem na tomada: ele pode estar escrevendo no disco\"")
     add_bullet(doc, "Volte à enquete do Bloco 1: \"quem sabe dizer agora o que é um servidor? E o Linux?\". As três frases (slide final)")
-    add_bullet(doc, "Encontro 2: o PC com Windows vai para a bancada, e a turma manda no servidor de longe, pelo PuTTY. Organiza as pastas, cria os funcionários e faz o site de um negócio")
+    add_bullet(doc, "Encontro 2: o PC vira a bancada do técnico. Endereço fixo do servidor, PuTTY, pastas e os funcionários do escritório com senha")
 
     add_hr(doc)
 
@@ -542,13 +607,13 @@ def build_roteiro():
     add_heading(doc, "DEPOIS DA AULA")
     add_bullet(doc, "NÃO reinstale nem formate: o Encontro 2 continua de onde parou, na mesma máquina, com o mesmo usuário")
     add_bullet(doc, "Guarde cada servidor junto com o roteador da equipe e a ficha de entrega")
-    add_bullet(doc, "Tire foto da ficha técnica de cada equipe (página 4): se um aluno faltar ou perder a folha, a senha do servidor está salva")
-    add_bullet(doc, "Anote quantas equipes chegaram ao site no celular. É o indicador do encontro")
+    add_bullet(doc, "Tire foto da ficha técnica de cada equipe (página 4, no fim): se um aluno faltar ou perder a folha, a senha do servidor está salva")
+    add_bullet(doc, "Anote quantas equipes chegaram ao site da IA no celular. É o indicador do encontro")
 
     add_hr(doc)
 
     add_heading(doc, "DESCRITIVO PARA O DIÁRIO")
-    add_para(doc, "Iniciei o estudo de servidores com Linux apresentando a situação-problema do módulo e o produto a ser construído. Trabalhei a diferença entre cliente e servidor a partir do roteador configurado na unidade anterior e de exemplos do cotidiano, e os estudantes classificaram casos em dupla. Apresentei a função do sistema operacional, a história do Linux e do software livre e o conceito de distribuição, e os estudantes identificaram o núcleo Linux em seus próprios celulares. Expliquei a inicialização do computador e o processo de instalação. Em equipes, com rodízio de funções, os estudantes instalaram o Ubuntu Server 24.04 em computadores reaproveitados, por meio de pendrive, interpretando as telas do instalador em inglês técnico e registrando cada escolha, e elaboraram um glossário dos termos do instalador. Acessaram o sistema pelo terminal e levantaram nome, endereço de rede, memória e espaço em disco da máquina, testando a comunicação com o roteador e com a internet. Instalaram o servidor web Nginx pelo gerenciador de pacotes, publicaram uma página interna da equipe e verificaram o acesso pelo celular, discutindo a diferença entre rede local e internet. Iniciaram a ficha técnica do servidor e desligaram o sistema de forma segura.")
+    add_para(doc, "Iniciei o estudo de servidores com Linux apresentando a situação-problema do módulo e o produto a ser construído. Trabalhei a diferença entre cliente e servidor a partir do roteador configurado na unidade anterior e de exemplos do cotidiano, e os estudantes classificaram casos em dupla. Apresentei a função do sistema operacional, a história do Linux e do software livre e o conceito de distribuição, e os estudantes identificaram o núcleo Linux em seus próprios celulares. Expliquei a inicialização do computador e o processo de instalação. Em equipes, com rodízio de funções, os estudantes instalaram o Ubuntu Server 24.04 em computadores reaproveitados, por meio de pendrive, interpretando as telas do instalador em inglês técnico e registrando cada escolha. Acessaram o sistema pelo terminal e, em demonstração guiada, consultaram nome, endereço de rede, memória e espaço em disco da máquina e testaram a comunicação com o roteador e com a internet. Instalaram o servidor web Nginx pelo gerenciador de pacotes e verificaram o acesso pelo celular, discutindo a diferença entre rede local e internet. Escolheram um nicho de negócio fictício, elaboraram o pedido a uma ferramenta de inteligência artificial, publicaram o site gerado no servidor por conexão segura a partir de um computador com Windows e identificaram informações inventadas ou incorretas, discutindo o cuidado com dados pessoais. Iniciaram a ficha técnica do servidor e desligaram o sistema de forma segura.")
 
     add_hr(doc)
 
@@ -767,13 +832,18 @@ def build_slides():
         ["Choose a password", "A equipe inventa (10+ caracteres) e ANOTA"],
     ], col_widths=[4.5, 7.4], size=20, height=3.0)
 
-    lista("ENQUANTO COPIA · 15 MIN", "O dicionário do técnico", [
-        "Página 3 da folha:",
-        "",
-        "•  18 palavras do instalador: traduzam sem celular, depois confiram",
-        "•  O palpite do raio-x: o que cada comando vai mostrar?",
-        "•  O anotador vigia a tela: chama quando aparecer Reboot Now",
-    ], size=21, nota="Reboot Now → TIRE O PENDRIVE → Enter", nota_cor=R)
+    tabela("ENQUANTO COPIA · 15 MIN", "O site da equipe: escolham o nicho", [["Nicho", "Nome de exemplo", "Exemplos"]] + [list(n) for n in NICHOS],
+           col_widths=[4.6, 3.3, 4.0], size=13, height=3.9, top=2.3,
+           nota="Página 3 da folha: preencham o pedido. Tudo inventado, nada de dado real.")
+
+    lista("O PEDIDO PARA A IA", "Quanto mais claro o pedido, melhor o site", [
+        "•  Um único arquivo HTML, com <meta charset=\"UTF-8\">",
+        "•  CSS dentro de <style>, sem JavaScript, sem imagens de outros sites",
+        "•  Bonito no celular, em português",
+        "•  O nicho, o nome, o slogan, 3 serviços com preços, horário, contato",
+        "•  As cores e o rodapé com o servidor da equipe",
+        "•  \"Responda só com o código\"",
+    ], size=20, nota="O anotador vigia a tela: Reboot Now → TIRE O PENDRIVE → Enter", nota_cor=R)
 
     frase("", "INTERVALO\n15 minutos", cor=K)
 
@@ -788,11 +858,11 @@ def build_slides():
         "•  $ = \"pode mandar\"",
     ], size=22, nota="Mensagens depois do login:? É o sistema terminando de ligar. Enter.")
 
-    tabela("PRÁTICA · 20 MIN", "O raio-x da máquina", [["Comando", "O que mostra"]] + [list(r) for r in RAIOX],
+    tabela("DEMONSTRAÇÃO · TODOS RODAM JUNTOS", "O raio-x da máquina", [["Comando", "O que mostra"]] + [list(r) for r in RAIOX],
            col_widths=[4.2, 7.7], size=15, height=4.0, top=2.3,
-           nota="Seta pra cima repete. Tab completa. Errou? Leia a mensagem.")
+           nota="Só olhar. Guarde apenas o endereço do ip a. Seta pra cima repete, Tab completa.")
 
-    lista("PRÁTICA · 20 MIN", "O primeiro site", [
+    lista("PRÁTICA · 15 MIN", "O Nginx: o servidor de páginas", [
         "$ sudo apt update",
         "$ sudo apt install nginx",
         "$ systemctl status nginx",
@@ -806,13 +876,32 @@ def build_slides():
 
     frase("VOCÊS SÃO A COZINHA", "Essa página não veio da internet.\nVeio daquela máquina velha,\npelo cabo, pelo roteador, pelo Wi-Fi.", size=30)
 
-    lista("PRÁTICA · 15 MIN", "A página da equipe", [
+    lista("PRÁTICA · 35 MIN", "O site com IA: o pedido", [
+        "•  O digitador vai para o PC da equipe (cabo no roteador da equipe)",
+        "•  cmd → ipconfig: o PC está na rede 192.168.1N?",
+        "•  chatgpt.com → o leitor dita o pedido da folha → enviar",
+        "",
+        "O código que volta é o que o navegador lê para desenhar a página.",
+    ], size=21)
+
+    lista("PRÁTICA · 35 MIN", "Mandar o site para o servidor", [
+        "$ ssh equipeN@192.168.1N.1xx",
+        "   (primeira vez: yes · a senha não aparece)",
         "$ sudo nano /var/www/html/index.html",
         "",
-    ] + PAGINA + [
-        "",
-        "Salvar: Ctrl+O, Enter · Sair: Ctrl+X · Recarregue o celular",
-    ], size=19, nota="Hoje sem acento e sem ç. Cada um da equipe põe uma linha.")
+        "•  ChatGPT: Copiar código → no cmd: BOTÃO DIREITO cola",
+        "•  Ctrl+O, Enter · Ctrl+X · recarregue o celular",
+    ], size=21, nota="O ssh abre o servidor dentro do PC. É a prévia do Encontro 2.")
+
+    lista("CONFIRA O QUE A IA FEZ", "O técnico responde pelo resultado", [
+        "•  Ache uma coisa que a IA inventou, errou ou que não serve",
+        "•  Peça um ajuste: \"... e me mande o código completo de novo\"",
+        "$ sudo rm /var/www/html/index.html",
+        "$ sudo nano /var/www/html/index.html",
+        "•  Cole, salve, Ctrl+F5",
+    ], size=21)
+
+    frase("CUIDADO COM A IA", "Nunca coloque senha, nome completo\nou telefone de verdade num pedido.\nO que vai para a IA sai da sala.", cor=R, size=30)
 
     frase("VISITA", "No seu Wi-Fi, o site da vizinha não abre.\nCada roteador é uma casa.\nEsse site está na REDE, não na INTERNET.", size=28)
 
@@ -829,7 +918,7 @@ def build_slides():
     lista("NO ENCONTRO 2", "A bancada do técnico", [
         "•  Um PC com Windows ao lado do servidor, no mesmo roteador",
         "•  Mandar no servidor de longe, pelo PuTTY",
-        "•  Pastas, funcionários com senha e o site de um negócio",
+        "•  Endereço fixo, pastas e os funcionários do escritório com senha",
         "",
         "Tarefa: quatro serviços que você usou esta semana e que dependem de um servidor.",
     ], size=21)
@@ -892,64 +981,58 @@ def build_folha():
     campo(doc, "Nome do servidor: ______________________   Usuário: ______________   Senha: ______________________", size=10)
     campo(doc, "Hora em que começou a cópia: ____ : ____     Hora do Reboot Now: ____ : ____     Levou ______ minutos", size=10)
 
-    # PÁGINA 3 — Enquanto copia + raio-x
+    # PÁGINA 3 — Planejar o site e o pedido pronto
     doc.add_page_break()
     cabecalho_documento(
         doc,
-        "O DICIONÁRIO DO TÉCNICO E O RAIO-X",
-        "Servidores com Linux · Encontro 1 · 3 de 4",
+        "O SITE DA EQUIPE: O PEDIDO PARA A IA",
+        "Servidores com Linux · Encontro 1 · 3 de 4 · enquanto o servidor copia",
     )
 
-    add_heading(doc, "1  Enquanto copia: o dicionário do técnico", level=2)
-    add_para(doc, "Traduza sem o celular. Depois confira com a turma.", italic=True, size=9, color=COR_CINZA)
-    metade = (len(DICIONARIO) + 1) // 2
-    rows = [["Na tela", "Quer dizer", "Na tela", "Quer dizer"]]
-    for i in range(metade):
-        a = DICIONARIO[i][0]
-        b = DICIONARIO[i + metade][0] if i + metade < len(DICIONARIO) else ""
-        rows.append([a, "", b, ""])
-    tbl = add_table(doc, rows, col_widths=[4.2, 4.5, 4.2, 4.5])
-    small_table(tbl, size=9)
-    for row in tbl.rows[1:]:
-        row.height = Cm(0.7)
-    campo(doc, "Que palavra na tela do disco avisa que tudo vai ser apagado? ______________________", size=10)
+    add_heading(doc, "1  Escolham o nicho", level=2)
+    add_para(doc, "Os nomes e serviços são só exemplo: podem inventar outros, ou escolher outro nicho. Tudo inventado, nada de dado real.", italic=True, size=9, color=COR_CINZA)
+    tbl = add_table(doc, [["", "Nicho", "Nome de exemplo", "Serviços ou produtos de exemplo"]] +
+                    [["☐", n, nome, ex] for n, nome, ex in NICHOS] + [["☐", "Outro: ____________________", "", ""]],
+                    col_widths=[0.9, 6, 4.2, 6.3])
+    small_table(tbl, size=9.5)
 
-    add_heading(doc, "2  O raio-x da máquina (depois do intervalo)", level=2)
-    add_para(doc, "Antes de rodar, escreva o palpite. Depois rode e anote o resultado. Troque N pelo número da equipe.", italic=True, size=9, color=COR_CINZA)
-    tbl = add_table(doc, [["Comando", "O que mostra", "Palpite", "O que deu"]] +
-                    [[c, d, "", ""] for c, d in RAIOX[:7]], col_widths=[3.8, 5.4, 3.8, 4.4])
-    small_table(tbl, size=9)
-    mono_col(tbl, 0, size=9)
-    for row in tbl.rows[1:]:
-        row.height = Cm(0.8)
-    campo(doc, "O endereço do ip a bate com o da tela de rede do instalador?  ☐ Sim  ☐ Não", size=10)
-    campo(doc, "Disco: tem ______ GB e estão livres ______ GB. Cabem quantas fotos de 3 MB? (1 GB ≈ 1000 MB) ________", size=10)
-    campo(doc, "Para pingar google.com, o servidor precisou perguntar pra quem? (Noite 7) ______________________", size=10)
+    add_heading(doc, "2  O pedido pronto: preencham as lacunas", level=2)
+    add_para(doc, "Depois do intervalo, o leitor dita este pedido e o digitador escreve no ChatGPT, no PC da equipe.", italic=True, size=9, color=COR_CINZA)
+    for l in PROMPT_IA:
+        p = add_cmd(doc, l, size=9.5)
+        p.paragraph_format.space_after = Pt(3)
+    add_para(doc, "Nunca coloque senha, nome completo ou telefone de verdade num pedido para IA. O que vai para a IA sai da sala.", bold=True, size=9.5, color=COR_ALERTA)
 
-    # PÁGINA 4 — O site, a visita e a ficha técnica
+    add_heading(doc, "3  Antes de pedir, pensem", level=2)
+    campo(doc, "Quem é o cliente desse site (quem vai abrir a página)? ______________________________________________", size=10)
+    campo(doc, "O que essa pessoa precisa achar logo de cara? ______________________________________________________", size=10)
+
+    # PÁGINA 4 — Publicar, conferir, visita e ficha técnica
     doc.add_page_break()
     cabecalho_documento(
         doc,
-        "O PRIMEIRO SITE",
+        "O SITE NO SERVIDOR",
         "Servidores com Linux · Encontro 1 · 4 de 4",
     )
 
-    add_heading(doc, "1  Instalar e abrir no celular", level=2)
-    tbl = add_table(doc, [["Comando", "Para quê", "✓"]] + [[c, d, "☐"] for c, d in SITE[:3]],
+    add_heading(doc, "1  O Nginx", level=2)
+    tbl = add_table(doc, [["Comando (no servidor)", "Para quê", "✓"]] + [[c, d, "☐"] for c, d in SITE[:3]],
                     col_widths=[6, 10.4, 1])
     small_table(tbl, size=9)
     mono_col(tbl, 0, size=9)
-    campo(doc, "No celular (Wi-Fi da equipe): http:// ____ . ____ . ____ . ____     Apareceu Welcome to nginx?  ☐ Sim  ☐ Não", size=10)
+    campo(doc, "Endereço do servidor (ip a): 192.168.____.____     No celular, apareceu Welcome to nginx?  ☐ Sim  ☐ Não", size=10)
 
-    add_heading(doc, "2  A página da equipe", level=2)
-    add_cmd(doc, SITE[3][0], size=9.5)
-    add_para(doc, "Digite (sem acento e sem ç), trocando N e os nomes. Salvar: Ctrl+O e Enter · Sair: Ctrl+X.", italic=True, size=9, color=COR_CINZA)
-    for l in PAGINA:
-        add_cmd(doc, l, size=9.5)
-    campo(doc, "A linha que a equipe inventou: _________________________________________________", size=10)
+    add_heading(doc, "2  Mandar o site da IA para o servidor (pelo PC)", level=2)
+    tbl = add_table(doc, [["Onde / o quê", "O que fazer", "✓"]] + [[a, b, "☐"] for a, b in PUBLICAR_IA],
+                    col_widths=[5.4, 11, 1])
+    small_table(tbl, size=9)
+    mono_col(tbl, 0, size=8.5)
+    add_para(doc, "No cmd: colar = botão direito do mouse · Ctrl+C cancela, não copia. Para publicar de novo depois de um ajuste: sudo rm /var/www/html/index.html e sudo nano de novo.", italic=True, size=9, color=COR_CINZA)
 
-    add_heading(doc, "3  Visita", level=2)
-    campo(doc, "Site da equipe ____ · No meu Wi-Fi abriu?  ☐ Sim  ☐ Não · No Wi-Fi dela abriu?  ☐ Sim  ☐ Não", size=10)
+    add_heading(doc, "3  Conferir o que a IA fez", level=2)
+    campo(doc, "Uma coisa que a IA inventou, errou ou que não serve: ____________________________________________", size=10)
+    campo(doc, "O ajuste que a equipe pediu: ____________________________________   Publicou de novo?  ☐ Sim  ☐ Não", size=10)
+    campo(doc, "Site da equipe ____ (visita) · No meu Wi-Fi abriu?  ☐ Sim  ☐ Não · No Wi-Fi dela?  ☐ Sim  ☐ Não", size=10)
     campo(doc, "Por que alguém em casa não consegue abrir o site da equipe? ________________________________________", size=10)
 
     add_heading(doc, "4  Ficha técnica do servidor (começa hoje, continua nos próximos encontros)", level=2)
@@ -1004,6 +1087,12 @@ def build_resumo():
     add_bullet(doc, "4. Disco inteiro. ATENÇÃO: apaga tudo. No cliente, sempre perguntar e fazer cópia antes")
     add_bullet(doc, "5. Perfil: nome do servidor, usuário e senha (tudo minúsculo, sem espaço). Marcar Install OpenSSH server")
     add_bullet(doc, "6. Esperar a cópia, Reboot Now, tirar o pendrive e Enter")
+
+    add_heading(doc, "O site feito com IA", level=2)
+    add_bullet(doc, "O pedido (prompt) diz o que se quer: o nicho, o nome, os serviços, as cores e as regras (um arquivo HTML, bonito no celular). Quanto mais claro, melhor")
+    add_bullet(doc, "O código vai para o servidor pelo PC: ssh no cmd, sudo nano /var/www/html/index.html, colar com o botão direito, Ctrl+O, Enter, Ctrl+X")
+    add_bullet(doc, "A IA inventa e erra: quem confere antes de entregar é o técnico")
+    add_bullet(doc, "Nunca coloque senha, nome completo ou telefone de verdade num pedido para IA")
 
     add_heading(doc, "Os comandos da noite", level=2)
     tbl = add_table(doc, [["Comando", "O que faz"]] + [list(r) for r in RAIOX] + [list(r) for r in SITE],
