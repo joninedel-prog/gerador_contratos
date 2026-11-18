@@ -8,6 +8,14 @@ configurados na Noite 8. Depois entram no sistema pela primeira vez, tiram o
 da equipe que abre no celular. No fim, visitam o site das outras equipes
 conectando no Wi-Fi delas com a ficha de entrega da Noite 8.
 Padrão prática-pesada, sem role-play e sem duelo. Precisa de internet.
+
+Versão 2026-11-18 (aula dada nesse dia): abertura completa antes da prática —
+o módulo, o que é servidor (tipos, data center), sistema operacional (síndico),
+história do Linux e software livre, distribuições, como o computador liga —
+intercalada com práticas curtas (cliente ou servidor, kernel Linux no Android).
+Na espera da cópia, o dicionário do técnico (inglês das telas). Folha com 4 páginas.
+As funções add_cmd, mono_col, small_table, campo e linha são usadas pelos
+scripts dos Encontros 2 e 3: não mudar a assinatura delas.
 """
 import os
 import sys
@@ -80,7 +88,7 @@ SITE = [
 PAGINA = [
     "<h1>Servidor da Equipe N</h1>",
     "<p>Feito por: nomes da equipe</p>",
-    "<p>Instalado em 27/11/2026 no CEJA Itapiranga</p>",
+    "<p>Instalado em 18/11/2026 no CEJA Itapiranga</p>",
     "<p>Funcionando num computador antigo com Ubuntu Server</p>",
 ]
 
@@ -177,6 +185,79 @@ def linha(doc):
 
 
 # ============================================================
+# Conteúdo das introduções (versão 2026-11-18: aula com abertura completa)
+# ============================================================
+DATA_AULA = "quarta 18/11"
+
+# O que o módulo vai construir
+MODULO = [
+    ("Encontro 1 (hoje)", "Instalar o Ubuntu Server, conhecer a máquina pelo terminal e publicar a primeira página"),
+    ("Encontro 2", "Mandar no servidor de longe pelo PC, organizar pastas, criar os funcionários e o site do negócio"),
+    ("Encontro 3", "A pasta do escritório aparece no Windows e no celular. Entrega e apresentação do servidor"),
+]
+
+# Tipos de servidor do dia a dia
+TIPOS_SERVIDOR = [
+    ("Servidor de páginas (web)", "Entrega sites: o do banco, o da prefeitura, a página que vocês fazem hoje"),
+    ("Servidor de arquivos", "Guarda os arquivos de um escritório num lugar só (Encontro 3)"),
+    ("Servidor de e-mail e de mensagens", "Segura a mensagem até a pessoa ligar o celular"),
+    ("Servidor de vídeo", "YouTube, Netflix: guarda e entrega os vídeos"),
+    ("Servidor de jogos", "Partida online, servidor de Minecraft: todos os jogadores se encontram nele"),
+    ("DVR / NVR de câmeras", "Grava as câmeras e entrega as imagens para o aplicativo"),
+    ("Servidor de endereços e de nomes", "O roteador (DHCP) e a agenda da internet (DNS)"),
+]
+
+# O sistema operacional
+SO_FUNCOES = [
+    "Liga a máquina e conversa com as peças: processador, memória, disco, placa de rede, teclado",
+    "Divide a máquina entre os programas: quem usa a memória, quem usa o processador, em que ordem",
+    "Guarda os arquivos organizados em pastas no disco",
+    "Controla quem pode entrar e o que cada um pode fazer (usuários e senhas)",
+]
+
+SO_EXEMPLOS = [
+    ("Windows", "Microsoft", "A maioria dos computadores de casa e de escritório. Pago"),
+    ("macOS / iOS", "Apple", "Computadores Mac e iPhone. Só nas máquinas da Apple"),
+    ("Android", "Google", "A maioria dos celulares. Por dentro, é Linux"),
+    ("Linux", "Comunidade (milhares de pessoas e empresas)", "Servidores, roteadores, TVs, supercomputadores. Gratuito"),
+]
+
+# A história do Linux em 5 datas
+LINUX_HISTORIA = [
+    ("1983", "Richard Stallman começa o projeto GNU: um sistema inteiro que qualquer um pudesse usar, estudar, mudar e repartir"),
+    ("1991", "Linus Torvalds, estudante de 21 anos na Finlândia, cria o núcleo (kernel) Linux no computador de casa e divulga de graça na internet"),
+    ("Anos 90", "Voluntários do mundo todo melhoram o Linux juntos. GNU + Linux viram um sistema completo"),
+    ("2004", "Nasce o Ubuntu, uma versão mais fácil de instalar. \"Ubuntu\" é uma palavra africana: \"sou o que sou porque somos todos\""),
+    ("Hoje", "Linux está nos servidores da internet, no Android, em roteadores, TVs e carros, e em todos os 500 supercomputadores mais rápidos do mundo"),
+]
+
+DISTROS = [
+    ("Ubuntu", "A mais conhecida. Tem a versão com janelas (Desktop) e a Server, que é a de hoje"),
+    ("Debian", "A \"mãe\" do Ubuntu. Muito estável, muito usada em servidor"),
+    ("Linux Mint", "Parece o Windows. Boa para computador antigo de casa"),
+    ("Fedora", "Mantida com apoio da Red Hat, empresa que vende Linux para grandes empresas"),
+]
+
+# O que acontece quando o computador liga
+BOOT = [
+    ("1. Liga o botão", "A placa-mãe acorda"),
+    ("2. BIOS / UEFI", "O \"porteiro\" da placa-mãe: testa as peças e procura de onde ligar"),
+    ("3. Disco ou pendrive?", "A tecla de boot (F12, F11, F8, Esc) deixa você escolher. Hoje: o pendrive"),
+    ("4. O sistema carrega", "Do pendrive vem o instalador. Depois de instalado, vem do disco"),
+]
+
+# Atividade da espera: o dicionário do técnico
+DICIONARIO = [
+    ("Install", "Instalar"), ("Language", "Idioma"), ("Keyboard", "Teclado"),
+    ("Network", "Rede"), ("Storage / Disk", "Armazenamento / Disco"), ("Mirror", "Espelho: o site de onde baixar"),
+    ("Profile", "Perfil"), ("Username", "Nome de usuário"), ("Password", "Senha"),
+    ("Done", "Pronto"), ("Continue", "Continuar"), ("Back", "Voltar"),
+    ("Skip", "Pular"), ("Confirm", "Confirmar"), ("Destructive action", "Ação que destrói (apaga)"),
+    ("Reboot", "Reiniciar"), ("Remove the installation medium", "Tire o pendrive"), ("Update", "Atualização"),
+]
+
+
+# ============================================================
 # ROTEIRO
 # ============================================================
 def build_roteiro():
@@ -186,220 +267,254 @@ def build_roteiro():
     cabecalho_documento(
         doc,
         "INSTALANDO O UBUNTU E O PRIMEIRO SITE",
-        f"Roteiro do professor · Servidores com Linux · Encontro 1 de 3 · sexta 27/11 · Curso FIC · CEJA Itapiranga – SC",
+        f"Roteiro do professor · Servidores com Linux · Encontro 1 de 3 · {DATA_AULA} · Curso FIC · CEJA Itapiranga – SC",
     )
 
     add_heading(doc, "A IDEIA DESTE ENCONTRO")
-    add_para(doc, "É o primeiro contato da turma com Linux, e quase todos nunca viram uma tela só de texto. A noite tem que terminar com uma vitória que dá pra mostrar: cada equipe instala o Ubuntu Server numa máquina antiga com as próprias mãos e, no fim, abre no celular um site que está rodando naquela máquina.")
-    add_para(doc, "O caminho é curto de propósito. Nada de partição, nada de teoria de sistema operacional. Instalar, entrar, perguntar cinco coisas pra máquina, instalar um programa e publicar uma página. O resto (pastas, usuários, permissões, acesso de longe, pasta compartilhada) vem nos encontros 2 e 3.")
+    add_para(doc, "É o primeiro contato da turma com Linux e com servidor. Quase ninguém viu uma tela só de texto, e muitos não sabem o que é um sistema operacional, mesmo usando um todo dia. Por isso a noite abre com uma introdução de verdade: o que vamos construir no módulo, o que é um servidor, o que é um sistema operacional, de onde vem o Linux e o que acontece quando o computador liga.")
+    add_para(doc, "A introdução não é um bloco só de fala. Ela vem em três partes curtas, cada uma seguida de uma atividade em que o aluno faz alguma coisa (classificar cliente e servidor, achar o Linux no próprio celular). Depois, a parte prática: cada equipe instala o Ubuntu Server com as próprias mãos e termina a noite abrindo no celular um site que está rodando naquela máquina.")
     add_para(doc, "A frase da noite: \"Servidor não é um computador especial. É um computador que trabalha para os outros.\"", bold=True, color=COR_PRIMARIA)
 
     add_heading(doc, "O que se resolve neste encontro", level=2)
-    add_para(doc, "Cada aluno sai sabendo diferenciar cliente de servidor com exemplos do dia a dia, dar boot por pendrive, passar pelas telas do instalador do Ubuntu Server entendendo cada escolha, entrar no sistema, descobrir o endereço, a memória e o disco da máquina, instalar um programa com o apt e publicar uma página que abre nos celulares da rede.")
+    add_para(doc, "Cada aluno sai sabendo diferenciar cliente de servidor com exemplos do dia a dia, dizer o que um sistema operacional faz, contar de onde vem o Linux e por que ele é gratuito, explicar o que acontece quando o computador liga, dar boot por pendrive, passar pelas telas do instalador do Ubuntu Server entendendo cada escolha, entrar no sistema, descobrir o endereço, a memória e o disco da máquina, instalar um programa com o apt e publicar uma página que abre nos celulares da rede.")
 
     add_heading(doc, "Onde este encontro fica no módulo", level=2)
-    add_para(doc, "Abre o Plano Mensal 4 (servidores com Linux). Usa os roteadores configurados na Noite 8 e a ficha de entrega deles. Retoma a Noite 1 (rede não é internet: o site só abre dentro da rede), a Noite 6 (endereço, gateway, ping) e a Noite 7 (o ping em google.com só funciona porque a agenda, o DNS, responde). O SSH já fica instalado hoje para o Encontro 2.")
-    add_para(doc, "Não entre em: partições e LVM, interface gráfica, comparação entre distribuições, domínio na internet, redirecionamento de portas, HTML além das quatro linhas da página. Se alguém perguntar \"e pra abrir de casa?\", a resposta é \"dá, mas é outro serviço, com outros cuidados\" (ver Se perguntarem).", italic=True, color=COR_ALERTA)
+    add_para(doc, "Abre o Plano Mensal 4 (servidores com Linux). Usa os roteadores configurados na Noite 8 e a ficha de entrega deles. Retoma a Noite 1 (rede não é internet: o site só abre dentro da rede), a Noite 6 (endereço, gateway, ping, e a analogia do condomínio) e a Noite 7 (o ping em google.com só funciona porque a agenda, o DNS, responde). O SSH fica instalado hoje para o Encontro 2, em que a turma passa a mandar no servidor pelo PC com o PuTTY.")
+    add_para(doc, "Não entre em: partições e LVM, interface gráfica, comparação técnica entre distribuições, licenças (GPL) em detalhe, domínio na internet, redirecionamento de portas, HTML além das quatro linhas da página. Se alguém perguntar \"e pra abrir de casa?\", a resposta está em Se perguntarem.", italic=True, color=COR_ALERTA)
 
     add_hr(doc)
 
     add_heading(doc, "ANTES DA AULA")
-    add_heading(doc, "As máquinas (faça com antecedência)", level=2)
-    add_bullet(doc, "Confira cada máquina: processador de 64 bits, pelo menos 2 GB de RAM e disco de pelo menos 25 GB. Máquina abaixo disso não aceita o 24.04 ou fica lenta demais")
+    add_heading(doc, "As máquinas", level=2)
+    add_bullet(doc, "Confira cada máquina: processador de 64 bits, pelo menos 2 GB de RAM e disco de pelo menos 25 GB")
     add_bullet(doc, "Confirme com a escola que NÃO há nada nos discos. A instalação apaga tudo")
-    add_bullet(doc, "Descubra a tecla do menu de boot de cada modelo (F12, F11, F8, Esc) e cole numa fita crepe em cima da máquina: \"BOOT = F12\". Isso economiza 15 minutos de tentativa na aula")
-    add_bullet(doc, "Faça UMA instalação completa antes, seguindo a folha do aluno, numa das máquinas. Cronometre: é o tempo que as equipes vão levar (em máquina antiga, de 20 a 40 minutos). Essa máquina fica pronta como RESERVA para a equipe cuja máquina falhar")
+    add_bullet(doc, "Descubra a tecla do menu de boot de cada modelo (F12, F11, F8, Esc) e cole numa fita crepe em cima da máquina: \"BOOT = F12\"")
+    add_bullet(doc, "Se der tempo, faça UMA instalação completa antes, seguindo a folha. Essa máquina fica como RESERVA para a equipe cuja máquina falhar. Sem tempo: tenha ao menos um pendrive testado dando boot")
     add_bullet(doc, "Numere com fita crepe: SERVIDOR EQUIPE 1, SERVIDOR EQUIPE 2… Cada máquina com monitor, teclado (mouse não é usado), tomada e cabo de rede")
+    add_bullet(doc, "Separe UMA máquina aberta (ou uma placa-mãe velha) para mostrar no Bloco 4: processador, memória, disco. Opcional, mas ajuda muito")
 
     add_heading(doc, "Os pendrives", level=2)
-    add_bullet(doc, "Baixe a imagem ubuntu-24.04.x-live-server-amd64.iso em ubuntu.com/download/server")
-    add_bullet(doc, "Grave com o Rufus (Windows) ou o balenaEtcher, um pendrive de 4 GB ou mais por equipe. Etiquete \"UBUNTU SERVER\"")
-    add_bullet(doc, "Se tiver menos pendrives do que equipes: o pendrive fica preso na máquina até o fim da instalação. Comece as equipes em ondas e use a atividade de espera (Bloco 5) para quem ainda não começou")
+    add_bullet(doc, "Imagem ubuntu-24.04.x-live-server-amd64.iso, de ubuntu.com/download/server")
+    add_bullet(doc, "Gravada com o Rufus (Windows) ou o balenaEtcher, um pendrive de 4 GB ou mais por equipe")
+    add_bullet(doc, "Menos pendrives do que equipes: o pendrive fica preso na máquina até o fim da cópia. Comece as equipes em ondas e use o dicionário do técnico (Bloco 8) para quem espera")
 
     add_heading(doc, "A rede", level=2)
-    add_bullet(doc, "Cada servidor vai num roteador de equipe da Noite 8, por cabo, numa porta LAN. A porta WAN (Internet) do roteador vai num ponto de rede da escola")
-    add_bullet(doc, "Teste a internet de cada roteador com um celular antes da aula. Sem internet não instala o Nginx (há um plano B no Bloco 7)")
-    add_bullet(doc, "Tenha as fichas de entrega da Noite 8 (nome e senha do Wi-Fi de cada roteador). Elas são usadas no Bloco 9")
-    add_bullet(doc, "Se os roteadores ainda estão como a Noite 8 deixou, o servidor da equipe N vai ganhar um endereço 192.168.1N.1xx (equipe 3: 192.168.13.101, por exemplo)")
-    add_para(doc, "Sem os roteadores da Noite 8? Todos os servidores podem ir num roteador só. Nesse caso o Bloco 9 fica mais simples (todos no mesmo Wi-Fi), mas perde a discussão de \"cada rede é uma casa\".", italic=True, color=COR_CINZA)
+    add_bullet(doc, "Cada servidor vai no roteador da sua equipe (Noite 8), por cabo, numa porta LAN. A WAN do roteador vai num ponto de rede da escola")
+    add_bullet(doc, "Teste a internet de cada roteador com um celular. Sem internet não instala o Nginx (plano B no Bloco 10)")
+    add_bullet(doc, "Tenha as fichas de entrega da Noite 8 (Wi-Fi de cada roteador): usadas no Bloco 12")
+    add_bullet(doc, "Com os roteadores como a Noite 8 deixou, o servidor da equipe N ganha um endereço 192.168.1N.1xx. No Encontro 2 ele passa a ser fixo em 192.168.1N.10")
 
-    add_heading(doc, "Imprima", level=2)
-    add_bullet(doc, "Folha do aluno (3 páginas), uma por pessoa")
-    add_bullet(doc, "Resumo do aluno, uma por pessoa (pra levar pra casa)")
-    add_bullet(doc, "Os slides ficam projetados durante a instalação: o slide das telas do instalador é o mapa da turma")
+    add_heading(doc, "Imprima e projete", level=2)
+    add_bullet(doc, "Folha do aluno (4 páginas), uma por pessoa. Resumo do aluno, uma por pessoa")
+    add_bullet(doc, "Os slides seguem a ordem dos blocos. Os da introdução (slides 2 a 21) são o roteiro da sua fala")
 
     add_hr(doc)
 
     add_heading(doc, "QUADRO DE TEMPO — 210 MINUTOS")
     add_table(doc, [
         ["Bloco", "Tempo", "O que acontece"],
-        ["1. Abertura: o roteador já é um servidor", "15 min", "Cliente e servidor, a cozinha do restaurante, a demanda do escritório"],
-        ["2. Linux, Ubuntu e o pendrive", "10 min", "Software livre, servidor sem janela, como se dá boot. Aviso: apaga o disco"],
-        ["3. PRÁTICA — Boot e primeiras telas", "25 min", "Pendrive, menu de boot, idioma, teclado, tipo, rede (anotar o IP), mirror"],
-        ["4. PRÁTICA — Disco, perfil e SSH", "20 min", "Disco inteiro, nome do servidor, usuário e senha, OpenSSH. Começa a cópia"],
-        ["5. PRÁTICA — Enquanto copia", "20 min", "Cliente ou servidor? (12 casos) e leitura dos comandos da noite"],
+        ["1. Abertura do módulo", "10 min", "O que vamos construir em três encontros, como vai funcionar, a enquete da mão levantada"],
+        ["2. O que é um servidor", "15 min", "O roteador já é um servidor, a cozinha do restaurante, os tipos de servidor, onde eles ficam"],
+        ["3. PRÁTICA — Cliente ou servidor?", "15 min", "Doze casos em dupla, correção em voz alta"],
+        ["4. Sistema operacional e Linux", "15 min", "O síndico do computador, os sistemas que eles já usam, a história do Linux, as distribuições"],
+        ["5. PRÁTICA — O Linux no seu bolso", "10 min", "Achar a versão do kernel Linux no Android. Onde mais tem Linux na sala?"],
+        ["6. Como o computador liga e como se instala", "10 min", "BIOS, boot, pendrive, o instalador sem mouse, o aviso do disco"],
+        ["7. PRÁTICA — A instalação", "40 min", "As 15 telas, em equipe, com rodízio. Anotar o IP e o perfil"],
+        ["8. PRÁTICA — Enquanto copia", "15 min", "O dicionário do técnico (inglês das telas) e o palpite do raio-x"],
         ["INTERVALO", "15 min", "Coincide com o fim da cópia nas máquinas mais lentas"],
-        ["6. PRÁTICA — Primeiro login e raio-x", "25 min", "Entrar, a senha invisível, oito comandos, a ficha técnica"],
-        ["7. PRÁTICA — O primeiro site", "30 min", "apt update, instalar o Nginx, abrir no celular"],
-        ["8. PRÁTICA — A página da equipe", "25 min", "nano, quatro linhas, salvar, recarregar no celular"],
-        ["9. PRÁTICA — Visita aos outros servidores", "15 min", "Conectar no Wi-Fi de outra equipe e abrir o site dela"],
-        ["10. Desligar certo + fechamento", "10 min", "sudo poweroff, três frases, o que vem no Encontro 2"],
+        ["9. PRÁTICA — Primeiro login e raio-x", "20 min", "A senha invisível, o prompt, oito comandos, a ficha técnica"],
+        ["10. PRÁTICA — O primeiro site", "20 min", "apt update, instalar o Nginx, abrir no celular"],
+        ["11. PRÁTICA — A página da equipe", "15 min", "nano, quatro linhas, salvar, recarregar no celular"],
+        ["12. Visita, desligar e fechamento", "10 min", "O site de outra equipe, sudo poweroff, três frases, o Encontro 2"],
     ], col_widths=[6.5, 2, 8])
-    add_para(doc, "Blocos 3 a 9: 160 min de atividade do aluno (76% do total). A exposição é só os Blocos 1 e 2 (25 min) e as falas curtas dentro das práticas.", italic=True, color=COR_CINZA)
+    add_para(doc, "Introdução: 50 min de fala (Blocos 1, 2, 4 e 6), sempre intercalada com prática. Atividade do aluno: Blocos 3, 5 e 7 a 12, cerca de 145 min (69% do total). Nunca há dois blocos de fala seguidos.", italic=True, color=COR_CINZA)
 
     add_heading(doc, "As equipes e o rodízio", level=2)
-    add_para(doc, "Uma equipe por máquina, de 3 ou 4. Três papéis que trocam a cada bloco (anotado no topo da página 1 da folha):")
+    add_para(doc, "Forme as equipes no Bloco 1, uma por máquina, de 3 ou 4. Três papéis que trocam a cada bloco de prática (anotado na página 2 da folha):")
     add_bullet(doc, "Digitador: o único com a mão no teclado")
     add_bullet(doc, "Leitor: lê a folha e a tela em voz alta, traduz o inglês, confere antes do Enter")
     add_bullet(doc, "Anotador: preenche a folha da equipe (IP, usuário, resultados)")
-    add_para(doc, "A regra: o digitador não aperta Enter antes do leitor dizer \"confere\". Isso evita 90% dos erros de digitação e obriga todos a lerem a tela.", italic=True, color=COR_PRIMARIA)
+    add_para(doc, "A regra: o digitador não aperta Enter antes do leitor dizer \"confere\".", italic=True, color=COR_PRIMARIA)
 
     add_hr(doc)
 
     # BLOCO 1
-    add_heading(doc, "BLOCO 1 — ABERTURA: O ROTEADOR JÁ É UM SERVIDOR · 15 MIN")
-    add_heading(doc, "Comece pelo que eles já fizeram — 5 min", level=2)
-    add_para(doc, "Segure um roteador da Noite 8 e pergunte:")
-    add_bullet(doc, "\"Quem dá o endereço pro celular quando ele conecta?\" (o roteador, o DHCP)")
-    add_bullet(doc, "\"Onde vocês entraram pra configurar ele?\" (numa página: 192.168.1N.1)")
-    add_para(doc, "\"Então esse aparelhinho entrega endereço pra todo mundo e ainda tem uma página que abre no navegador. Ele trabalha para os outros aparelhos da casa. Isso tem nome: servidor. Vocês já configuraram um servidor sem saber. Hoje vocês vão transformar um computador velho em um servidor de verdade, com um site que abre no celular de vocês.\"", italic=True, color=COR_PRIMARIA)
-
-    add_heading(doc, "A cozinha do restaurante — 5 min", level=2)
-    add_para(doc, "Desenhe no quadro: mesas de um lado, cozinha do outro.")
-    add_bullet(doc, "O cliente senta, PEDE e recebe. Celular, notebook e TV são clientes")
-    add_bullet(doc, "A cozinha fica lá atrás, ninguém vê, e SERVE todas as mesas ao mesmo tempo. É o servidor")
-    add_bullet(doc, "\"A foto do Instagram está no seu celular?\" (não: está num servidor, o celular só pede e mostra)")
-    add_bullet(doc, "A cozinha não fecha. Servidor fica ligado o tempo todo, e quase sempre sem ninguém olhando a tela")
-
-    add_heading(doc, "A demanda — 5 min", level=2)
+    add_heading(doc, "BLOCO 1 — ABERTURA DO MÓDULO · 10 MIN")
+    add_heading(doc, "A enquete da mão levantada — 3 min", level=2)
+    add_para(doc, "Antes de explicar qualquer coisa, pergunte e conte as mãos (anote no canto do quadro, vai ser retomado no fim do módulo):")
+    add_bullet(doc, "\"Quem já ouviu a palavra servidor?\" \"Quem sabe dizer o que é?\"")
+    add_bullet(doc, "\"Quem já ouviu falar de Linux?\" \"Quem já usou?\" (quase todos usaram sem saber: o Android)")
+    add_bullet(doc, "\"Quem já viu uma tela preta só com letras, num filme ou no computador?\"")
+    add_heading(doc, "O que vamos construir — 5 min", level=2)
     add_para(doc, "Leia a questão do plano: \"Um escritório pequeno quer guardar os arquivos num lugar só, acessar de qualquer computador e ter uma página interna para os funcionários. Como transformar um computador antigo no servidor que resolve isso?\"")
-    add_para(doc, "\"Em três encontros a gente faz isso inteiro. Hoje: o sistema instalado e a página interna funcionando.\"", italic=True)
+    add_table(doc, [["Quando", "O que a equipe faz"]] + [list(m) for m in MODULO], col_widths=[4, 12.5])
+    add_para(doc, "\"Esses computadores aqui iam para o lixo. Em três encontros, cada equipe vai transformar um deles no servidor de um escritório, com site, pasta de rede e funcionários com senha. E no fim vocês entregam para outra equipe testar, como se fosse para um cliente.\"", italic=True, color=COR_PRIMARIA)
+    add_heading(doc, "Como vai funcionar — 2 min", level=2)
+    add_bullet(doc, "Equipes de 3 ou 4, uma máquina por equipe, a mesma até o fim do módulo")
+    add_bullet(doc, "Rodízio: digitador, leitor, anotador. Todo mundo põe a mão no teclado")
+    add_bullet(doc, "A ficha técnica do servidor começa hoje e é entregue no último encontro. É a avaliação")
+    add_bullet(doc, "Errar faz parte: no Linux, toda mensagem de erro diz o que aconteceu. A gente vai aprender a ler")
 
     add_hr(doc)
 
     # BLOCO 2
-    add_heading(doc, "BLOCO 2 — LINUX, UBUNTU E O PENDRIVE · 10 MIN")
-    add_bullet(doc, "Linux é um sistema, como o Windows. É gratuito, qualquer um pode usar e melhorar (software livre) e roda bem em máquina antiga. A maioria dos servidores da internet usa Linux. O Android também é Linux por dentro")
-    add_bullet(doc, "Ubuntu é uma \"versão empacotada\" do Linux (uma distribuição). O Ubuntu Server não tem janelas nem mouse: só texto. Não precisa: ninguém fica olhando a tela de um servidor")
-    add_bullet(doc, "\"Parece filme de hacker, mas é só escrever ordens. Cada ordem é uma palavra em inglês: ele faz o que vocês mandam, nem mais nem menos\"")
-    add_bullet(doc, "24.04 quer dizer abril de 2024. É uma versão de suporte longo: recebe correções até 2029")
-    add_heading(doc, "Como se instala", level=2)
-    add_bullet(doc, "O pendrive tem o instalador. Liga a máquina e aperta a tecla de boot (está na fita crepe) para escolher o pendrive")
-    add_bullet(doc, "O instalador é em inglês e não usa mouse: setas e Tab para andar, Espaço para marcar, Enter para confirmar. Esc volta uma tela")
-    add_bullet(doc, "Mostre o slide das telas: são 15, a folha traduz cada uma")
-    add_para(doc, "Fale sério, uma vez: \"Numa tela o instalador avisa que vai apagar o disco inteiro. Aqui as máquinas estão vazias. Na casa de um cliente, isso apaga as fotos da família. O técnico SEMPRE pergunta e faz cópia antes.\"", bold=True, color=COR_ALERTA)
+    add_heading(doc, "BLOCO 2 — O QUE É UM SERVIDOR · 15 MIN")
+    add_heading(doc, "Comece pelo que eles já fizeram — 3 min", level=2)
+    add_para(doc, "Segure um roteador da Noite 8 e pergunte:")
+    add_bullet(doc, "\"Quem dá o endereço pro celular quando ele conecta?\" (o roteador, o DHCP)")
+    add_bullet(doc, "\"Onde vocês entraram pra configurar ele?\" (numa página: 192.168.1N.1)")
+    add_para(doc, "\"Esse aparelhinho entrega endereço pra todo mundo e ainda tem uma página que abre no navegador. Ele trabalha para os outros aparelhos da casa, sem ninguém olhando. Isso tem nome: servidor. Vocês já configuraram um servidor sem saber.\"", italic=True, color=COR_PRIMARIA)
+    add_heading(doc, "A cozinha do restaurante — 4 min", level=2)
+    add_para(doc, "Desenhe no quadro: mesas de um lado, cozinha do outro.")
+    add_bullet(doc, "O cliente senta, PEDE e recebe. Celular, notebook e TV são clientes")
+    add_bullet(doc, "A cozinha fica lá atrás, ninguém vê, e SERVE todas as mesas ao mesmo tempo. É o servidor")
+    add_bullet(doc, "A cozinha não fecha. Servidor fica ligado o tempo todo, quase sempre sem tela e sem ninguém do lado")
+    add_bullet(doc, "\"A foto do Instagram está no seu celular?\" (não: está num servidor, o celular só pede e mostra)")
+    add_heading(doc, "Os tipos de servidor — 5 min", level=2)
+    add_para(doc, "Projete a tabela e pergunte, para cada linha, \"quem aqui usou isso hoje?\":")
+    add_table(doc, [["Servidor", "O que faz"]] + [list(t) for t in TIPOS_SERVIDOR], col_widths=[5.5, 11])
+    add_para(doc, "Puxe o DVR de câmeras: é o servidor que o técnico da região mais instala sem chamar de servidor. Quem já viu um DVR na casa de alguém?", italic=True, color=COR_DESTAQUE)
+    add_heading(doc, "Onde os servidores ficam — 3 min", level=2)
+    add_bullet(doc, "Os grandes ficam em data centers: galpões enormes, cheios de servidores empilhados em armários, com ar-condicionado e energia de reserva. O YouTube, o banco e o WhatsApp moram lá")
+    add_bullet(doc, "Os pequenos ficam numa sala do escritório, da escola, da clínica, da cooperativa. É esse o servidor que vocês vão montar")
+    add_bullet(doc, "\"Por que um computador velho serve?\" Um escritório de 5 pessoas pede pouco: uns arquivos, uma página. E sem janelas, o sistema gasta pouca memória. O que importa é ficar ligado e não perder os dados")
 
     add_hr(doc)
 
     # BLOCO 3
-    add_heading(doc, "BLOCO 3 — PRÁTICA · BOOT E PRIMEIRAS TELAS · 25 MIN")
-    add_para(doc, "Página 1 da folha. As equipes vão no seu ritmo, você circula. Telas 1 a 8:")
-    add_table(doc, [["Tela", "O que é", "O que escolher"]] + [list(t) for t in TELAS[:8]], col_widths=[5.2, 4.3, 7])
-    add_heading(doc, "Pontos de parada", level=2)
-    add_bullet(doc, "Teclado: se escolherem errado, depois / e : não saem no lugar certo e nenhum comando funciona. Peça que mostrem a tela antes do Done")
-    add_bullet(doc, "Rede: pare cada equipe aqui. \"Esse número ao lado de DHCPv4 é o endereço do servidor. Quem deu esse número?\" (o roteador da equipe, o DHCP da Noite 8). Anotar sem o /24")
-    add_bullet(doc, "Mirror: \"This mirror location passed tests\" quer dizer que o servidor alcançou a internet. Se não passar, o problema é a WAN do roteador")
-    add_para(doc, "Onde dilatar: na tela de rede, peça que a equipe confira o número no painel do roteador (lista de clientes DHCP, Noite 6). O servidor aparece lá com o nome ubuntu-server ou sem nome. É o mesmo endereço?", italic=True, color=COR_DESTAQUE)
+    add_heading(doc, "BLOCO 3 — PRÁTICA · CLIENTE OU SERVIDOR? · 15 MIN")
+    add_para(doc, "Página 1 da folha, em dupla. Doze casos para marcar cliente ou servidor (8 min). Depois corrija em voz alta (7 min), pedindo que a dupla justifique.")
+    add_bullet(doc, "Os que dão discussão: a impressora compartilhada (servidor de impressão), o WhatsApp (o servidor segura a mensagem quando o amigo está sem internet), a câmera (ela serve as imagens, o aplicativo é cliente), a máquina que vão instalar (hoje ainda nada; no fim da noite, servidor)")
+    add_bullet(doc, "Pergunta de fechamento: \"um mesmo aparelho pode ser cliente e servidor?\" (pode: o computador do escritório é cliente quando abre o site do banco e pode ser servidor quando compartilha a impressora)")
 
     add_hr(doc)
 
     # BLOCO 4
-    add_heading(doc, "BLOCO 4 — PRÁTICA · DISCO, PERFIL E SSH · 20 MIN")
-    add_table(doc, [["Tela", "O que é", "O que escolher"]] + [list(t) for t in TELAS[8:]], col_widths=[5.2, 4.3, 7])
-    add_heading(doc, "O combinado do perfil (escreva no quadro)", level=2)
+    add_heading(doc, "BLOCO 4 — SISTEMA OPERACIONAL E LINUX · 15 MIN")
+    add_heading(doc, "O síndico do computador — 5 min", level=2)
+    add_para(doc, "Retome o condomínio da Noite 6. Se tiver a máquina aberta, mostre as peças: processador, memória, disco.")
+    add_para(doc, "\"O computador é um prédio: as peças são a estrutura, os programas são os moradores. Quem organiza tudo é o síndico: o sistema operacional. Sem ele, o Word não sabe usar a memória, o WhatsApp não sabe usar a placa de rede, e ninguém sabe onde está guardado o quê.\"", italic=True, color=COR_PRIMARIA)
+    add_para(doc, "O que o sistema operacional faz:")
+    for f in SO_FUNCOES:
+        add_bullet(doc, f)
+    add_table(doc, [["Sistema", "De quem", "Onde está"]] + [list(s) for s in SO_EXEMPLOS], col_widths=[3, 5, 8.5])
+    add_heading(doc, "De onde vem o Linux — 6 min", level=2)
+    add_table(doc, [["Quando", "O que aconteceu"]] + [list(h) for h in LINUX_HISTORIA], col_widths=[2.3, 14.2])
+    add_bullet(doc, "Software livre: qualquer um pode usar, estudar como funciona, mudar e repartir. Não é só \"de graça\": é aberto. Por isso empresas do mundo todo melhoram o Linux juntas e todos ganham")
+    add_bullet(doc, "\"Como alguém ganha dinheiro com algo gratuito?\" Com o serviço: instalar, configurar, dar suporte, manter. Exatamente o que vocês vão aprender a vender")
+    add_heading(doc, "As distribuições — 4 min", level=2)
+    add_para(doc, "O Linux é o motor. Uma distribuição é o carro pronto: o motor mais os programas, o instalador e as atualizações, montados por alguém.")
+    add_table(doc, [["Distribuição", "Como é"]] + [list(d) for d in DISTROS], col_widths=[3.5, 13])
+    add_bullet(doc, "Hoje: Ubuntu Server 24.04. 24.04 = abril de 2024. É LTS (suporte longo): recebe correções de segurança até 2029")
+    add_bullet(doc, "Desktop tem janelas e mouse, para usar no dia a dia. Server não tem: só texto. \"Ninguém fica olhando a tela de um servidor. Sem janelas, a máquina velha sobra força para trabalhar\"")
+
+    add_hr(doc)
+
+    # BLOCO 5
+    add_heading(doc, "BLOCO 5 — PRÁTICA · O LINUX NO SEU BOLSO · 10 MIN")
+    add_para(doc, "Página 1 da folha. Quem tem Android procura a versão do kernel (o núcleo Linux) no próprio celular:")
+    add_bullet(doc, "Samsung: Configurações → Sobre o telefone → Informações do software → Versão do kernel")
+    add_bullet(doc, "Motorola, Xiaomi e outros: Configurações → Sobre o telefone → (Versão do Android ou Todas as especificações) → Versão do kernel")
+    add_bullet(doc, "Aparece algo como 5.10.198 ou 6.1.75. É a versão do Linux que está rodando no celular. Quem tem iPhone acompanha o colega (o iPhone não é Linux, mas é \"parente\": vem da família Unix)")
+    add_bullet(doc, "No quadro, anote as versões que apareceram. Qual é a mais nova? E a mais antiga? (celular mais antigo, Linux mais antigo: por isso celular velho para de receber atualização)")
+    add_para(doc, "Feche com a caça: \"Onde mais tem Linux nesta sala?\" (os roteadores da bancada, a TV smart, o projetor talvez, a máquina de cartão, o painel do carro). \"Vocês usam Linux o dia inteiro. Hoje vão instalar um.\"", italic=True, color=COR_PRIMARIA)
+
+    add_hr(doc)
+
+    # BLOCO 6
+    add_heading(doc, "BLOCO 6 — COMO O COMPUTADOR LIGA E COMO SE INSTALA · 10 MIN")
+    add_table(doc, [["Etapa", "O que acontece"]] + [list(b) for b in BOOT], col_widths=[4.5, 12])
+    add_bullet(doc, "Instalar é copiar o sistema do pendrive para o disco e deixar ele pronto para ligar sozinho. O instalador pergunta umas coisas antes: idioma, teclado, rede, disco, nome e senha")
+    add_bullet(doc, "O instalador é em inglês e não usa mouse: setas e Tab para andar, Espaço para marcar, Enter para confirmar, Esc volta. A folha traduz cada tela")
+    add_bullet(doc, "Mostre o slide das 15 telas: é o mapa da instalação")
+    add_para(doc, "Fale sério, uma vez: \"Numa tela o instalador avisa que vai apagar o disco inteiro. Aqui as máquinas estão vazias. Na casa de um cliente, isso apaga as fotos da família. O técnico SEMPRE pergunta e faz cópia antes.\"", bold=True, color=COR_ALERTA)
+
+    add_hr(doc)
+
+    # BLOCO 7
+    add_heading(doc, "BLOCO 7 — PRÁTICA · A INSTALAÇÃO · 40 MIN")
+    add_para(doc, "Página 2 da folha. As equipes vão no seu ritmo, você circula. Troque o digitador na tela 9 (o disco).")
+    add_table(doc, [["Tela", "O que é", "O que escolher"]] + [list(t) for t in TELAS], col_widths=[5.2, 4.3, 7])
+    add_heading(doc, "Pontos de parada", level=2)
+    add_bullet(doc, "Teclado: se escolherem errado, / e : não saem no lugar certo e nenhum comando funciona. Peça que mostrem a tela antes do Done")
+    add_bullet(doc, "Rede: pare cada equipe. \"Esse número ao lado de DHCPv4 é o endereço do servidor. Quem deu esse número?\" (o roteador da equipe, o DHCP). Anotar sem o /24")
+    add_bullet(doc, "Mirror: \"This mirror location passed tests\" = o servidor alcançou a internet. Se não passar, o problema é a WAN do roteador")
+    add_bullet(doc, "Disco: o instalador pergunta \"Confirm destructive action\". O leitor lê a palavra destructive em voz alta antes do Continue")
     add_table(doc, [
-        ["Campo", "O que a equipe põe", "Regra"],
+        ["Perfil: campo", "O que a equipe põe", "Regra"],
         ["Your name", "Equipe N", "Livre"],
         ["Your server's name", "servidor-equipeN", "Minúsculo, sem espaço, sem acento"],
         ["Pick a username", "equipeN", "Minúsculo, sem espaço, sem acento"],
         ["Choose a password", "A equipe inventa", "10 caracteres ou mais. Anotar na folha"],
     ], col_widths=[4.5, 4.5, 7.5])
-    add_bullet(doc, "Storage: o padrão já vem certo (disco inteiro). O instalador mostra o resumo e pergunta \"Confirm destructive action\". Lembre a fala do Bloco 2 e deixe a equipe ler a palavra destructive em voz alta antes do Continue")
-    add_bullet(doc, "SSH: no instalador, marcar é com Espaço, não Enter. Confira que aparece [X] Install OpenSSH server. É o que permite entrar no servidor pelo celular no Encontro 2")
-    add_bullet(doc, "Depois dos snaps começa a cópia (Installing system). Em máquina antiga demora de 10 a 30 minutos. Se aparecer \"Cancel update and reboot\" depois de muito tempo baixando atualizações, pode usar: o servidor se atualiza depois")
-
-    add_hr(doc)
-
-    # BLOCO 5
-    add_heading(doc, "BLOCO 5 — PRÁTICA · ENQUANTO COPIA · 20 MIN")
-    add_para(doc, "O anotador fica de olho na tela (chama quando aparecer Reboot Now). Os outros fazem a página 2 da folha:")
-    add_bullet(doc, "Cliente ou servidor? Doze casos para marcar. Corrija em voz alta com a turma. Os casos que dão discussão: a impressora compartilhada (servidor de impressão), o WhatsApp (o servidor segura a mensagem quando o amigo está sem internet), a câmera (ela serve as imagens, o aplicativo é cliente)")
-    add_bullet(doc, "Leitura dos comandos: a equipe lê a tabela do raio-x e escreve, antes de rodar, o que acha que cada comando vai mostrar")
-    add_para(doc, "A cópia terminou: Reboot Now. A tela pede \"Please remove the installation medium, then press ENTER\": tira o pendrive, Enter. Se não tirar, a máquina pode começar a instalação de novo.", italic=True, color=COR_ALERTA)
-
-    add_heading(doc, "INTERVALO — 15 MIN", level=2)
-    add_para(doc, "Se alguma máquina ainda estiver copiando, ela segue sozinha durante o intervalo.", italic=True, color=COR_CINZA)
-
-    add_hr(doc)
-
-    # BLOCO 6
-    add_heading(doc, "BLOCO 6 — PRÁTICA · PRIMEIRO LOGIN E RAIO-X · 25 MIN")
-    add_para(doc, "A tela mostra: servidor-equipeN login:")
-    add_para(doc, "Antes de qualquer um digitar, pare a turma toda: \"Quando vocês digitarem a senha, NADA vai aparecer. Nem bolinha, nem asterisco. Não travou: ele está escondendo. Digitem com calma e Enter.\" Esse é o susto número um do primeiro contato.", bold=True, color=COR_ALERTA)
-    add_bullet(doc, "Se aparecerem mensagens depois do login: (cloud-init, chaves SSH), é o sistema terminando de ligar. Enter e o login: volta")
-    add_bullet(doc, "Entrou: aparece equipeN@servidor-equipeN:~$ . Explique as partes: quem@qual-máquina:onde$. O $ quer dizer \"pode mandar\"")
-    add_heading(doc, "O raio-x (página 2 da folha)", level=2)
-    add_table(doc, [["Comando", "O que mostra"]] + [list(r) for r in RAIOX], col_widths=[5.5, 11])
-    add_bullet(doc, "Em ip a, ensine a ignorar o lo (127.0.0.1, a máquina falando com ela mesma). O endereço é o inet da outra placa (enp…, eno…). Tem que bater com o da tela de rede do instalador")
-    add_bullet(doc, "No primeiro ping, troque o N pelo número da equipe. -c 4 manda 4 e para. Sem o -c, o ping não para: Ctrl+C")
-    add_bullet(doc, "Ping em google.com: \"Pra pingar um nome, o servidor perguntou pra quem?\" (pra agenda, o DNS da Noite 7)")
-    add_bullet(doc, "free -h e df -h: a equipe anota e faz a conta de quanto sobra (Matemática). \"Esse computador que ninguém queria tem espaço pra quantas fotos de 3 MB?\"")
-    add_bullet(doc, "Dois atalhos que mudam a vida: seta para cima repete o último comando; Tab completa a palavra")
-    add_para(doc, "Comando digitado errado mostra \"command not found\". Não é desastre: leia a mensagem com a equipe. É o método de diagnóstico do módulo.", italic=True, color=COR_PRIMARIA)
-
-    add_hr(doc)
-
-    # BLOCO 7
-    add_heading(doc, "BLOCO 7 — PRÁTICA · O PRIMEIRO SITE · 30 MIN")
-    add_para(doc, "Página 3 da folha.")
-    for c, _ in SITE[:3]:
-        add_cmd(doc, c)
-    add_bullet(doc, "sudo = \"faça como administrador\". Pede a senha da equipe (invisível de novo). Ele lembra por 15 minutos")
-    add_bullet(doc, "apt é a \"loja de aplicativos\" do servidor, só que por texto. update atualiza a vitrine; install instala")
-    add_bullet(doc, "Na pergunta Do you want to continue? [Y/n], a letra maiúscula é o padrão: só Enter já é sim")
-    add_bullet(doc, "systemctl status nginx: procurar active (running) em verde. Para sair, a tecla q")
-    add_heading(doc, "O momento da noite", level=2)
-    add_para(doc, "Cada um conecta o celular no Wi-Fi da equipe (desliga os dados móveis) e digita no navegador http:// e o endereço do servidor. Aparece \"Welcome to nginx!\".")
-    add_para(doc, "Deixe a turma comemorar. Depois: \"Essa página não veio da internet. Veio daquela máquina velha ali, pelo cabo, pelo roteador, pelo Wi-Fi até o seu celular. Vocês são o restaurante agora.\"", italic=True, color=COR_PRIMARIA)
-    add_heading(doc, "Plano B: sem internet não instala o Nginx", level=2)
-    add_para(doc, "O Ubuntu já vem com Python, que tem um servidor de páginas embutido. A equipe faz a página do Bloco 8 numa pasta e liga esse servidor:")
-    add_cmd(doc, "mkdir site")
-    add_cmd(doc, "nano site/index.html")
-    add_cmd(doc, "sudo python3 -m http.server 80 --directory site")
-    add_para(doc, "Abre no celular do mesmo jeito. Fica ligado enquanto a tela estiver aberta; Ctrl+C desliga. Quando a internet voltar, instale o Nginx no Encontro 2.", italic=True, color=COR_CINZA)
+    add_bullet(doc, "SSH: marcar é com Espaço, não Enter. Tem que aparecer [X] Install OpenSSH server. É o que permite mandar no servidor pelo PC no Encontro 2")
+    add_bullet(doc, "Depois dos snaps começa a cópia (Installing system): de 10 a 30 minutos em máquina antiga. \"Cancel update and reboot\" pode ser usado se as atualizações demorarem muito")
+    add_para(doc, "Onde dilatar: na tela de rede, a equipe confere o número no painel do roteador (lista de clientes DHCP, Noite 6). É o mesmo endereço?", italic=True, color=COR_DESTAQUE)
 
     add_hr(doc)
 
     # BLOCO 8
-    add_heading(doc, "BLOCO 8 — PRÁTICA · A PÁGINA DA EQUIPE · 25 MIN")
-    add_cmd(doc, SITE[3][0])
-    add_para(doc, "Abre o nano, um editor de texto dentro do terminal. A equipe digita as quatro linhas da folha, trocando o N e os nomes. Hoje sem acento e sem ç (no terminal eles dão trabalho):")
-    for l in PAGINA:
-        add_cmd(doc, l, size=10)
-    add_bullet(doc, "Salvar: Ctrl+O e Enter (confirma o nome). Sair: Ctrl+X. Os atalhos estão no rodapé do nano: ^ quer dizer Ctrl")
-    add_bullet(doc, "Recarregar no celular: a página da equipe substitui o Welcome")
-    add_bullet(doc, "Explique só isto do HTML: <h1> é título grande, <p> é parágrafo. Abre com <h1> e fecha com </h1>")
-    add_bullet(doc, "Troque o digitador e peça uma linha nova: o que a equipe quiser (o time, a música, um recado). Cada um da equipe põe a mão no nano")
-    add_para(doc, "Onde dilatar: o leitor muda uma letra no celular? Não: só no servidor. Peça que a equipe erre de propósito (apague um </h1>) e veja o que acontece na página. Depois conserta.", italic=True, color=COR_DESTAQUE)
+    add_heading(doc, "BLOCO 8 — PRÁTICA · ENQUANTO COPIA · 15 MIN")
+    add_para(doc, "O anotador vigia a tela e chama quando aparecer Reboot Now. Os outros fazem a página 3 da folha:")
+    add_bullet(doc, "O dicionário do técnico: 18 palavras e expressões em inglês que apareceram nas telas. A equipe traduz sem celular primeiro, depois confere com a tabela abaixo. Linguagens: inglês técnico")
+    add_table(doc, [["Na tela", "Quer dizer"]] + [list(d) for d in DICIONARIO], col_widths=[6, 10.5])
+    add_bullet(doc, "O palpite do raio-x: a equipe lê os comandos que vão rodar depois do intervalo e escreve o que acha que cada um mostra")
+    add_para(doc, "A cópia terminou: Reboot Now. A tela pede \"Please remove the installation medium, then press ENTER\": tira o pendrive, Enter. Se não tirar, a máquina pode começar a instalação de novo.", italic=True, color=COR_ALERTA)
+
+    add_heading(doc, "INTERVALO — 15 MIN", level=2)
 
     add_hr(doc)
 
     # BLOCO 9
-    add_heading(doc, "BLOCO 9 — PRÁTICA · VISITA AOS OUTROS SERVIDORES · 15 MIN")
-    add_para(doc, "Escreva no quadro o endereço do servidor de cada equipe. Primeiro, cada equipe tenta abrir o site da equipe vizinha continuando no PRÓPRIO Wi-Fi. Não abre.")
-    add_bullet(doc, "\"Por quê?\" Cada roteador é uma casa. O servidor da equipe 2 está dentro da casa da equipe 2")
-    add_bullet(doc, "Para visitar, conectem no Wi-Fi da outra equipe. A senha está na ficha de entrega da Noite 8 (entregue as fichas). Agora abre")
-    add_bullet(doc, "Cada equipe visita pelo menos duas e anota na folha o que estava escrito na página")
-    add_para(doc, "Feche com a Noite 1: \"Esse site está na REDE, não na INTERNET. Quem está em casa não abre. Para o escritório da questão, é exatamente o que se quer: uma página interna, só para quem está lá dentro.\"", italic=True, color=COR_PRIMARIA)
+    add_heading(doc, "BLOCO 9 — PRÁTICA · PRIMEIRO LOGIN E RAIO-X · 20 MIN")
+    add_para(doc, "A tela mostra: servidor-equipeN login:")
+    add_para(doc, "Antes de qualquer um digitar, pare a turma toda: \"Quando vocês digitarem a senha, NADA vai aparecer. Nem bolinha, nem asterisco. Não travou: ele está escondendo. Digitem com calma e Enter.\"", bold=True, color=COR_ALERTA)
+    add_bullet(doc, "Mensagens depois do login: (cloud-init, chaves SSH) = o sistema terminando de ligar. Enter e o login: volta")
+    add_bullet(doc, "Entrou: equipeN@servidor-equipeN:~$ . As partes: quem@qual-máquina:onde$. O $ quer dizer \"pode mandar\"")
+    add_table(doc, [["Comando", "O que mostra"]] + [list(r) for r in RAIOX], col_widths=[5.5, 11])
+    add_bullet(doc, "Em ip a, ignorar o lo (127.0.0.1, a máquina falando com ela mesma). O endereço é o inet da outra placa (enp…, eno…)")
+    add_bullet(doc, "No primeiro ping, trocar o N pelo número da equipe. -c 4 manda 4 e para. Sem o -c, Ctrl+C")
+    add_bullet(doc, "Ping em google.com: \"Pra pingar um nome, o servidor perguntou pra quem?\" (pra agenda, o DNS da Noite 7)")
+    add_bullet(doc, "free -h e df -h: a equipe anota e faz a conta de quanto sobra. \"Cabem quantas fotos de 3 MB?\"")
+    add_bullet(doc, "Seta para cima repete o último comando; Tab completa a palavra. Errou? \"command not found\": leia a mensagem")
 
     add_hr(doc)
 
     # BLOCO 10
-    add_heading(doc, "BLOCO 10 — DESLIGAR CERTO + FECHAMENTO · 10 MIN")
+    add_heading(doc, "BLOCO 10 — PRÁTICA · O PRIMEIRO SITE · 20 MIN")
+    for c, _ in SITE[:3]:
+        add_cmd(doc, c)
+    add_bullet(doc, "sudo = \"faça como administrador\". Pede a senha da equipe (invisível de novo)")
+    add_bullet(doc, "apt é a \"loja de aplicativos\" do servidor, por texto. update atualiza a vitrine; install instala. Liga com o Bloco 4: quem mantém essa loja é a distribuição")
+    add_bullet(doc, "Do you want to continue? [Y/n]: a maiúscula é o padrão, só Enter já é sim. status: active (running) em verde, sai com q")
+    add_para(doc, "Cada um conecta o celular no Wi-Fi da equipe (dados móveis desligados) e abre http:// e o endereço do servidor. Aparece \"Welcome to nginx!\". Deixe comemorar. \"Essa página não veio da internet. Veio daquela máquina velha, pelo cabo, pelo roteador, pelo Wi-Fi. Vocês são a cozinha agora.\"", italic=True, color=COR_PRIMARIA)
+    add_heading(doc, "Plano B: sem internet não instala o Nginx", level=2)
+    add_cmd(doc, "mkdir site")
+    add_cmd(doc, "nano site/index.html")
+    add_cmd(doc, "sudo python3 -m http.server 80 --directory site")
+    add_para(doc, "O Ubuntu já vem com Python, que tem um servidor de páginas embutido. Fica ligado enquanto a tela estiver aberta; Ctrl+C desliga. Instale o Nginx no começo do Encontro 2.", italic=True, color=COR_CINZA)
+
+    add_hr(doc)
+
+    # BLOCO 11
+    add_heading(doc, "BLOCO 11 — PRÁTICA · A PÁGINA DA EQUIPE · 15 MIN")
+    add_cmd(doc, SITE[3][0])
+    add_para(doc, "O nano é um editor de texto dentro do terminal. A equipe digita as quatro linhas da folha, trocando o N e os nomes. Hoje sem acento e sem ç:")
+    for l in PAGINA:
+        add_cmd(doc, l, size=10)
+    add_bullet(doc, "Salvar: Ctrl+O e Enter. Sair: Ctrl+X. No rodapé do nano, ^ quer dizer Ctrl")
+    add_bullet(doc, "<h1> é título grande, <p> é parágrafo. Abre com <h1> e fecha com </h1>")
+    add_bullet(doc, "Troca o digitador: cada um da equipe acrescenta uma linha (o time, a música, um recado)")
+
+    add_hr(doc)
+
+    # BLOCO 12
+    add_heading(doc, "BLOCO 12 — VISITA, DESLIGAR E FECHAMENTO · 10 MIN")
+    add_bullet(doc, "Visita (5 min): cada um conecta o celular no Wi-Fi de outra equipe (ficha de entrega da Noite 8) e abre o site dela. No próprio Wi-Fi não abre: \"cada roteador é uma casa. Esse site está na REDE, não na INTERNET (Noite 1). Para o escritório, é isso que se quer: página interna\"")
     add_cmd(doc, "sudo poweroff")
-    add_bullet(doc, "\"Servidor não se desliga no botão nem na tomada. Ele pode estar escrevendo no disco. Puxar da tomada é como arrancar a panela do fogo no meio da receita\"")
-    add_bullet(doc, "As três frases (slide final). Confira se a ficha técnica da página 3 está preenchida: ela continua nos próximos encontros")
-    add_bullet(doc, "Encontro 2: andar pelas pastas, criar e apagar arquivos, criar usuários e entrar no servidor pelo celular, de longe (SSH)")
+    add_bullet(doc, "\"Servidor não se desliga no botão nem na tomada: ele pode estar escrevendo no disco\"")
+    add_bullet(doc, "Volte à enquete do Bloco 1: \"quem sabe dizer agora o que é um servidor? E o Linux?\". As três frases (slide final)")
+    add_bullet(doc, "Encontro 2: o PC com Windows vai para a bancada, e a turma manda no servidor de longe, pelo PuTTY. Organiza as pastas, cria os funcionários e faz o site de um negócio")
 
     add_hr(doc)
 
@@ -409,44 +524,46 @@ def build_roteiro():
     add_hr(doc)
 
     add_heading(doc, "SE PERGUNTAREM")
+    add_para(doc, "\"Se o Linux é tão bom, por que todo mundo usa Windows?\"", bold=True)
+    add_para(doc, "> \"Porque o Windows já vem instalado quando se compra o computador, e os programas mais conhecidos de escritório e jogos foram feitos para ele. No servidor é o contrário: quase tudo roda Linux. Cada um é melhor num lugar.\"", italic=True)
     add_para(doc, "\"Dá pra abrir esse site de casa?\"", bold=True)
-    add_para(doc, "> \"Dá, mas aí o servidor fica exposto pra internet inteira, e precisa de outros cuidados: endereço fixo do provedor, liberar porta no roteador, segurança. É um serviço diferente. O que a gente faz aqui é o que o escritório pediu: página interna.\"", italic=True)
-    add_para(doc, "\"Por que não instalar com janelas, igual Windows?\"", bold=True)
-    add_para(doc, "> \"Janela gasta memória e ninguém olha a tela de servidor. Sem janela, essa máquina velha sobra força pra trabalhar. E no Encontro 2 vocês vão mexer nela pelo celular, sem nem chegar perto.\"", italic=True)
+    add_para(doc, "> \"Dá, mas aí o servidor fica exposto pra internet inteira e precisa de outros cuidados: endereço do provedor, liberar porta no roteador, segurança. É outro serviço. O que a gente faz é o que o escritório pediu: página interna.\"", italic=True)
     add_para(doc, "\"Linux pega vírus?\"", bold=True)
-    add_para(doc, "> \"Pode ter problema de segurança como qualquer sistema. O que protege é atualizar (o apt faz isso), senha forte e só instalar o necessário. É o mesmo cuidado da Noite 10 com o roteador.\"", italic=True)
+    add_para(doc, "> \"Pode ter problema de segurança como qualquer sistema. O que protege é atualizar (o apt faz isso), senha forte e só instalar o necessário.\"", italic=True)
     add_para(doc, "\"Dá pra instalar Linux no meu computador de casa?\"", bold=True)
-    add_para(doc, "> \"Dá. Para usar no dia a dia, o Ubuntu Desktop (com janelas) ou o Linux Mint. Mas instalar apaga o Windows se escolher disco inteiro, como vocês viram hoje. Primeiro teste pelo pendrive, sem instalar, e faça cópia dos arquivos.\"", italic=True)
+    add_para(doc, "> \"Dá. Para o dia a dia, Ubuntu Desktop ou Linux Mint. Mas instalar no disco inteiro apaga o Windows, como vocês viram hoje. Primeiro teste pelo pendrive, sem instalar, e faça cópia dos arquivos.\"", italic=True)
+    add_para(doc, "\"O Linus Torvalds ficou rico?\"", bold=True)
+    add_para(doc, "> \"Não como o dono da Microsoft. Ele trabalha até hoje coordenando o Linux, pago por uma fundação que as empresas mantêm. Quem ganha dinheiro com Linux é quem presta serviço com ele.\"", italic=True)
     add_para(doc, "\"Isso é profissão?\"", bold=True)
-    add_para(doc, "> \"É. Pequeno escritório, clínica, escola, loja: alguém instala e cuida do servidor de arquivos e da página interna. Quem sabe Linux e documenta o serviço tem trabalho, aqui e à distância.\"", italic=True)
+    add_para(doc, "> \"É. Escritório, clínica, escola, loja: alguém instala e cuida do servidor de arquivos, das câmeras, da página interna. Quem sabe Linux e documenta o serviço tem trabalho, aqui e a distância.\"", italic=True)
 
     add_hr(doc)
 
     add_heading(doc, "DEPOIS DA AULA")
     add_bullet(doc, "NÃO reinstale nem formate: o Encontro 2 continua de onde parou, na mesma máquina, com o mesmo usuário")
     add_bullet(doc, "Guarde cada servidor junto com o roteador da equipe e a ficha de entrega")
-    add_bullet(doc, "Tire foto da ficha técnica de cada equipe (página 3): se um aluno faltar ou perder a folha, a senha do servidor está salva")
+    add_bullet(doc, "Tire foto da ficha técnica de cada equipe (página 4): se um aluno faltar ou perder a folha, a senha do servidor está salva")
     add_bullet(doc, "Anote quantas equipes chegaram ao site no celular. É o indicador do encontro")
 
     add_hr(doc)
 
     add_heading(doc, "DESCRITIVO PARA O DIÁRIO")
-    add_para(doc, "Iniciei o estudo de servidores com Linux a partir da diferença entre cliente e servidor, usando o roteador configurado na unidade anterior como exemplo de equipamento que presta serviços à rede. Apresentei o Linux como software livre e a distribuição Ubuntu Server como opção para reaproveitar computadores antigos. Em equipes, com rodízio de funções, os estudantes instalaram o Ubuntu Server 24.04 em computadores reaproveitados, por meio de pendrive, lendo e interpretando as telas do instalador em inglês técnico e registrando cada escolha. Acessaram o sistema pelo terminal e levantaram nome, endereço de rede, memória e espaço em disco da máquina, testando a comunicação com o roteador e com a internet. Instalaram o servidor web Nginx pelo gerenciador de pacotes, publicaram uma página interna da equipe e verificaram o acesso pelo celular, inclusive nas redes das outras equipes, discutindo a diferença entre rede local e internet. Iniciaram a ficha técnica do servidor e desligaram o sistema de forma segura.")
+    add_para(doc, "Iniciei o estudo de servidores com Linux apresentando a situação-problema do módulo e o produto a ser construído. Trabalhei a diferença entre cliente e servidor a partir do roteador configurado na unidade anterior e de exemplos do cotidiano, e os estudantes classificaram casos em dupla. Apresentei a função do sistema operacional, a história do Linux e do software livre e o conceito de distribuição, e os estudantes identificaram o núcleo Linux em seus próprios celulares. Expliquei a inicialização do computador e o processo de instalação. Em equipes, com rodízio de funções, os estudantes instalaram o Ubuntu Server 24.04 em computadores reaproveitados, por meio de pendrive, interpretando as telas do instalador em inglês técnico e registrando cada escolha, e elaboraram um glossário dos termos do instalador. Acessaram o sistema pelo terminal e levantaram nome, endereço de rede, memória e espaço em disco da máquina, testando a comunicação com o roteador e com a internet. Instalaram o servidor web Nginx pelo gerenciador de pacotes, publicaram uma página interna da equipe e verificaram o acesso pelo celular, discutindo a diferença entre rede local e internet. Iniciaram a ficha técnica do servidor e desligaram o sistema de forma segura.")
 
     add_hr(doc)
 
     add_heading(doc, "CAIXA DE FERRAMENTAS DIDÁTICAS", color=COR_DESTAQUE)
-    add_para(doc, "Se sobrar tempo, ou pra usar em outro encontro:", italic=True, color=COR_CINZA)
+    add_para(doc, "Se sobrar tempo, ou para usar no começo do Encontro 2:", italic=True, color=COR_CINZA)
     add_para(doc, "1. O servidor trabalhando ao vivo", bold=True)
-    add_para(doc, "sudo apt install htop e depois htop: a tela mostra processador e memória em tempo real. Enquanto a equipe recarrega a página no celular várias vezes, o digitador olha o htop. Sai com q. Discuta: por que uma máquina antiga dá conta? (servir uma página é pouco trabalho). 15 min.")
+    add_para(doc, "sudo apt install htop e depois htop: processador e memória em tempo real. Enquanto a equipe recarrega a página no celular várias vezes, o digitador olha o htop. Sai com q. Por que uma máquina antiga dá conta? 15 min.")
     add_para(doc, "2. Quanto custa deixar ligado", bold=True)
-    add_para(doc, "Ciências da Natureza e Matemática. Cada equipe lê a potência na etiqueta da fonte da máquina (ou usa 60 W, valor comum de máquina antiga sem monitor), calcula o consumo de 24 h por 30 dias em kWh e multiplica pela tarifa da fatura de luz de casa. Comparar: e se ficar ligada só no horário do escritório? 20 min.")
-    add_para(doc, "3. O cartaz do restaurante", bold=True)
-    add_para(doc, "Cada equipe faz um cartaz com o caminho da página: servidor → cabo → roteador → Wi-Fi → celular, marcando em cada ponto o endereço de verdade da equipe (IP do servidor, do roteador, do celular). Apresentação de 2 minutos por equipe. 25 min.")
-    add_para(doc, "4. Decifrar as mensagens", bold=True)
-    add_para(doc, "Liste no quadro mensagens que apareceram na noite (command not found, Permission denied, Could not get lock, active (running), Temporary failure in name resolution). As equipes traduzem e escrevem o que o técnico faz diante de cada uma. Linguagens: inglês técnico. 15 min.")
-    add_para(doc, "5. A página com mais coisas", bold=True)
-    add_para(doc, "No nano, a equipe acrescenta uma lista (<ul><li>Arquivos</li><li>Recados</li></ul>) com o que a página interna do escritório deveria ter, e um link para o site de outra equipe: <a href=\"http://192.168.1N.1xx\">Equipe N</a>. 20 min.")
+    add_para(doc, "Potência da fonte (ou 60 W) × 24 h × 30 dias em kWh, vezes a tarifa da fatura de casa. E se ficar ligado só no horário do escritório? Matemática e Ciências da Natureza. 20 min.")
+    add_para(doc, "3. O cartaz da cozinha", bold=True)
+    add_para(doc, "Cada equipe desenha o caminho da página: servidor → cabo → roteador → Wi-Fi → celular, com os endereços de verdade da equipe em cada ponto. Apresentação de 2 minutos. 25 min.")
+    add_para(doc, "4. A linha do tempo do Linux", bold=True)
+    add_para(doc, "Em dupla, com o celular, cada dupla pesquisa um fato (o primeiro Android, o pinguim Tux, por que o Ubuntu tem nome africano, o que é a Red Hat) e escreve num papel com o ano. A turma monta a linha do tempo na parede. 20 min.")
+    add_para(doc, "5. Decifrar as mensagens", bold=True)
+    add_para(doc, "No quadro, mensagens que apareceram na noite (command not found, Could not get lock, active (running), Temporary failure in name resolution). As equipes traduzem e escrevem o que o técnico faz diante de cada uma. 15 min.")
 
     path = os.path.join(OUTDIR, f"Roteiro - {TITULO_ARQ}.docx")
     doc.save(path)
@@ -493,11 +610,39 @@ def build_slides():
         add_footer(s, FOOTER)
         return s
 
+    # Capa + abertura do módulo
     add_slide_cover(prs, "SERVIDORES COM LINUX · ENCONTRO 1", "INSTALANDO", "O UBUNTU",
                     "e o primeiro site, aberto no celular de vocês",
                     "Curso FIC · Montador e Reparador de Computadores · CEJA Itapiranga – SC")
 
-    lista("PRA COMEÇAR", "Vocês já configuraram um servidor", [
+    lista("ANTES DE COMEÇAR", "Levante a mão", [
+        "•  Quem já ouviu a palavra servidor? Quem sabe dizer o que é?",
+        "•  Quem já ouviu falar de Linux? Quem já usou?",
+        "•  Quem já viu uma tela preta só com letras?",
+    ], size=24, nota="No fim do módulo a gente faz as mesmas perguntas.")
+
+    lista("A DEMANDA DO CLIENTE", "O escritório pequeno", [
+        "\"Queremos guardar os arquivos num lugar só,",
+        "acessar de qualquer computador",
+        "e ter uma página interna para os funcionários.\"",
+        "",
+        "Como transformar um computador antigo nesse servidor?",
+    ], size=24)
+
+    tabela("O MÓDULO", "Três encontros, um servidor por equipe", [["Quando", "O que a equipe faz"]] + [list(m) for m in MODULO],
+           col_widths=[3.0, 8.9], size=18, height=2.8,
+           nota="No fim, outra equipe testa o seu servidor só com a ficha técnica.")
+
+    lista("COMO VAI FUNCIONAR", "Equipe, rodízio e ficha", [
+        "•  Equipes de 3 ou 4. A mesma máquina até o fim",
+        "•  Digitador, leitor e anotador. Troca a cada parte",
+        "•  Enter só depois do leitor dizer \"confere\"",
+        "•  A ficha técnica começa hoje e é entregue no último encontro",
+        "•  Errar faz parte: a mensagem de erro diz o que aconteceu",
+    ], size=22)
+
+    # O que é um servidor
+    lista("O QUE É UM SERVIDOR", "Vocês já configuraram um", [
         "Aquele roteador da Noite 8:",
         "",
         "•  Entrega endereço pra todo aparelho que conecta (DHCP)",
@@ -512,34 +657,92 @@ def build_slides():
         ["O que faz", "Pede e mostra", "Prepara e entrega"],
         ["Quantos atende", "Só a si mesmo", "Todas as mesas ao mesmo tempo"],
         ["Onde fica", "Na mão da pessoa", "Lá atrás, ninguém vê"],
+        ["Quando funciona", "Quando a pessoa usa", "O tempo todo"],
         ["Exemplos", "Celular, notebook, TV", "YouTube, banco, WhatsApp, o roteador"],
-    ], col_widths=[2.9, 4.5, 4.5], size=18, height=3.4,
+    ], col_widths=[2.9, 4.5, 4.5], size=17, height=3.6,
         nota="A foto do Instagram não está no seu celular. Está num servidor.")
+
+    tabela("OS TIPOS", "Quem aqui usou isso hoje?", [["Servidor", "O que faz"]] + [list(t) for t in TIPOS_SERVIDOR],
+           col_widths=[4.3, 7.6], size=14, height=4.0, top=2.3)
+
+    lista("ONDE ELES FICAM", "Do galpão gigante à salinha do escritório", [
+        "•  Data center: galpões cheios de servidores empilhados,",
+        "   com ar-condicionado e energia de reserva. YouTube, banco, WhatsApp",
+        "•  Servidor pequeno: numa sala do escritório, da clínica, da escola",
+        "",
+        "Por que um computador velho serve?",
+        "Um escritório de 5 pessoas pede pouco. O que importa é",
+        "ficar ligado e não perder os dados.",
+    ], size=20)
 
     frase("A FRASE DA NOITE", "Servidor não é um computador especial.\nÉ um computador\nque trabalha para os outros.", size=34)
 
-    lista("A DEMANDA DO CLIENTE", "O escritório pequeno", [
-        "\"Queremos guardar os arquivos num lugar só,",
-        "acessar de qualquer computador",
-        "e ter uma página interna para os funcionários.\"",
+    lista("PRÁTICA · 15 MIN", "Cliente ou servidor?", [
+        "Página 1 da folha, em dupla:",
         "",
-        "Como transformar um computador antigo nesse servidor?",
+        "•  Doze casos para marcar",
+        "•  Depois a gente corrige junto: justifique a resposta",
         "",
-        "Hoje: o sistema instalado e a página interna funcionando.",
+        "Um mesmo aparelho pode ser cliente e servidor?",
     ], size=22)
 
-    lista("O SISTEMA", "Linux e Ubuntu Server", [
-        "•  Linux: sistema gratuito, livre, roda bem em máquina antiga",
-        "•  A maioria dos servidores da internet usa Linux. O Android também",
-        "•  Ubuntu: uma \"versão empacotada\" do Linux (distribuição)",
-        "•  Ubuntu Server: sem janela, sem mouse. Só texto",
-        "•  24.04 = abril de 2024. Recebe correções até 2029",
-    ], size=21, nota="Parece filme de hacker. É só escrever ordens.")
+    # Sistema operacional e Linux
+    lista("O SISTEMA OPERACIONAL", "O síndico do computador", [
+        "O computador é um prédio. As peças são a estrutura.",
+        "Os programas são os moradores. O síndico é o sistema operacional:",
+        "",
+    ] + ["•  " + f for f in SO_FUNCOES], size=19)
 
-    lista("COMO SE INSTALA", "Pendrive, tecla de boot e teclado", [
+    tabela("VOCÊS JÁ USAM", "Os sistemas do dia a dia", [["Sistema", "De quem", "Onde está"]] + [list(s) for s in SO_EXEMPLOS],
+           col_widths=[2.4, 4.0, 5.5], size=15, height=3.4,
+           nota="O Android é Linux por dentro.")
+
+    tabela("DE ONDE VEM O LINUX", "Um estudante, um computador de casa e o mundo todo ajudando",
+           [["Quando", "O que aconteceu"]] + [list(h) for h in LINUX_HISTORIA],
+           col_widths=[1.6, 10.3], size=13, height=4.2, top=2.4)
+
+    lista("SOFTWARE LIVRE", "Não é só de graça: é aberto", [
+        "•  Qualquer um pode usar, estudar, mudar e repartir",
+        "•  Empresas do mundo todo melhoram o Linux juntas",
+        "",
+        "Como alguém ganha dinheiro com algo gratuito?",
+        "Com o serviço: instalar, configurar, dar suporte, manter.",
+        "",
+        "É isso que vocês vão aprender a vender.",
+    ], size=22)
+
+    tabela("AS DISTRIBUIÇÕES", "O Linux é o motor. A distribuição é o carro pronto",
+           [["Distribuição", "Como é"]] + [list(d) for d in DISTROS],
+           col_widths=[2.8, 9.1], size=16, height=3.2,
+           nota="Hoje: Ubuntu Server 24.04 (abril de 2024), com correções até 2029.")
+
+    lista("DESKTOP × SERVER", "Por que sem janelas?", [
+        "•  Ubuntu Desktop: janelas e mouse, para usar no dia a dia",
+        "•  Ubuntu Server: só texto",
+        "",
+        "Ninguém fica olhando a tela de um servidor.",
+        "Sem janelas, a máquina velha sobra força para trabalhar.",
+        "",
+        "Parece filme de hacker. É só escrever ordens, em inglês.",
+    ], size=22)
+
+    lista("PRÁTICA · 10 MIN", "O Linux no seu bolso", [
+        "Android → Configurações → Sobre o telefone →",
+        "   (Informações do software / Todas as especificações) →",
+        "   Versão do kernel",
+        "",
+        "Apareceu um número como 5.10 ou 6.1? É o Linux do seu celular.",
+        "",
+        "Onde mais tem Linux nesta sala?",
+    ], size=21, nota="iPhone não é Linux, mas é parente: família Unix.")
+
+    tabela("COMO O COMPUTADOR LIGA", "Do botão ao sistema", [["Etapa", "O que acontece"]] + [list(b) for b in BOOT],
+           col_widths=[3.6, 8.3], size=17, height=3.0,
+           nota="Instalar = copiar o sistema do pendrive para o disco.")
+
+    lista("O INSTALADOR", "Inglês e sem mouse", [
         "•  Pendrive na máquina → liga → tecla de boot (está na fita crepe)",
         "•  O instalador fala inglês. A folha traduz cada tela",
-        "•  Sem mouse:",
         "        Setas e Tab = andar     Espaço = marcar",
         "        Enter = confirmar       Esc = voltar",
         "•  Digitador, leitor e anotador. Enter só depois do \"confere\"",
@@ -547,11 +750,12 @@ def build_slides():
 
     frase("ANTES DE COMEÇAR", "O instalador vai apagar o disco inteiro.\nAqui as máquinas estão vazias.\nNo cliente, o técnico sempre pergunta\ne faz cópia antes.", cor=R, size=30)
 
-    tabela("PRÁTICA · 25 MIN", "Telas 1 a 8", [["Tela", "O que é", "O que escolher"]] + [list(t) for t in TELAS[:8]],
+    # Prática
+    tabela("PRÁTICA · 40 MIN", "Telas 1 a 8", [["Tela", "O que é", "O que escolher"]] + [list(t) for t in TELAS[:8]],
            col_widths=[3.9, 3.3, 4.7], size=13, height=4.0, top=2.3,
            nota="Tela de rede: anote o número do DHCPv4. É o endereço do servidor.")
 
-    tabela("PRÁTICA · 20 MIN", "Telas 9 a 15", [["Tela", "O que é", "O que escolher"]] + [list(t) for t in TELAS[8:]],
+    tabela("PRÁTICA · 40 MIN", "Telas 9 a 15", [["Tela", "O que é", "O que escolher"]] + [list(t) for t in TELAS[8:]],
            col_widths=[3.9, 3.3, 4.7], size=13, height=3.8, top=2.3,
            nota="SSH: marca com ESPAÇO. Tem que aparecer [X].", nota_cor=R)
 
@@ -563,11 +767,11 @@ def build_slides():
         ["Choose a password", "A equipe inventa (10+ caracteres) e ANOTA"],
     ], col_widths=[4.5, 7.4], size=20, height=3.0)
 
-    lista("ENQUANTO COPIA · 20 MIN", "Cliente ou servidor?", [
-        "Página 2 da folha:",
+    lista("ENQUANTO COPIA · 15 MIN", "O dicionário do técnico", [
+        "Página 3 da folha:",
         "",
-        "•  Doze casos para marcar: cliente ou servidor?",
-        "•  Leiam os comandos do raio-x e escrevam o que acham que cada um mostra",
+        "•  18 palavras do instalador: traduzam sem celular, depois confiram",
+        "•  O palpite do raio-x: o que cada comando vai mostrar?",
         "•  O anotador vigia a tela: chama quando aparecer Reboot Now",
     ], size=21, nota="Reboot Now → TIRE O PENDRIVE → Enter", nota_cor=R)
 
@@ -584,11 +788,11 @@ def build_slides():
         "•  $ = \"pode mandar\"",
     ], size=22, nota="Mensagens depois do login:? É o sistema terminando de ligar. Enter.")
 
-    tabela("PRÁTICA · 25 MIN", "O raio-x da máquina", [["Comando", "O que mostra"]] + [list(r) for r in RAIOX],
+    tabela("PRÁTICA · 20 MIN", "O raio-x da máquina", [["Comando", "O que mostra"]] + [list(r) for r in RAIOX],
            col_widths=[4.2, 7.7], size=15, height=4.0, top=2.3,
            nota="Seta pra cima repete. Tab completa. Errou? Leia a mensagem.")
 
-    lista("PRÁTICA · 30 MIN", "O primeiro site", [
+    lista("PRÁTICA · 20 MIN", "O primeiro site", [
         "$ sudo apt update",
         "$ sudo apt install nginx",
         "$ systemctl status nginx",
@@ -600,9 +804,9 @@ def build_slides():
 
     frase("NO CELULAR", "Wi-Fi da equipe, dados móveis desligados\nhttp://192.168.1N.1xx\n\nWelcome to nginx!", size=30)
 
-    frase("VOCÊS SÃO O RESTAURANTE", "Essa página não veio da internet.\nVeio daquela máquina velha,\npelo cabo, pelo roteador, pelo Wi-Fi.", size=30)
+    frase("VOCÊS SÃO A COZINHA", "Essa página não veio da internet.\nVeio daquela máquina velha,\npelo cabo, pelo roteador, pelo Wi-Fi.", size=30)
 
-    lista("PRÁTICA · 25 MIN", "A página da equipe", [
+    lista("PRÁTICA · 15 MIN", "A página da equipe", [
         "$ sudo nano /var/www/html/index.html",
         "",
     ] + PAGINA + [
@@ -610,29 +814,22 @@ def build_slides():
         "Salvar: Ctrl+O, Enter · Sair: Ctrl+X · Recarregue o celular",
     ], size=19, nota="Hoje sem acento e sem ç. Cada um da equipe põe uma linha.")
 
-    lista("PRÁTICA · 15 MIN", "Visita aos outros servidores", [
-        "•  Tente abrir o site da equipe vizinha no SEU Wi-Fi. Abre?",
-        "•  Cada roteador é uma casa",
-        "•  Conecte no Wi-Fi da outra equipe (ficha de entrega da Noite 8)",
-        "•  Agora abre? Anote o que estava escrito",
-    ], size=22)
-
-    frase("LEMBRA DA NOITE 1?", "Esse site está na REDE,\nnão na INTERNET.\nPágina interna: só quem está dentro vê.", size=32)
+    frase("VISITA", "No seu Wi-Fi, o site da vizinha não abre.\nCada roteador é uma casa.\nEsse site está na REDE, não na INTERNET.", size=28)
 
     frase("DESLIGAR CERTO", "$ sudo poweroff\n\nNunca no botão, nunca na tomada:\nele pode estar escrevendo no disco.", size=30)
 
     lista("O QUE FICA", "Três frases pra guardar", [
         "\"Servidor é um computador que trabalha para os outros.\"",
         "",
-        "\"Senha não aparece. Não travou.\"",
+        "\"Linux é livre: quem ganha é quem presta o serviço.\"",
         "",
-        "\"Errou o comando? Leia a mensagem.\"",
+        "\"Senha não aparece. Não travou.\"",
     ], size=23)
 
-    lista("NO ENCONTRO 2", "Morar no terminal", [
-        "•  Andar pelas pastas, criar, copiar e apagar arquivos",
-        "•  Criar usuários para os funcionários do escritório",
-        "•  Entrar no servidor pelo celular, de longe (o SSH que vocês marcaram hoje)",
+    lista("NO ENCONTRO 2", "A bancada do técnico", [
+        "•  Um PC com Windows ao lado do servidor, no mesmo roteador",
+        "•  Mandar no servidor de longe, pelo PuTTY",
+        "•  Pastas, funcionários com senha e o site de um negócio",
         "",
         "Tarefa: quatro serviços que você usou esta semana e que dependem de um servidor.",
     ], size=21)
@@ -649,14 +846,40 @@ def build_folha():
     doc = Document()
     setup_page(doc, margem=Cm(1.6))
 
-    # PÁGINA 1 — A instalação
+    # PÁGINA 1 — Antes de instalar
+    cabecalho_documento(
+        doc,
+        "SERVIDOR, SISTEMA E LINUX",
+        "Servidores com Linux · Encontro 1 · Curso FIC · CEJA Itapiranga · 1 de 4",
+    )
+    campo(doc, "Nome: _____________________________________________     Equipe: ______   Máquina: ____________________", space_after=6, size=10)
+
+    add_heading(doc, "1  Cliente ou servidor? (em dupla)", level=2)
+    add_para(doc, "Cliente pede e mostra. Servidor guarda, prepara e entrega para os outros.", italic=True, size=9, color=COR_CINZA)
+    rows = [["Aparelho ou serviço", "Cliente", "Servidor"]] + [[c, "☐", "☐"] for c in CLIENTE_SERVIDOR]
+    tbl = add_table(doc, rows, col_widths=[13.4, 2, 2])
+    small_table(tbl, size=9)
+    campo(doc, "Um mesmo aparelho pode ser cliente e servidor? Dê um exemplo: ________________________________________", size=10)
+
+    add_heading(doc, "2  O síndico do computador", level=2)
+    campo(doc, "Cite duas coisas que o sistema operacional faz: _________________________________________________", size=10)
+    campo(doc, "Que sistema tem no seu celular? ______________   No computador de casa (se tiver)? ______________", size=10)
+
+    add_heading(doc, "3  O Linux no seu bolso", level=2)
+    campo(doc, "Marca do celular: ______________   Versão do kernel (Linux): ______________   ☐ iPhone: olhei no do colega", size=10)
+    campo(doc, "A versão mais nova da turma: ________   A mais antiga: ________", size=10)
+    campo(doc, "Onde mais tem Linux nesta sala ou na sua casa? ____________________________________________", size=10)
+    campo(doc, "O Linux é software livre. O que isso quer dizer, além de ser gratuito?", bold=True, size=10)
+    linha(doc)
+
+    # PÁGINA 2 — A instalação
+    doc.add_page_break()
     cabecalho_documento(
         doc,
         "INSTALANDO O UBUNTU SERVER",
-        f"Servidores com Linux · Encontro 1 · Curso FIC · CEJA Itapiranga · 1 de 3",
+        "Servidores com Linux · Encontro 1 · 2 de 4",
     )
-    campo(doc, "Nome: _____________________________________________     Equipe: ______   Máquina: ____________________", space_after=6, size=10)
-    campo(doc, "Rodízio · Digitador: ____________   Leitor: ____________   Anotador: ____________   (troca a cada parte)", size=10)
+    campo(doc, "Rodízio · Digitador: ____________   Leitor: ____________   Anotador: ____________   (troca na tela 9)", size=10)
     add_para(doc, "Sem mouse: setas e Tab andam · Espaço marca · Enter confirma · Esc volta. Enter só depois do leitor dizer \"confere\".", italic=True, size=9, color=COR_CINZA)
 
     tbl = add_table(doc, [["Tela (em inglês)", "O que é", "O que escolher", "✓"]] +
@@ -668,27 +891,33 @@ def build_folha():
     campo(doc, "O mirror passou no teste (\"passed tests\")?  ☐ Sim  ☐ Não      Tamanho do disco que apareceu: ________ GB", size=10)
     campo(doc, "Nome do servidor: ______________________   Usuário: ______________   Senha: ______________________", size=10)
     campo(doc, "Hora em que começou a cópia: ____ : ____     Hora do Reboot Now: ____ : ____     Levou ______ minutos", size=10)
-    campo(doc, "Que palavra em inglês na tela do disco avisa que tudo vai ser apagado? O que ela quer dizer?", bold=True, size=10)
-    linha(doc)
 
-    # PÁGINA 2 — Enquanto copia + raio-x
+    # PÁGINA 3 — Enquanto copia + raio-x
     doc.add_page_break()
     cabecalho_documento(
         doc,
-        "CLIENTE OU SERVIDOR? E O RAIO-X",
-        f"Instalando o Ubuntu · Encontro 1 · 2 de 3",
+        "O DICIONÁRIO DO TÉCNICO E O RAIO-X",
+        "Servidores com Linux · Encontro 1 · 3 de 4",
     )
 
-    add_heading(doc, "1  Enquanto copia: cliente ou servidor?", level=2)
-    add_para(doc, "Cliente pede e mostra. Servidor guarda, prepara e entrega para os outros.", italic=True, size=9, color=COR_CINZA)
-    rows = [["Aparelho ou serviço", "Cliente", "Servidor"]] + [[c, "☐", "☐"] for c in CLIENTE_SERVIDOR]
-    tbl = add_table(doc, rows, col_widths=[13.4, 2, 2])
+    add_heading(doc, "1  Enquanto copia: o dicionário do técnico", level=2)
+    add_para(doc, "Traduza sem o celular. Depois confira com a turma.", italic=True, size=9, color=COR_CINZA)
+    metade = (len(DICIONARIO) + 1) // 2
+    rows = [["Na tela", "Quer dizer", "Na tela", "Quer dizer"]]
+    for i in range(metade):
+        a = DICIONARIO[i][0]
+        b = DICIONARIO[i + metade][0] if i + metade < len(DICIONARIO) else ""
+        rows.append([a, "", b, ""])
+    tbl = add_table(doc, rows, col_widths=[4.2, 4.5, 4.2, 4.5])
     small_table(tbl, size=9)
+    for row in tbl.rows[1:]:
+        row.height = Cm(0.7)
+    campo(doc, "Que palavra na tela do disco avisa que tudo vai ser apagado? ______________________", size=10)
 
-    add_heading(doc, "2  O raio-x da máquina", level=2)
-    add_para(doc, "Antes de rodar, escreva o que acha que vai aparecer. Depois rode e anote o resultado. Troque N pelo número da equipe.", italic=True, size=9, color=COR_CINZA)
-    tbl = add_table(doc, [["Comando", "O que mostra", "O que deu"]] +
-                    [[c, d, ""] for c, d in RAIOX[:7]], col_widths=[4.2, 6.6, 6.6])
+    add_heading(doc, "2  O raio-x da máquina (depois do intervalo)", level=2)
+    add_para(doc, "Antes de rodar, escreva o palpite. Depois rode e anote o resultado. Troque N pelo número da equipe.", italic=True, size=9, color=COR_CINZA)
+    tbl = add_table(doc, [["Comando", "O que mostra", "Palpite", "O que deu"]] +
+                    [[c, d, "", ""] for c, d in RAIOX[:7]], col_widths=[3.8, 5.4, 3.8, 4.4])
     small_table(tbl, size=9)
     mono_col(tbl, 0, size=9)
     for row in tbl.rows[1:]:
@@ -697,12 +926,12 @@ def build_folha():
     campo(doc, "Disco: tem ______ GB e estão livres ______ GB. Cabem quantas fotos de 3 MB? (1 GB ≈ 1000 MB) ________", size=10)
     campo(doc, "Para pingar google.com, o servidor precisou perguntar pra quem? (Noite 7) ______________________", size=10)
 
-    # PÁGINA 3 — O site, a visita e a ficha técnica
+    # PÁGINA 4 — O site, a visita e a ficha técnica
     doc.add_page_break()
     cabecalho_documento(
         doc,
         "O PRIMEIRO SITE",
-        f"Instalando o Ubuntu · Encontro 1 · 3 de 3",
+        "Servidores com Linux · Encontro 1 · 4 de 4",
     )
 
     add_heading(doc, "1  Instalar e abrir no celular", level=2)
@@ -719,14 +948,9 @@ def build_folha():
         add_cmd(doc, l, size=9.5)
     campo(doc, "A linha que a equipe inventou: _________________________________________________", size=10)
 
-    add_heading(doc, "3  Visita aos outros servidores", level=2)
-    tbl = add_table(doc, [["Equipe", "Endereço do servidor", "No meu Wi-Fi abriu?", "No Wi-Fi dela abriu?", "O que estava escrito"],
-                          ["", "", "", "", ""], ["", "", "", "", ""]], col_widths=[1.6, 3.8, 2.8, 2.8, 6.4])
-    small_table(tbl, size=9)
-    for row in tbl.rows[1:]:
-        row.height = Cm(0.7)
-    campo(doc, "Por que alguém em casa não consegue abrir o site da equipe?", bold=True, size=10)
-    linha(doc)
+    add_heading(doc, "3  Visita", level=2)
+    campo(doc, "Site da equipe ____ · No meu Wi-Fi abriu?  ☐ Sim  ☐ Não · No Wi-Fi dela abriu?  ☐ Sim  ☐ Não", size=10)
+    campo(doc, "Por que alguém em casa não consegue abrir o site da equipe? ________________________________________", size=10)
 
     add_heading(doc, "4  Ficha técnica do servidor (começa hoje, continua nos próximos encontros)", level=2)
     rows = [[FICHA[i], "", FICHA[i + 5], ""] for i in range(5)]
@@ -754,25 +978,32 @@ def build_resumo():
     cabecalho_documento(
         doc,
         "INSTALANDO O UBUNTU E O PRIMEIRO SITE",
-        f"Resumo do aluno · Servidores com Linux · Encontro 1 · Curso FIC · CEJA Itapiranga",
+        "Resumo do aluno · Servidores com Linux · Encontro 1 · Curso FIC · CEJA Itapiranga",
     )
 
     add_heading(doc, "A ideia principal", level=2)
     add_para(doc, "Servidor não é um computador especial. É um computador que fica ligado trabalhando para os outros: guarda, prepara e entrega. Cliente é quem pede e mostra (celular, notebook, TV). Hoje um computador antigo virou servidor, com Linux, e entregou uma página para os celulares da rede.")
 
-    add_heading(doc, "Linux e Ubuntu Server", level=2)
-    add_bullet(doc, "Linux é um sistema gratuito e livre, que roda bem em máquina antiga. A maioria dos servidores do mundo usa Linux")
-    add_bullet(doc, "Ubuntu é uma distribuição (uma versão empacotada) do Linux. O Ubuntu Server não tem janela nem mouse: só texto")
-    add_bullet(doc, "24.04 quer dizer abril de 2024. Recebe correções até 2029")
+    add_heading(doc, "Tipos de servidor", level=2)
+    add_table(doc, [["Servidor", "O que faz"]] + [list(t) for t in TIPOS_SERVIDOR], col_widths=[5.5, 10])
+
+    add_heading(doc, "Sistema operacional e Linux", level=2)
+    add_bullet(doc, "O sistema operacional é o síndico do computador: conversa com as peças, divide a máquina entre os programas, guarda os arquivos e controla quem entra")
+    add_bullet(doc, "Windows, macOS, Android e Linux são sistemas operacionais. O Android é Linux por dentro")
+    add_bullet(doc, "1991: Linus Torvalds, estudante na Finlândia, cria o Linux e divulga de graça. Junto com o projeto GNU (1983), vira um sistema completo")
+    add_bullet(doc, "Software livre: qualquer um pode usar, estudar, mudar e repartir. Quem ganha dinheiro é quem presta o serviço")
+    add_bullet(doc, "Distribuição é o Linux pronto para usar: Ubuntu, Debian, Linux Mint, Fedora. Hoje: Ubuntu Server 24.04 (abril de 2024, correções até 2029), sem janelas")
+
+    add_heading(doc, "Como o computador liga", level=2)
+    add_para(doc, "Botão → BIOS/UEFI testa as peças e procura de onde ligar → a tecla de boot escolhe o pendrive → o sistema carrega. Instalar é copiar o sistema do pendrive para o disco.", size=10.5)
 
     add_heading(doc, "A instalação em 6 passos", level=2)
-    add_bullet(doc, "1. Pendrive com o instalador na máquina, liga e aperta a tecla de boot (F12, F11, F8 ou Esc)")
+    add_bullet(doc, "1. Pendrive na máquina, liga e aperta a tecla de boot (F12, F11, F8 ou Esc)")
     add_bullet(doc, "2. Idioma English, teclado Portuguese (Brazil), tipo Ubuntu Server")
     add_bullet(doc, "3. Rede: anotar o endereço que aparece (DHCPv4). Quem deu esse número foi o roteador")
     add_bullet(doc, "4. Disco inteiro. ATENÇÃO: apaga tudo. No cliente, sempre perguntar e fazer cópia antes")
     add_bullet(doc, "5. Perfil: nome do servidor, usuário e senha (tudo minúsculo, sem espaço). Marcar Install OpenSSH server")
     add_bullet(doc, "6. Esperar a cópia, Reboot Now, tirar o pendrive e Enter")
-    add_para(doc, "Sem mouse: setas e Tab andam, Espaço marca, Enter confirma, Esc volta.", italic=True, size=10, color=COR_CINZA)
 
     add_heading(doc, "Os comandos da noite", level=2)
     tbl = add_table(doc, [["Comando", "O que faz"]] + [list(r) for r in RAIOX] + [list(r) for r in SITE],
@@ -780,24 +1011,20 @@ def build_resumo():
     mono_col(tbl, 0, size=9.5)
 
     add_heading(doc, "Cuidados do primeiro contato", level=2)
-    add_bullet(doc, "A senha NÃO aparece quando você digita. Não travou: digite com calma e Enter")
+    add_bullet(doc, "A senha NÃO aparece quando você digita. Não travou")
     add_bullet(doc, "Maiúscula e minúscula são diferentes no Linux")
-    add_bullet(doc, "Errou? \"command not found\" quer dizer \"não conheço esse comando\". Leia a mensagem: ela diz o que houve")
-    add_bullet(doc, "Seta para cima repete o último comando. Tab completa a palavra")
-    add_bullet(doc, "No celular, o endereço começa com http:// (não https) e o celular tem que estar no Wi-Fi da mesma rede do servidor")
+    add_bullet(doc, "\"command not found\" = \"não conheço esse comando\". Leia a mensagem")
+    add_bullet(doc, "No celular: http:// (não https), no Wi-Fi da mesma rede do servidor")
     add_bullet(doc, "Servidor se desliga com sudo poweroff. Nunca no botão nem na tomada")
-
-    add_heading(doc, "Rede não é internet (de novo)", level=2)
-    add_para(doc, "O site da equipe só abre para quem está conectado no mesmo roteador. Quem está em casa não vê. Para um escritório, é isso que se quer: uma página interna, só para quem está lá dentro.")
 
     add_heading(doc, "Três frases pra guardar", level=2)
     add_para(doc, "\"Servidor é um computador que trabalha para os outros.\"", bold=True, color=COR_PRIMARIA)
+    add_para(doc, "\"Linux é livre: quem ganha é quem presta o serviço.\"", bold=True, color=COR_PRIMARIA)
     add_para(doc, "\"Senha não aparece. Não travou.\"", bold=True, color=COR_PRIMARIA)
-    add_para(doc, "\"Errou o comando? Leia a mensagem.\"", bold=True, color=COR_PRIMARIA)
 
     add_heading(doc, "Pra se testar em casa", level=2)
-    add_bullet(doc, "Na sua casa, quais aparelhos são clientes? Tem algum que trabalha como servidor?")
-    add_bullet(doc, "Por que o técnico pergunta e faz cópia antes de instalar um sistema na máquina de alguém?")
+    add_bullet(doc, "Na sua casa, quais aparelhos são clientes? Tem algum que trabalha como servidor (roteador, DVR de câmera)?")
+    add_bullet(doc, "Explique para alguém da família o que é um sistema operacional, usando o síndico do prédio")
     add_bullet(doc, "Se o celular não abre a página do servidor, quais são as três primeiras coisas que você confere?")
 
     doc.add_paragraph()
