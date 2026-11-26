@@ -306,7 +306,8 @@ ls -lh ~/backup-servidor-equipe.tar.gz</pre>
   <p>Agora o teste de verdade: o site inteiro numa máquina nova, a partir só do backup.</p>
   <ol>
     <li>No <b>WinSCP</b>, <b>Nova sessão</b> → SFTP, host: o endereço da VM, usuário <code>equipe<i class="n"></i></code>. Salve como <code>vm-equipe<i class="n"></i></code>.</li>
-    <li>Arraste o backup da Área de Trabalho (esquerda) para a pasta de casa da VM (direita).</li>
+    <li>Arraste o backup da Área de Trabalho (esquerda) para a pasta de casa da VM (direita): <code>/home/equipe<i class="n"></i></code>. É a pasta que o WinSCP já abre ao entrar. Não mude o nome do arquivo.</li>
+    <li>Confira no PuTTY da VM <span class="tag digite">Digite</span>: <code>ls -lh ~</code> → tem que aparecer <code>backup-servidor-equipe.tar.gz</code>.</li>
   </ol>
   <p>Restaurar, no PuTTY da VM <span class="tag cole">Cole</span></p>
   <div class="aviso"><strong>Antes:</strong> digite <code>sudo -v</code> e a senha. E confira o nome no começo da linha: tem que ser <code>servidor-vm-equipe<i class="n"></i></code>.</div>
