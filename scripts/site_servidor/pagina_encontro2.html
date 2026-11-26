@@ -27,22 +27,12 @@
 </header>
 
 <section class="passo">
-  <div class="passo-head"><span class="num">1</span><h2>A pasta do site agora é da equipe</h2></div>
-  <p>Até agora a pasta do site era do <b>root</b>: por isso precisava de sudo para mexer nela. Vamos passar a pasta para o usuário da equipe <span class="tag cole">Cole</span></p>
-  <div class="bloco" data-bloco="dono">
-    <div class="bloco-top"><span>Trocar o dono da pasta do site</span><button class="copiar" type="button">Copiar</button></div>
-    <pre>ls -l /var/www/html
-sudo chown -R $USER:$USER /var/www/html
-ls -l /var/www/html</pre>
-  </div>
-  <div class="perg"><strong>Na folha:</strong> quem era o dono do index.html antes? E depois? O <code>$USER</code> virou qual nome?</div>
-  <p>Agora organize a pasta, sem sudo <span class="tag digite">Digite</span></p>
+  <div class="passo-head"><span class="num">1</span><h2>A pasta das fotos</h2><span class="tag digite">Digite</span></div>
   <div class="cmds"><table>
     <tr><td>cd /var/www/html</td><td>Entrar na pasta do site</td></tr>
-    <tr><td>cp index.html ~/index-encontro1.html</td><td>Guardar uma cópia do site antes de mexer. Técnico sempre faz cópia antes</td></tr>
-    <tr><td>mkdir img</td><td>A pasta das fotos</td></tr>
-    <tr><td>ls -l</td><td>Conferir: index.html e img, os dois da equipe<i class="n"></i></td></tr>
-    <tr><td>ls ~</td><td>A cópia está guardada em casa</td></tr>
+    <tr><td>sudo mkdir img</td><td>Criar a pasta das fotos</td></tr>
+    <tr><td>sudo chown $USER:$USER img</td><td>A pasta passa a ser da equipe<i class="n"></i>: assim o WinSCP consegue enviar as fotos</td></tr>
+    <tr><td>ls -l</td><td>Conferir: o index.html é do root, a img é da equipe<i class="n"></i></td></tr>
   </table></div>
 </section>
 
@@ -89,11 +79,12 @@ ls -l /var/www/html</pre>
   <div class="aviso"><strong>Nunca</strong> cole senha, nome completo ou telefone de verdade no ChatGPT. O que vai para a IA sai da sala.</div>
   <p>A IA respondeu com três códigos. Publique um por um <span class="tag digite">Digite</span></p>
   <div class="cmds"><table>
-    <tr><td>cd /var/www/html</td><td>A pasta do site (sem sudo: agora é da equipe)</td></tr>
-    <tr><td>rm index.html</td><td>Apaga a página inicial antiga (a cópia está em ~)</td></tr>
-    <tr><td>nano index.html</td><td>Cole o código novo da página inicial. Ctrl+O, Enter, Ctrl+X</td></tr>
-    <tr><td>nano servicos.html</td><td>Cole o código da página de serviços</td></tr>
-    <tr><td>nano contato.html</td><td>Cole o código da página de contato</td></tr>
+    <tr><td>cd /var/www/html</td><td>A pasta do site</td></tr>
+    <tr><td>sudo cp index.html ~/index-encontro1.html</td><td>Guardar uma cópia antes de mexer. Técnico sempre faz cópia antes</td></tr>
+    <tr><td>sudo rm index.html</td><td>Apaga a página inicial antiga (a cópia está em ~)</td></tr>
+    <tr><td>sudo nano index.html</td><td>Cole o código novo da página inicial. Ctrl+O, Enter, Ctrl+X</td></tr>
+    <tr><td>sudo nano servicos.html</td><td>Cole o código da página de serviços</td></tr>
+    <tr><td>sudo nano contato.html</td><td>Cole o código da página de contato</td></tr>
     <tr><td>ls -l</td><td>Os três arquivos .html e a pasta img</td></tr>
   </table></div>
   <p>No navegador do PC, abra <code>http://192.168.<i class="n1"></i>.10</code> e clique em todos os botões do menu. O <b>Cadastre-se</b> ainda dá erro 404: a página é o próximo passo.</p>
@@ -105,10 +96,13 @@ ls -l /var/www/html</pre>
   <p>Até agora o Nginx só entregava páginas prontas. Para guardar um cadastro, o servidor precisa <b>rodar um programa</b> quando o visitante clica em Enviar. Esse programa é o <b>PHP</b>, e o lugar onde ele guarda os dados é o banco <b>SQLite</b>: um arquivo só, sem complicação.</p>
   <p>Instalar <span class="tag cole">Cole</span></p>
   <div class="bloco" data-bloco="instalar">
-    <div class="bloco-top"><span>Instalar o PHP e o SQLite</span><button class="copiar" type="button">Copiar</button></div>
+    <div class="bloco-top"><span>Instalar o PHP, o SQLite e a pasta do banco</span><button class="copiar" type="button">Copiar</button></div>
     <pre>sudo apt update
 sudo apt install -y php-fpm php-cli php-sqlite3 sqlite3
-php -v</pre>
+php -v
+sudo mkdir -p /var/www/dados
+sudo chown www-data:www-data /var/www/dados
+sudo chmod 770 /var/www/dados</pre>
   </div>
   <p>Ensinar o Nginx a passar as páginas .php para o PHP <span class="tag cole">Cole</span></p>
   <div class="bloco" data-bloco="nginx">
@@ -117,21 +111,6 @@ php -v</pre>
   </div>
   <div class="perg"><strong>Confira:</strong> o <code>nginx -t</code> tem que responder <code>syntax is ok</code> e <code>test is successful</code>. Se der erro, NÃO siga: veja “Se travar”.</div>
   <div class="perg"><strong>Na folha:</strong> o que faz a primeira linha do bloco? Para que serve a linha <code>index index.html index.php</code>?</div>
-  <p>A prova de que o PHP funciona <span class="tag digite">Digite</span></p>
-  <div class="cmds"><table>
-    <tr><td>echo '&lt;?php phpinfo();' &gt; /var/www/html/teste.php</td><td>Cria uma página de teste de uma linha</td></tr>
-    <tr><td>http://192.168.<i class="n1"></i>.10/teste.php</td><td>No navegador: a tabela roxa do PHP. Funcionou!</td></tr>
-    <tr><td>rm /var/www/html/teste.php</td><td>Apagar já. Essa página conta tudo sobre o servidor para qualquer um</td></tr>
-  </table></div>
-  <p>O cofre do banco de dados, fora da pasta do site <span class="tag cole">Cole</span></p>
-  <div class="bloco" data-bloco="dados">
-    <div class="bloco-top"><span>A pasta do banco</span><button class="copiar" type="button">Copiar</button></div>
-    <pre>sudo mkdir -p /var/www/dados
-sudo chown www-data:www-data /var/www/dados
-sudo chmod 770 /var/www/dados
-ls -ld /var/www/dados</pre>
-  </div>
-  <div class="perg"><strong>Na folha:</strong> quem é o <code>www-data</code>? (Dica: é o usuário com que o site roda.) Por que o banco fica em <code>/var/www/dados</code> e não em <code>/var/www/html</code>?</div>
 </section>
 
 <section class="passo">
@@ -140,7 +119,7 @@ ls -ld /var/www/dados</pre>
 
   <h3>comum.php: o que todas as páginas usam</h3>
   <div class="cmds"><table>
-    <tr><td>nano /var/www/html/comum.php</td><td>Abra, cole o código abaixo e ANTES de salvar troque as três primeiras linhas</td></tr>
+    <tr><td>sudo nano /var/www/html/comum.php</td><td>Abra, cole o código abaixo e ANTES de salvar troque as três primeiras linhas</td></tr>
   </table></div>
   <div class="bloco" data-bloco="comum">
     <div class="bloco-top"><span>comum.php</span><button class="copiar" type="button">Copiar</button></div>
@@ -150,7 +129,7 @@ ls -ld /var/www/dados</pre>
 
   <h3>cadastro.php: o formulário</h3>
   <div class="cmds"><table>
-    <tr><td>nano /var/www/html/cadastro.php</td><td>Cole e salve</td></tr>
+    <tr><td>sudo nano /var/www/html/cadastro.php</td><td>Cole e salve</td></tr>
   </table></div>
   <div class="bloco" data-bloco="cadastro">
     <div class="bloco-top"><span>cadastro.php</span><button class="copiar" type="button">Copiar</button></div>
@@ -159,7 +138,7 @@ ls -ld /var/www/dados</pre>
 
   <h3>painel.php: a lista dos cadastros</h3>
   <div class="cmds"><table>
-    <tr><td>nano /var/www/html/painel.php</td><td>Cole e salve</td></tr>
+    <tr><td>sudo nano /var/www/html/painel.php</td><td>Cole e salve</td></tr>
   </table></div>
   <div class="bloco" data-bloco="painel">
     <div class="bloco-top"><span>painel.php</span><button class="copiar" type="button">Copiar</button></div>
@@ -208,14 +187,15 @@ ls -ld /var/www/dados</pre>
   <div class="travou"><table>
     <tr><th>O que aparece</th><th>O que fazer</th></tr>
     <tr><td>Pediu senha no meio do bloco colado</td><td>Ctrl+C, digite sudo -v, a senha, e cole o bloco de novo</td></tr>
-    <tr><td>Permission denied no nano do site</td><td>Faltou o passo 1 (chown). Rode o bloco “Trocar o dono” de novo</td></tr>
+    <tr><td>Permission denied ao salvar no nano</td><td>Faltou o sudo na frente do nano. Saia sem salvar (Ctrl+X, N) e abra de novo com sudo</td></tr>
+    <tr><td>WinSCP: Permission denied ao enviar foto</td><td>A pasta img não é da equipe: sudo chown $USER:$USER /var/www/html/img</td></tr>
     <tr><td>WinSCP: Access denied</td><td>Usuário ou senha errados. É o mesmo usuário e senha do PuTTY</td></tr>
     <tr><td>A foto não aparece no site</td><td>O nome no código é igual ao do arquivo? Maiúscula conta. ls /var/www/html/img e compare letra por letra</td></tr>
     <tr><td>nginx -t: emerg ou failed</td><td>O bloco entrou cortado. Volte ao original: sudo cp ~/nginx-default.original /etc/nginx/sites-available/default e cole o bloco de novo, inteiro</td></tr>
     <tr><td>502 Bad Gateway</td><td>O PHP não está rodando ou o nome do “sock” é outro. ls /run/php/ e chame o professor</td></tr>
     <tr><td>O navegador baixa o arquivo .php em vez de abrir</td><td>O Nginx não recarregou: sudo systemctl reload nginx. Depois Ctrl+F5</td></tr>
     <tr><td>Página em branco ou erro 500</td><td>O PHP deu erro. sudo tail /var/log/nginx/error.log mostra a linha. Quase sempre é aspas ou vírgula faltando no comum.php</td></tr>
-    <tr><td>unable to open database file</td><td>A pasta /var/www/dados não existe ou não é do www-data. Rode o bloco “A pasta do banco” de novo</td></tr>
+    <tr><td>unable to open database file</td><td>A pasta /var/www/dados não existe ou não é do www-data. Rode de novo as três últimas linhas do bloco de instalação</td></tr>
     <tr><td>attempt to write a readonly database</td><td>sudo chown www-data:www-data /var/www/dados/site.db</td></tr>
     <tr><td>O Cadastre-se dá 404</td><td>O nome do arquivo é cadastro.php, tudo minúsculo e sem acento? ls /var/www/html</td></tr>
     <tr><td>O comando não para (tail -f, ping)</td><td>Ctrl+C</td></tr>

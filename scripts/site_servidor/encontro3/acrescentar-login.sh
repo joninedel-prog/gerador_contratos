@@ -1,5 +1,5 @@
 tail -3 /var/www/html/comum.php
-cat >> /var/www/html/comum.php <<'FIM'
+sudo tee -a /var/www/html/comum.php > /dev/null <<'FIM'
 
 // ===== Encontro 3: login =====
 session_start();

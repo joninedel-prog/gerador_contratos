@@ -196,11 +196,11 @@ details.dic .cmds { margin-top: 10px; }
 
 <section class="passo">
   <div class="passo-head"><span class="num">2</span><h2>O login do painel</h2></div>
-  <p>O <code>comum.php</code> ganha a parte do login no fim do arquivo. O <code>&gt;&gt;</code> <b>acrescenta</b> no fim, sem apagar o que a equipe personalizou <span class="tag cole">Cole</span></p>
+  <p>O <code>comum.php</code> ganha a parte do login no fim do arquivo. O <code>tee -a</code> <b>acrescenta</b> no fim, sem apagar o que a equipe personalizou <span class="tag cole">Cole</span></p>
   <div class="bloco" data-bloco="acrescentar">
     <div class="bloco-top"><span>Acrescentar o login no comum.php</span><button class="copiar" type="button">Copiar</button></div>
     <pre class="codigo">tail -3 /var/www/html/comum.php
-cat &gt;&gt; /var/www/html/comum.php &lt;&lt;'FIM'
+sudo tee -a /var/www/html/comum.php &gt; /dev/null &lt;&lt;'FIM'
 
 // ===== Encontro 3: login =====
 session_start();
@@ -222,12 +222,12 @@ FIM
 tail -20 /var/www/html/comum.php</pre>
   </div>
   <div class="aviso"><strong>Cole uma vez só.</strong> Se colar duas vezes, o site dá erro 500 (veja “Se travar”).</div>
-  <div class="perg"><strong>Na folha:</strong> qual é a diferença entre <code>&gt;</code> e <code>&gt;&gt;</code>? O que aconteceria com o nome do negócio se fosse um <code>&gt;</code> só?</div>
+  <div class="perg"><strong>Na folha:</strong> o <code>-a</code> do <code>tee</code> quer dizer “acrescentar”. O que aconteceria com o nome do negócio se faltasse o <code>-a</code>?</div>
 
   <p>As duas páginas novas. Para cada uma: <span class="tag digite">Digite</span> o nano, <span class="tag cole">Cole</span> o código, <b>Ctrl+O</b>, <b>Enter</b>, <b>Ctrl+X</b>.</p>
   <h3>login.php</h3>
   <div class="cmds"><table>
-    <tr><td>nano /var/www/html/login.php</td><td>Cole e salve</td></tr>
+    <tr><td>sudo nano /var/www/html/login.php</td><td>Cole e salve</td></tr>
   </table></div>
   <div class="bloco" data-bloco="login">
     <div class="bloco-top"><span>login.php</span><button class="copiar" type="button">Copiar</button></div>
@@ -279,7 +279,7 @@ topo('Entrar');
   </div>
   <h3>sair.php</h3>
   <div class="cmds"><table>
-    <tr><td>nano /var/www/html/sair.php</td><td>Cole e salve</td></tr>
+    <tr><td>sudo nano /var/www/html/sair.php</td><td>Cole e salve</td></tr>
   </table></div>
   <div class="bloco" data-bloco="sair">
     <div class="bloco-top"><span>sair.php</span><button class="copiar" type="button">Copiar</button></div>
@@ -304,9 +304,9 @@ exit;</pre>
   <p>O painel antigo vai embora e entra o novo, que exige login <span class="tag digite">Digite</span></p>
   <div class="cmds"><table>
     <tr><td>cd /var/www/html</td><td>A pasta do site</td></tr>
-    <tr><td>mv painel.php ~/painel-encontro2.php</td><td>Guarda o painel antigo em casa (mover tira da pasta do site)</td></tr>
-    <tr><td>nano painel.php</td><td>Cole o painel novo e salve</td></tr>
-    <tr><td>nano editar.php</td><td>Cole a página de editar e salve</td></tr>
+    <tr><td>sudo mv painel.php ~/painel-encontro2.php</td><td>Guarda o painel antigo em casa (mover tira da pasta do site)</td></tr>
+    <tr><td>sudo nano painel.php</td><td>Cole o painel novo e salve</td></tr>
+    <tr><td>sudo nano editar.php</td><td>Cole a página de editar e salve</td></tr>
     <tr><td>ls -l</td><td>Conferir os arquivos com o desenho do topo da página</td></tr>
   </table></div>
   <h3>painel.php</h3>
@@ -506,7 +506,7 @@ ls -lh ~/backup-servidor-equipe.tar.gz</pre>
     <tr><td>Pediu senha no meio do bloco colado</td><td>Ctrl+C, digite sudo -v, a senha, e cole o bloco de novo</td></tr>
     <tr><td>sqlite&gt; não responde depois do Enter</td><td>Faltou o ponto e vírgula. Digite ; e Enter</td></tr>
     <tr><td>no such table: usuarios</td><td>Ninguém abriu o login.php ainda. Abra no navegador e tente de novo</td></tr>
-    <tr><td>Erro 500 em todas as páginas PHP</td><td>sudo tail /var/log/nginx/error.log. Se aparecer “Cannot redeclare exigir_login”, o bloco foi colado duas vezes: nano comum.php e apague a segunda cópia</td></tr>
+    <tr><td>Erro 500 em todas as páginas PHP</td><td>sudo tail /var/log/nginx/error.log. Se aparecer “Cannot redeclare exigir_login”, o bloco foi colado duas vezes: sudo nano comum.php e apague a segunda cópia</td></tr>
     <tr><td>O login volta sempre para o login</td><td>Usuário ou senha errados (o usuário diferencia maiúscula). Ou o navegador bloqueia cookies: teste outro navegador</td></tr>
     <tr><td>Esqueci a senha do painel</td><td>Chame o professor: sudo sqlite3 /var/www/dados/site.db "DELETE FROM usuarios;" e o login volta ao primeiro acesso</td></tr>
     <tr><td>Outra equipe criou o administrador antes</td><td>O mesmo comando acima. Depois crie o seu na hora</td></tr>
@@ -525,7 +525,7 @@ ls -lh ~/backup-servidor-equipe.tar.gz</pre>
       <tr><td>pwd · ls -l · cd</td><td>Onde estou · o que tem aqui · entrar numa pasta (cd .. sobe, cd ~ volta para casa)</td></tr>
       <tr><td>mkdir · nano · cat</td><td>Criar pasta · editar arquivo (Ctrl+O salva, Ctrl+X sai) · mostrar arquivo</td></tr>
       <tr><td>cp · mv · rm</td><td>Copiar · mover ou renomear · apagar (sem lixeira)</td></tr>
-      <tr><td>comando &gt; arquivo · &gt;&gt; arquivo</td><td>Escreve a saída no arquivo apagando o que tinha · acrescenta no fim</td></tr>
+      <tr><td>sudo tee -a arquivo</td><td>Acrescenta texto no fim de um arquivo do sistema</td></tr>
       <tr><td>sudo · chown · chmod</td><td>Administrador · trocar o dono · trocar as permissões (r = 4, w = 2, x = 1)</td></tr>
       <tr><td>sudo apt update · upgrade · install</td><td>Lista de novidades · atualizar · instalar programa</td></tr>
       <tr><td>systemctl status · reload</td><td>O serviço está rodando? · recarregar a configuração</td></tr>
