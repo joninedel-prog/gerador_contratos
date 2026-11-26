@@ -1,0 +1,396 @@
+<title>Máquina Virtual · Encontro 4</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: uma coluna de bancada, na ordem da noite; cada passo diz se é DIGITAR ou COLAR */
+:root {
+  --bg: #f3f5f6;
+  --paper: #ffffff;
+  --ink: #15232b;
+  --muted: #56666f;
+  --line: #d5dde1;
+  --accent: #0b6e8a;
+  --accent-soft: #e2f0f4;
+  --type: #9a5a00;
+  --type-soft: #fbefd9;
+  --term-bg: #10181d;
+  --term-fg: #d7e6ea;
+  --warn: #b3261e;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1518; --paper: #162127; --ink: #e3ecef; --muted: #9aabb2; --line: #2b3a41;
+    --accent: #5cc3df; --accent-soft: #173540; --type: #f0b55a; --type-soft: #3a2c14;
+    --term-bg: #070b0d; --term-fg: #d7e6ea; --warn: #ff8a80; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1518; --paper: #162127; --ink: #e3ecef; --muted: #9aabb2; --line: #2b3a41;
+  --accent: #5cc3df; --accent-soft: #173540; --type: #f0b55a; --type-soft: #3a2c14;
+  --term-bg: #070b0d; --term-fg: #d7e6ea; --warn: #ff8a80; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 19px; line-height: 1.55;
+  margin: 0;
+}
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 28px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: 2.5rem; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.08rem; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-mono); font-size: .92em; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+header { display: flex; flex-direction: column; gap: 14px; }
+.bancada {
+  display: grid; grid-template-columns: auto 1fr; gap: 14px 22px; align-items: center;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+}
+.bancada label { font-weight: 600; }
+.bancada select {
+  font: inherit; font-weight: 600; padding: 6px 10px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+}
+.dados { display: flex; flex-wrap: wrap; gap: 8px 22px; min-width: 0; }
+.dados div { display: flex; flex-direction: column; }
+.dados span.k { font-size: .75rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+.dados span.v { font-family: var(--font-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.legenda { display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: .92rem; color: var(--muted); }
+.tag {
+  display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 4px; vertical-align: middle;
+}
+.tag.digite { background: var(--type-soft); color: var(--type); }
+.tag.cole { background: var(--accent-soft); color: var(--accent); }
+
+section.passo { display: flex; flex-direction: column; gap: 12px; padding-top: 22px; border-top: 1px solid var(--line); }
+.passo-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.num { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 1.6rem; }
+
+ol, ul { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 4px; }
+
+.cmds { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow-x: auto; }
+.cmds table { border-collapse: collapse; width: 100%; }
+.cmds td { padding: 7px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.cmds tr:first-child td { border-top: 0; }
+.cmds td:first-child { font-family: var(--font-mono); font-weight: 600; white-space: nowrap; color: var(--type); }
+.cmds td:last-child { color: var(--muted); font-size: .94rem; }
+
+.bloco { border-radius: 8px; background: var(--term-bg); color: var(--term-fg); overflow: hidden; }
+.bloco-top {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 8px 10px 8px 14px; border-bottom: 1px solid #ffffff1a; font-size: .85rem; color: #9fb4bb;
+}
+.bloco pre {
+  margin: 0; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: .9rem; line-height: 1.6;
+  white-space: pre;
+}
+.bloco pre.texto { white-space: pre-wrap; font-family: var(--font-body); font-size: .95rem; }
+button.copiar {
+  font: inherit; font-weight: 600; font-size: .85rem; cursor: pointer;
+  padding: 6px 14px; border-radius: 6px; border: 0; background: var(--accent); color: #fff;
+}
+:root:not([data-theme="light"]) button.copiar { color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.copiar { color: #06222b; } }
+:root[data-theme="dark"] button.copiar { color: #06222b; }
+button.copiar.ok { background: var(--type); }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--type); outline-offset: 2px; }
+
+.perg { background: var(--type-soft); border-radius: 8px; padding: 10px 14px; font-size: .95rem; }
+.perg strong { color: var(--type); }
+.aviso { border-left: 4px solid var(--warn); padding: 6px 0 6px 12px; font-size: .95rem; }
+.aviso strong { color: var(--warn); }
+
+.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo label { font-weight: 600; font-size: .95rem; }
+.campo input {
+  font: inherit; padding: 9px 12px; border-radius: 6px; border: 1px solid var(--line);
+  background: var(--paper); color: var(--ink); width: 100%;
+}
+.teclas { display: flex; flex-wrap: wrap; gap: 8px; }
+.teclas span { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: .92rem; }
+.teclas b { font-family: var(--font-mono); }
+
+.travou { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow-x: auto; }
+.travou table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+.travou th, .travou td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.travou th { border-top: 0; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.travou td:first-child { font-family: var(--font-mono); font-size: .86rem; color: var(--warn); min-width: 12em; }
+
+footer { color: var(--muted); font-size: .85rem; }
+.bloco pre.codigo { max-height: 70vh; overflow: auto; }
+details.dic { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; }
+details.dic summary { cursor: pointer; font-weight: 600; }
+details.dic .cmds { margin-top: 10px; }
+.arquivos { display: flex; flex-wrap: wrap; gap: 8px; }
+.arquivos span { font-family: var(--font-mono); font-size: .9rem; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; }
+.arquivos span.novo { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.linha-log { white-space: pre-wrap !important; word-break: break-all; }
+.partes { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-size: .95rem; }
+.partes code { color: var(--type); font-weight: 600; }
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  h1 { font-size: 1.7rem; }
+  .partes { grid-template-columns: 1fr; }
+  .bancada { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Servidores com Linux · Encontro 4 · CEJA Itapiranga</span>
+  <h1>Um servidor dentro do PC: a máquina virtual</h1>
+  <p>Uma máquina virtual (VM) é um computador inteiro que roda dentro de outro, como um programa. O PC com Windows é o <b>anfitrião</b>; o Ubuntu dentro da VM é o <b>convidado</b>. Hoje cada equipe instala o servidor do zero numa VM e traz o site do Encontro 3 de volta pelo backup. É assim que dá para ter um servidor em casa sem comprar outra máquina.</p>
+  <div class="bancada">
+    <label for="equipe">Equipe</label>
+    <div class="dados">
+      <select id="equipe" aria-label="Número da equipe">
+        <option>1</option><option>2</option><option>3</option><option>4</option>
+        <option>5</option><option>6</option><option>7</option><option>8</option>
+      </select>
+      <div><span class="k">Nome da VM</span><span class="v">servidor-vm-equipe<i class="n"></i></span></div>
+      <div><span class="k">Usuário</span><span class="v">equipe<i class="n"></i></span></div>
+      <div><span class="k">Rede da equipe</span><span class="v">192.168.<i class="n1"></i>.x</span></div>
+    </div>
+  </div>
+  <div class="legenda">
+    <span><span class="tag digite">Digite</span> você digita, letra por letra. É assim que se aprende.</span>
+    <span><span class="tag cole">Cole</span> copie aqui e cole no PuTTY (botão direito). Leia antes de dar Enter.</span>
+  </div>
+</header>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">1</span><h2>O PC aguenta uma VM?</h2></div>
+  <p>A VM usa um pedaço da memória, do processador e do disco do PC. Antes de tudo, confira no Windows:</p>
+  <ol>
+    <li><b>Ctrl+Shift+Esc</b> abre o Gerenciador de Tarefas → aba <b>Desempenho</b>.</li>
+    <li>Clique em <b>CPU</b>: embaixo tem que estar <b>Virtualização: Habilitado</b>. Quantos núcleos?</li>
+    <li>Clique em <b>Memória</b>: quanto tem no total?</li>
+    <li>No Explorador (Windows + E), <b>Este Computador</b>: quanto espaço livre no disco C:?</li>
+  </ol>
+  <div class="cmds"><table>
+    <tr><td>Memória do PC</td><td>8 GB ou mais: tranquilo. 4 GB: funciona, mas o Windows fica lento</td></tr>
+    <tr><td>Disco livre</td><td>30 GB ou mais</td></tr>
+    <tr><td>Virtualização</td><td>Habilitado. Se estiver Desabilitado, liga na BIOS (veja “Se travar”)</td></tr>
+  </table></div>
+  <div class="perg"><strong>Na folha:</strong> anote a memória, os núcleos e o disco livre do PC. Quanto disso vai sobrar para o Windows depois que a VM pegar a parte dela?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">2</span><h2>Instalar o VirtualBox</h2></div>
+  <ol>
+    <li>No navegador: <b>virtualbox.org</b> → <b>Downloads</b> → <b>Windows hosts</b>.</li>
+    <li>Abra o instalador e vá em <b>Next</b>. Quando avisar que a rede vai cair por um instante, <b>Yes</b>: ele instala uma placa de rede virtual.</li>
+    <li>Se pedir o <b>Microsoft Visual C++</b>, instale primeiro (veja “Se travar”) e rode o instalador de novo.</li>
+    <li>Pegue com o professor o arquivo do Ubuntu: <code>ubuntu-24.04…-live-server-amd64.iso</code>. É o mesmo do pendrive do Encontro 1, só que em arquivo.</li>
+  </ol>
+  <div class="perg"><strong>Na folha:</strong> o que é o arquivo .iso? Qual a diferença entre gravar o .iso no pendrive (Encontro 1) e entregar o .iso para a VM?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">3</span><h2>Criar a máquina virtual</h2></div>
+  <p>No VirtualBox, botão <b>Novo</b>:</p>
+  <div class="cmds"><table>
+    <tr><td>Nome</td><td>servidor-vm-equipe<i class="n"></i></td></tr>
+    <tr><td>Imagem ISO</td><td>o arquivo do Ubuntu que o professor passou</td></tr>
+    <tr><td>Tipo / Versão</td><td>Linux / Ubuntu (64-bit). Ele costuma acertar sozinho pela ISO</td></tr>
+    <tr><td>Pular instalação desassistida</td><td><b>MARQUE</b> (Skip Unattended Installation). Quem instala hoje é a equipe, não o VirtualBox</td></tr>
+    <tr><td>Memória</td><td>2048 MB</td></tr>
+    <tr><td>Processadores</td><td>2</td></tr>
+    <tr><td>Disco rígido</td><td>Criar um disco virtual agora · 25 GB. Deixe sem pré-alocar: o arquivo cresce aos poucos</td></tr>
+  </table></div>
+  <p>Clique em <b>Finalizar</b>. A VM aparece na lista, desligada.</p>
+  <h3>A rede da VM: modo Bridge</h3>
+  <p>Selecione a VM → <b>Configurações</b> → <b>Rede</b> → Adaptador 1:</p>
+  <div class="cmds"><table>
+    <tr><td>Conectado a</td><td><b>Placa em modo Bridge</b> (Bridged Adapter)</td></tr>
+    <tr><td>Nome</td><td>a placa de rede do PC que está ligada no roteador da equipe (a Ethernet com cabo)</td></tr>
+  </table></div>
+  <div class="partes">
+    <code>NAT</code><span>A VM sai para a internet escondida atrás do PC, mas ninguém da rede enxerga a VM. É o padrão</span>
+    <code>Bridge</code><span>A VM vira mais um aparelho na rede da equipe, com endereço próprio dado pelo roteador. O celular consegue abrir o site dela</span>
+  </div>
+  <div class="perg"><strong>Na folha:</strong> desenhe a rede da equipe com o roteador, o servidor físico, o PC e a VM dentro do PC. Quantos endereços o roteador vai entregar?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">4</span><h2>Instalar o Ubuntu do zero</h2></div>
+  <p>Selecione a VM → <b>Iniciar</b>. Abre uma janela que é a “tela” da VM. É a mesma instalação do Encontro 1, agora sem a folha: a equipe faz de memória e confere aqui.</p>
+  <div class="teclas">
+    <span>Clicou dentro e o mouse sumiu? Solta com o <b>Ctrl da direita</b> (a tecla Host)</span>
+    <span>Na instalação tudo é <b>teclado</b>: setas, Tab, Espaço marca, Enter confirma</span>
+  </div>
+  <div class="cmds"><table>
+    <tr><td>Idioma</td><td>o mesmo do Encontro 1</td></tr>
+    <tr><td>Teclado</td><td>Portuguese (Brazil). Teste o ç e o acento no campo de teste</td></tr>
+    <tr><td>Tipo de instalação</td><td>Ubuntu Server</td></tr>
+    <tr><td>Rede</td><td>Tem que aparecer um endereço <code>192.168.<i class="n1"></i>.algo</code>. Anote! Se não aparecer, o Bridge está na placa errada</td></tr>
+    <tr><td>Proxy / Mirror</td><td>deixar como está, Done</td></tr>
+    <tr><td>Disco</td><td>Use an entire disk. Ele mostra um disco de 25 GB: é o disco <b>virtual</b>. O Windows não é apagado</td></tr>
+    <tr><td>Perfil</td><td>Seu nome · servidor: <code>servidor-vm-equipe<i class="n"></i></code> · usuário: <code>equipe<i class="n"></i></code> · senha forte, anotada</td></tr>
+    <tr><td>Ubuntu Pro</td><td>Skip for now</td></tr>
+    <tr><td>SSH</td><td><b>Marque Install OpenSSH server</b>. Sem isso, nada de PuTTY</td></tr>
+    <tr><td>Snaps</td><td>nenhum, Done</td></tr>
+    <tr><td>Fim</td><td>Espere o <i>Reboot Now</i>. Se pedir para remover a mídia, só Enter</td></tr>
+  </table></div>
+  <div class="perg"><strong>Na folha:</strong> a instalação na VM foi mais rápida ou mais lenta que no servidor do Encontro 1? Por quê?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">5</span><h2>Raio-x da VM</h2><span class="tag digite">Digite</span></div>
+  <p>Entre na janela da VM com o usuário e a senha, e compare com o servidor de verdade:</p>
+  <div class="cmds"><table>
+    <tr><td>hostname</td><td>servidor-vm-equipe<i class="n"></i></td></tr>
+    <tr><td>ip a</td><td>O endereço que o roteador deu para a VM (procure o inet 192.168.<i class="n1"></i>…)</td></tr>
+    <tr><td>free -h</td><td>A VM acha que o computador tem 2 GB. Foi o que demos a ela</td></tr>
+    <tr><td>df -h /</td><td>E acha que o disco tem uns 25 GB</td></tr>
+    <tr><td>nproc</td><td>Quantos processadores ela enxerga</td></tr>
+    <tr><td>ping -c 4 192.168.<i class="n1"></i>.10</td><td>A VM fala com o servidor físico da equipe? Os dois estão na mesma rede</td></tr>
+    <tr><td>ping -c 4 google.com</td><td>E com a internet?</td></tr>
+  </table></div>
+  <div class="perg"><strong>Na folha:</strong> tabela com duas colunas, servidor físico e VM: nome, endereço, memória, disco e processadores.</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">6</span><h2>Entrar na VM pelo PuTTY</h2></div>
+  <ol>
+    <li>Abra o <b>PuTTY</b>. Host Name: o endereço da VM que você anotou. Porta 22.</li>
+    <li>Saved Sessions: <code>vm-equipe<i class="n"></i></code> → <b>Save</b> → <b>Open</b> → Accept a impressão digital nova.</li>
+    <li>Agora a equipe tem <b>dois servidores</b> na mesma rede. Olhe o nome no começo da linha antes de cada comando!</li>
+  </ol>
+  <div class="cmds"><table>
+    <tr><td>wall Oi da VM</td><td><span class="tag digite">Digite</span> O recado aparece na janela da VM</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">7</span><h2>O backup traz o site de volta</h2></div>
+  <p>No Encontro 3, a equipe guardou o <code>backup-servidor-equipe.tar.gz</code> no PC ou no pendrive. É hora de ver se o backup funciona de verdade: o site inteiro numa máquina nova.</p>
+  <ol>
+    <li>No <b>WinSCP</b>, <b>Nova sessão</b> → SFTP, host: o endereço da VM, usuário <code>equipe<i class="n"></i></code>.</li>
+    <li>Arraste o backup do PC (esquerda) para a pasta de casa da VM (direita).</li>
+  </ol>
+  <p>Restaurar, no PuTTY da VM <span class="tag cole">Cole</span></p>
+  <div class="aviso"><strong>Antes:</strong> digite <code>sudo -v</code> e a senha. E confira o nome no começo da linha: tem que ser <code>servidor-vm-equipe<i class="n"></i></code>.</div>
+  <div class="bloco" data-bloco="restaurar">
+    <div class="bloco-top"><span>Instalar os programas e restaurar o backup</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>sudo apt update
+sudo apt install -y nginx php-fpm php-cli php-sqlite3 sqlite3
+cd /
+sudo tar -xzvf ~/backup-servidor-equipe.tar.gz
+sudo chown -R www-data:www-data /var/www/dados
+sudo nginx -t
+sudo systemctl reload nginx
+cd ~</pre>
+  </div>
+  <p>O <code>nginx -t</code> tem que dar <code>test is successful</code>. No navegador do PC, abra o endereço da VM:</p>
+  <ul>
+    <li>O site da equipe aparece, com as páginas, o menu e as fotos?</li>
+    <li>Entre no <code>/painel.php</code> com o usuário e a senha do Encontro 3. Os cadastros das outras equipes estão lá?</li>
+  </ul>
+  <div class="perg"><strong>Na folha:</strong> o que a linha <code>cd /</code> tem a ver com o lugar onde o tar coloca os arquivos? Por que os programas (Nginx, PHP) tiveram que ser instalados de novo, mas o site e os cadastros não?</div>
+  <details class="dic">
+    <summary>A equipe não tem o backup? Faça só isto</summary>
+    <div class="bloco" style="margin-top:10px">
+      <div class="bloco-top"><span>Um site simples na VM</span><button class="copiar" type="button">Copiar</button></div>
+      <pre>sudo apt update
+sudo apt install -y nginx
+echo '&lt;h1&gt;Servidor VM da equipe no ar&lt;/h1&gt;' | sudo tee /var/www/html/index.html</pre>
+    </div>
+  </details>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">8</span><h2>O instantâneo: a VM volta no tempo</h2></div>
+  <p>A maior vantagem da VM: tirar uma “foto” dela inteira e voltar para essa foto quando quiser. Na tela do VirtualBox:</p>
+  <ol>
+    <li>Selecione a VM → menu ao lado do nome → <b>Instantâneos</b> → <b>Tirar</b>. Nome: <code>site restaurado</code>.</li>
+    <li>Agora estrague de propósito, no PuTTY da VM <span class="tag digite">Digite</span>: <code>sudo rm /var/www/html/index.html</code>. Ctrl+F5 no navegador: o site sumiu.</li>
+    <li>Desligue a VM: <code>sudo poweroff</code>.</li>
+    <li>Em <b>Instantâneos</b>, selecione <code>site restaurado</code> → <b>Restaurar</b>. Se perguntar sobre guardar o estado atual, desmarque.</li>
+    <li><b>Iniciar</b> de novo. Ctrl+F5: o site voltou.</li>
+  </ol>
+  <div class="perg"><strong>Na folha:</strong> qual a diferença entre o instantâneo da VM e o backup do Encontro 3? Quando o técnico usa cada um? (Dica: o instantâneo mora no mesmo PC.)</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">9</span><h2>Para fazer em casa</h2></div>
+  <p>Quem tem computador em casa pode repetir tudo, que é o melhor treino. Precisa de 8 GB de memória (4 GB no limite), 30 GB livres e a virtualização habilitada.</p>
+  <ul>
+    <li>Leve no pendrive o arquivo .iso do Ubuntu e o seu backup.</li>
+    <li>Em casa, a VM pega o endereço do roteador de casa (<code>ip a</code> mostra qual). O celular, no mesmo Wi-Fi, abre o site.</li>
+    <li>Se o PC de casa estiver no Wi-Fi, no Bridge escolha a placa Wi-Fi.</li>
+    <li>Ao terminar, sempre <code>sudo poweroff</code>, nada de fechar a janela no X.</li>
+  </ul>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">!</span><h2>Se travar</h2></div>
+  <div class="travou"><table>
+    <tr><th>O que aparece</th><th>O que fazer</th></tr>
+    <tr><td>Virtualização: Desabilitado / VT-x is disabled / AMD-V</td><td>Ligar na BIOS: reiniciar o PC apertando F2, F10 ou Del. Procure Virtualization, Intel VT-x ou SVM Mode → Enabled → salvar (F10)</td></tr>
+    <tr><td>Só aparece Ubuntu (32-bit), sem 64-bit</td><td>A mesma coisa: a virtualização está desligada na BIOS</td></tr>
+    <tr><td>O instalador pede Microsoft Visual C++</td><td>Baixe “Visual C++ Redistributable x64” no site da Microsoft, instale e rode o VirtualBox de novo</td></tr>
+    <tr><td>VM muito lenta ou com tartaruga verde no canto</td><td>O Hyper-V do Windows está ligado. Chame o professor</td></tr>
+    <tr><td>A VM instalou sozinha, sem perguntar nada</td><td>Faltou marcar “Pular instalação desassistida”. Apague a VM (Remover → Excluir todos os arquivos) e crie de novo</td></tr>
+    <tr><td>Na instalação, a rede não pega endereço</td><td>O Bridge está na placa errada. Desligue a VM, Configurações → Rede → Nome: a placa com cabo</td></tr>
+    <tr><td>O mouse ficou preso na VM</td><td>Ctrl da direita</td></tr>
+    <tr><td>Depois de instalar, liga de novo o instalador</td><td>Desligue a VM, Configurações → Armazenamento → clique no disco do Ubuntu → Remover disco da unidade</td></tr>
+    <tr><td>tar: Cannot open: No such file</td><td>O backup não está na casa da VM. ls ~ e confira o nome do arquivo</td></tr>
+    <tr><td>O site da VM abre, mas a foto ou o painel não</td><td>sudo tail /var/log/nginx/error.log. Confira se o bloco de restaurar rodou inteiro</td></tr>
+    <tr><td>PuTTY: WARNING POTENTIAL SECURITY BREACH</td><td>Aquele endereço era de outra máquina antes. Se você sabe que é a VM nova, Accept</td></tr>
+  </table></div>
+</section>
+
+<footer>Curso FIC Montador e Reparador de Computadores · CEJA Itapiranga – SC</footer>
+</div>
+
+<script>
+(function () {
+  var sel = document.getElementById("equipe");
+  function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function gravar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function aplicar() {
+    var n = sel.value;
+    document.querySelectorAll("i.n").forEach(function (el) { el.textContent = n; });
+    document.querySelectorAll("i.n1").forEach(function (el) { el.textContent = "1" + n; });
+  }
+  var salvo = ler("equipe");
+  if (salvo && /^[1-8]$/.test(salvo)) sel.value = salvo;
+  aplicar();
+  sel.addEventListener("change", function () { gravar("equipe", sel.value); aplicar(); });
+
+  document.querySelectorAll("button.copiar").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.closest(".bloco").querySelector("pre");
+      var txt = pre.textContent;
+      function feito() {
+        btn.textContent = "Copiado";
+        btn.classList.add("ok");
+        setTimeout(function () { btn.textContent = "Copiar"; btn.classList.remove("ok"); }, 1800);
+      }
+      function selecionar() {
+        var r = document.createRange(); r.selectNodeContents(pre);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = "Ctrl+C para copiar";
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(feito, selecionar);
+      } else { selecionar(); }
+    });
+  });
+})();
+</script>

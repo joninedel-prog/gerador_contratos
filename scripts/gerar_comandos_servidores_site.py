@@ -1,4 +1,4 @@
-"""Gera as páginas de comandos dos Encontros 2 e 3 (site com páginas, cadastro, login).
+"""Gera as páginas de comandos dos Encontros 2 a 4 (site, cadastro, login, VM).
 
 Junta scripts/site_servidor/estilo.html com o corpo de cada encontro e coloca,
 escapado, o código de cada arquivo em {{code:caminho}}.
@@ -15,6 +15,8 @@ PAGINAS = [
      "Comandos - Servidores 2 - Paginas, fotos e cadastro.html"),
     ("pagina_encontro3.html", "Entrega do Servidor · Encontro 3",
      "Comandos - Servidores 3 - Login, edicao e entrega.html"),
+    ("pagina_encontro4.html", "Máquina Virtual · Encontro 4",
+     "Comandos - Servidores 4 - Maquina virtual no VirtualBox.html"),
 ]
 
 estilo = (BASE / "estilo.html").read_text(encoding="utf-8")
