@@ -2,7 +2,7 @@
 <header>
   <span class="eyebrow">Servidores com Linux · Encontro 4 · CEJA Itapiranga</span>
   <h1>Um servidor dentro do PC: a máquina virtual</h1>
-  <p>Uma máquina virtual (VM) é um computador inteiro que roda dentro de outro, como um programa. O PC com Windows é o <b>anfitrião</b>; o Ubuntu dentro da VM é o <b>convidado</b>. Hoje cada equipe instala o servidor do zero numa VM e traz o site do Encontro 3 de volta pelo backup. É assim que dá para ter um servidor em casa sem comprar outra máquina.</p>
+  <p>Uma máquina virtual (VM) é um computador inteiro que roda dentro de outro, como um programa. O PC com Windows é o <b>anfitrião</b>; o Ubuntu dentro da VM é o <b>convidado</b>. Hoje cada equipe instala o servidor do zero numa VM, faz o backup do servidor físico e leva o site inteiro para a VM. É assim que dá para ter um servidor em casa sem comprar outra máquina.</p>
   <div class="bancada">
     <label for="equipe">Equipe</label>
     <div class="dados">
@@ -126,11 +126,34 @@
 </section>
 
 <section class="passo">
-  <div class="passo-head"><span class="num">7</span><h2>O backup traz o site de volta</h2></div>
-  <p>No Encontro 3, a equipe guardou o <code>backup-servidor-equipe.tar.gz</code> no PC ou no pendrive. É hora de ver se o backup funciona de verdade: o site inteiro numa máquina nova.</p>
+  <div class="passo-head"><span class="num">7</span><h2>O backup do servidor físico</h2></div>
+  <p>Antes de levar o site para a VM, a equipe faz um backup novo no servidor de verdade, com tudo o que tem nele hoje: as páginas, as fotos, o banco com os cadastros e a configuração do site.</p>
   <ol>
-    <li>No <b>WinSCP</b>, <b>Nova sessão</b> → SFTP, host: o endereço da VM, usuário <code>equipe<i class="n"></i></code>.</li>
-    <li>Arraste o backup do PC (esquerda) para a pasta de casa da VM (direita).</li>
+    <li>No <b>PuTTY</b>, abra a sessão do servidor físico: <code>servidor-equipe<i class="n"></i></code> (<code>192.168.<i class="n1"></i>.10</code>).</li>
+    <li>Confira o nome no começo da linha: tem que ser <code>equipe<i class="n"></i>@servidor-equipe<i class="n"></i></code>, sem o “vm”.</li>
+    <li>Digite <code>sudo -v</code> e a senha.</li>
+  </ol>
+  <p>Fazer o backup <span class="tag cole">Cole</span></p>
+  <div class="bloco" data-bloco="backup">
+    <div class="bloco-top"><span>Fazer o backup no servidor físico</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>{{code:encontro3/backup.sh}}</pre>
+  </div>
+  <p>O aviso <code>Removing leading '/'</code> é normal. A última linha mostra o tamanho do arquivo.</p>
+  <h3>Baixar o backup para o PC</h3>
+  <ol>
+    <li>No <b>WinSCP</b>, abra a sessão do servidor físico <code>servidor-equipe<i class="n"></i></code>.</li>
+    <li>No lado direito, vá para a pasta de casa: <code>/home/equipe<i class="n"></i></code>.</li>
+    <li>Arraste o <code>backup-servidor-equipe.tar.gz</code> para o PC (lado esquerdo), na Área de Trabalho. Guarde também uma cópia no pendrive.</li>
+  </ol>
+  <div class="perg"><strong>Na folha:</strong> o que vai dentro do backup (as duas pastas e o arquivo da linha do tar)? Qual o tamanho? Por que o banco <code>site.db</code> precisa ir junto?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">8</span><h2>O backup traz o site para a VM</h2></div>
+  <p>Agora o teste de verdade: o site inteiro numa máquina nova, a partir só do backup.</p>
+  <ol>
+    <li>No <b>WinSCP</b>, <b>Nova sessão</b> → SFTP, host: o endereço da VM, usuário <code>equipe<i class="n"></i></code>. Salve como <code>vm-equipe<i class="n"></i></code>.</li>
+    <li>Arraste o backup da Área de Trabalho (esquerda) para a pasta de casa da VM (direita).</li>
   </ol>
   <p>Restaurar, no PuTTY da VM <span class="tag cole">Cole</span></p>
   <div class="aviso"><strong>Antes:</strong> digite <code>sudo -v</code> e a senha. E confira o nome no começo da linha: tem que ser <code>servidor-vm-equipe<i class="n"></i></code>.</div>
@@ -141,11 +164,11 @@
   <p>O <code>nginx -t</code> tem que dar <code>test is successful</code>. No navegador do PC, abra o endereço da VM:</p>
   <ul>
     <li>O site da equipe aparece, com as páginas, o menu e as fotos?</li>
-    <li>Entre no <code>/painel.php</code> com o usuário e a senha do Encontro 3. Os cadastros das outras equipes estão lá?</li>
+    <li>Entre no <code>/painel.php</code> com o usuário e a senha do painel. Os cadastros das outras equipes estão lá?</li>
   </ul>
   <div class="perg"><strong>Na folha:</strong> o que a linha <code>cd /</code> tem a ver com o lugar onde o tar coloca os arquivos? Por que os programas (Nginx, PHP) tiveram que ser instalados de novo, mas o site e os cadastros não?</div>
   <details class="dic">
-    <summary>A equipe não tem o backup? Faça só isto</summary>
+    <summary>O servidor físico da equipe não liga? Faça só isto</summary>
     <div class="bloco" style="margin-top:10px">
       <div class="bloco-top"><span>Um site simples na VM</span><button class="copiar" type="button">Copiar</button></div>
       <pre>{{code:encontro4/sem-backup.sh}}</pre>
@@ -154,7 +177,7 @@
 </section>
 
 <section class="passo">
-  <div class="passo-head"><span class="num">8</span><h2>O instantâneo: a VM volta no tempo</h2></div>
+  <div class="passo-head"><span class="num">9</span><h2>O instantâneo: a VM volta no tempo</h2></div>
   <p>A maior vantagem da VM: tirar uma “foto” dela inteira e voltar para essa foto quando quiser. Na tela do VirtualBox:</p>
   <ol>
     <li>Selecione a VM → menu ao lado do nome → <b>Instantâneos</b> → <b>Tirar</b>. Nome: <code>site restaurado</code>.</li>
@@ -167,10 +190,10 @@
 </section>
 
 <section class="passo">
-  <div class="passo-head"><span class="num">9</span><h2>Para fazer em casa</h2></div>
+  <div class="passo-head"><span class="num">10</span><h2>Para fazer em casa</h2></div>
   <p>Quem tem computador em casa pode repetir tudo, que é o melhor treino. Precisa de 8 GB de memória (4 GB no limite), 30 GB livres e a virtualização habilitada.</p>
   <ul>
-    <li>Leve no pendrive o arquivo .iso do Ubuntu e o seu backup.</li>
+    <li>Leve no pendrive o arquivo .iso do Ubuntu e o backup do passo 7.</li>
     <li>Em casa, a VM pega o endereço do roteador de casa (<code>ip a</code> mostra qual). O celular, no mesmo Wi-Fi, abre o site.</li>
     <li>Se o PC de casa estiver no Wi-Fi, no Bridge escolha a placa Wi-Fi.</li>
     <li>Ao terminar, sempre <code>sudo poweroff</code>, nada de fechar a janela no X.</li>
@@ -190,6 +213,8 @@
     <tr><td>O mouse ficou preso na VM</td><td>Ctrl da direita</td></tr>
     <tr><td>Depois de instalar, liga de novo o instalador</td><td>Desligue a VM, Configurações → Armazenamento → clique no disco do Ubuntu → Remover disco da unidade</td></tr>
     <tr><td>tar: Cannot open: No such file</td><td>O backup não está na casa da VM. ls ~ e confira o nome do arquivo</td></tr>
+    <tr><td>WinSCP não deixa baixar o backup do servidor físico</td><td>Faltou a linha do chown no bloco do backup. Rode só ela no servidor físico</td></tr>
+    <tr><td>O backup foi feito na VM, não no servidor físico</td><td>O nome no começo da linha tinha “vm”. Saia (exit), abra a sessão servidor-equipe<i class="n"></i> e cole o bloco de novo</td></tr>
     <tr><td>O site da VM abre, mas a foto ou o painel não</td><td>sudo tail /var/log/nginx/error.log. Confira se o bloco de restaurar rodou inteiro</td></tr>
     <tr><td>PuTTY: WARNING POTENTIAL SECURITY BREACH</td><td>Aquele endereço era de outra máquina antes. Se você sabe que é a VM nova, Accept</td></tr>
   </table></div>
