@@ -1,0 +1,602 @@
+<title>Site da Equipe · Encontro 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: uma coluna de bancada, na ordem da noite; cada passo diz se é DIGITAR ou COLAR */
+:root {
+  --bg: #f3f5f6;
+  --paper: #ffffff;
+  --ink: #15232b;
+  --muted: #56666f;
+  --line: #d5dde1;
+  --accent: #0b6e8a;
+  --accent-soft: #e2f0f4;
+  --type: #9a5a00;
+  --type-soft: #fbefd9;
+  --term-bg: #10181d;
+  --term-fg: #d7e6ea;
+  --warn: #b3261e;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1518; --paper: #162127; --ink: #e3ecef; --muted: #9aabb2; --line: #2b3a41;
+    --accent: #5cc3df; --accent-soft: #173540; --type: #f0b55a; --type-soft: #3a2c14;
+    --term-bg: #070b0d; --term-fg: #d7e6ea; --warn: #ff8a80; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1518; --paper: #162127; --ink: #e3ecef; --muted: #9aabb2; --line: #2b3a41;
+  --accent: #5cc3df; --accent-soft: #173540; --type: #f0b55a; --type-soft: #3a2c14;
+  --term-bg: #070b0d; --term-fg: #d7e6ea; --warn: #ff8a80; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 19px; line-height: 1.55;
+  margin: 0;
+}
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 28px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: 2.5rem; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.08rem; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-mono); font-size: .92em; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+header { display: flex; flex-direction: column; gap: 14px; }
+.bancada {
+  display: grid; grid-template-columns: auto 1fr; gap: 14px 22px; align-items: center;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+}
+.bancada label { font-weight: 600; }
+.bancada select {
+  font: inherit; font-weight: 600; padding: 6px 10px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+}
+.dados { display: flex; flex-wrap: wrap; gap: 8px 22px; min-width: 0; }
+.dados div { display: flex; flex-direction: column; }
+.dados span.k { font-size: .75rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+.dados span.v { font-family: var(--font-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.legenda { display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: .92rem; color: var(--muted); }
+.tag {
+  display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 4px; vertical-align: middle;
+}
+.tag.digite { background: var(--type-soft); color: var(--type); }
+.tag.cole { background: var(--accent-soft); color: var(--accent); }
+
+section.passo { display: flex; flex-direction: column; gap: 12px; padding-top: 22px; border-top: 1px solid var(--line); }
+.passo-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.num { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 1.6rem; }
+
+ol, ul { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 4px; }
+
+.cmds { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow-x: auto; }
+.cmds table { border-collapse: collapse; width: 100%; }
+.cmds td { padding: 7px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.cmds tr:first-child td { border-top: 0; }
+.cmds td:first-child { font-family: var(--font-mono); font-weight: 600; white-space: nowrap; color: var(--type); }
+.cmds td:last-child { color: var(--muted); font-size: .94rem; }
+
+.bloco { border-radius: 8px; background: var(--term-bg); color: var(--term-fg); overflow: hidden; }
+.bloco-top {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 8px 10px 8px 14px; border-bottom: 1px solid #ffffff1a; font-size: .85rem; color: #9fb4bb;
+}
+.bloco pre {
+  margin: 0; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: .9rem; line-height: 1.6;
+  white-space: pre;
+}
+.bloco pre.texto { white-space: pre-wrap; font-family: var(--font-body); font-size: .95rem; }
+button.copiar {
+  font: inherit; font-weight: 600; font-size: .85rem; cursor: pointer;
+  padding: 6px 14px; border-radius: 6px; border: 0; background: var(--accent); color: #fff;
+}
+:root:not([data-theme="light"]) button.copiar { color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.copiar { color: #06222b; } }
+:root[data-theme="dark"] button.copiar { color: #06222b; }
+button.copiar.ok { background: var(--type); }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--type); outline-offset: 2px; }
+
+.perg { background: var(--type-soft); border-radius: 8px; padding: 10px 14px; font-size: .95rem; }
+.perg strong { color: var(--type); }
+.aviso { border-left: 4px solid var(--warn); padding: 6px 0 6px 12px; font-size: .95rem; }
+.aviso strong { color: var(--warn); }
+
+.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo label { font-weight: 600; font-size: .95rem; }
+.campo input {
+  font: inherit; padding: 9px 12px; border-radius: 6px; border: 1px solid var(--line);
+  background: var(--paper); color: var(--ink); width: 100%;
+}
+.teclas { display: flex; flex-wrap: wrap; gap: 8px; }
+.teclas span { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: .92rem; }
+.teclas b { font-family: var(--font-mono); }
+
+.travou { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow-x: auto; }
+.travou table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+.travou th, .travou td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.travou th { border-top: 0; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.travou td:first-child { font-family: var(--font-mono); font-size: .86rem; color: var(--warn); min-width: 12em; }
+
+footer { color: var(--muted); font-size: .85rem; }
+.bloco pre.codigo { max-height: 70vh; overflow: auto; }
+details.dic { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; }
+details.dic summary { cursor: pointer; font-weight: 600; }
+details.dic .cmds { margin-top: 10px; }
+.arquivos { display: flex; flex-wrap: wrap; gap: 8px; }
+.arquivos span { font-family: var(--font-mono); font-size: .9rem; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; }
+.arquivos span.novo { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.linha-log { white-space: pre-wrap !important; word-break: break-all; }
+.partes { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-size: .95rem; }
+.partes code { color: var(--type); font-weight: 600; }
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  h1 { font-size: 1.7rem; }
+  .partes { grid-template-columns: 1fr; }
+  .bancada { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Servidores com Linux · Encontro 2 · 04/12 · CEJA Itapiranga</span>
+  <h1>O site cresce: páginas, fotos e cadastro</h1>
+  <p>O site da equipe ganha mais páginas com menu, fotos de verdade enviadas pelo WinSCP e um formulário de cadastro que guarda os dados num banco. No fim, as outras equipes se cadastram no seu site e você vê tudo chegando.</p>
+  <div class="bancada">
+    <label for="equipe">Equipe</label>
+    <div class="dados">
+      <select id="equipe" aria-label="Número da equipe">
+        <option>1</option><option>2</option><option>3</option><option>4</option>
+        <option>5</option><option>6</option><option>7</option><option>8</option>
+      </select>
+      <div><span class="k">Servidor</span><span class="v">192.168.<i class="n1"></i>.10</span></div>
+      <div><span class="k">Usuário</span><span class="v">equipe<i class="n"></i></span></div>
+      <div><span class="k">Site</span><span class="v">http://192.168.<i class="n1"></i>.10</span></div>
+    </div>
+  </div>
+  <div class="legenda">
+    <span><span class="tag digite">Digite</span> você digita, letra por letra. É assim que se aprende.</span>
+    <span><span class="tag cole">Cole</span> copie aqui e cole no PuTTY (botão direito). Leia antes de dar Enter.</span>
+  </div>
+  <div class="aviso"><strong>Antes de colar um bloco com sudo:</strong> digite <code>sudo -v</code> e a senha. Assim o sudo não pede senha no meio do bloco.</div>
+  <p>Ao fim da noite, a pasta do site vai ter:</p>
+  <div class="arquivos">
+    <span>index.html</span><span class="novo">servicos.html</span><span class="novo">contato.html</span><span class="novo">img/</span><span class="novo">comum.php</span><span class="novo">cadastro.php</span><span class="novo">painel.php</span>
+  </div>
+</header>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">1</span><h2>A pasta do site agora é da equipe</h2></div>
+  <p>Até agora a pasta do site era do <b>root</b>: por isso precisava de sudo para mexer nela. Vamos passar a pasta para o usuário da equipe <span class="tag cole">Cole</span></p>
+  <div class="bloco" data-bloco="dono">
+    <div class="bloco-top"><span>Trocar o dono da pasta do site</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>ls -l /var/www/html
+sudo chown -R $USER:$USER /var/www/html
+ls -l /var/www/html</pre>
+  </div>
+  <div class="perg"><strong>Na folha:</strong> quem era o dono do index.html antes? E depois? O <code>$USER</code> virou qual nome?</div>
+  <p>Agora organize a pasta, sem sudo <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>cd /var/www/html</td><td>Entrar na pasta do site</td></tr>
+    <tr><td>cp index.html ~/index-encontro1.html</td><td>Guardar uma cópia do site antes de mexer. Técnico sempre faz cópia antes</td></tr>
+    <tr><td>mkdir img</td><td>A pasta das fotos</td></tr>
+    <tr><td>ls -l</td><td>Conferir: index.html e img, os dois da equipe<i class="n"></i></td></tr>
+    <tr><td>ls ~</td><td>A cópia está guardada em casa</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">2</span><h2>WinSCP: as pastas do servidor no Windows</h2></div>
+  <p>O PuTTY dá a tela de comandos. O <b>WinSCP</b> usa a mesma porta 22, mas mostra as pastas: à esquerda o PC, à direita o servidor. Arrastar de um lado para o outro é enviar ou baixar.</p>
+  <ol>
+    <li>Abra o <b>WinSCP</b>. Protocolo: <b>SFTP</b>.</li>
+    <li>Nome do host: <code>192.168.<i class="n1"></i>.10</code> · Porta: <code>22</code> · Usuário: <code>equipe<i class="n"></i></code> · Senha: a da equipe.</li>
+    <li><b>Salvar</b> com o nome <code>servidor-equipe<i class="n"></i></code>. Depois <b>Login</b>.</li>
+    <li>Na primeira vez ele pergunta se confia no servidor: é a mesma “impressão digital” do PuTTY. <b>Sim</b>.</li>
+    <li>No lado direito, abra a pasta <code>/var/www/html</code>: clique no caminho no alto e escreva.</li>
+  </ol>
+  <h3>As fotos do site</h3>
+  <ul>
+    <li><b>De onde:</b> fotos do celular da equipe, ou de bancos gratuitos como <b>pexels.com</b>, <b>pixabay.com</b> e <b>unsplash.com</b>. Foto do Google tem dono: não pode usar.</li>
+    <li><b>Tamanho:</b> baixe no tamanho <b>pequeno ou médio</b>. Foto de 5 MB deixa o site lento no celular.</li>
+    <li><b>Nome:</b> tudo minúsculo, sem espaço e sem acento: <code>fachada.jpg</code>, <code>servico1.jpg</code>. No Linux, <code>Foto.JPG</code> e <code>foto.jpg</code> são arquivos diferentes.</li>
+    <li>Renomeie no PC, depois <b>arraste</b> as fotos para dentro da pasta <code>img</code> do lado direito.</li>
+  </ul>
+  <p>Conferir pelo PuTTY <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>ls -lh /var/www/html/img</td><td>As fotos chegaram? O -h mostra o tamanho em K e M</td></tr>
+    <tr><td>http://192.168.<i class="n1"></i>.10/img/fachada.jpg</td><td>No navegador do PC: a foto abre sozinha (troque pelo nome da sua)</td></tr>
+  </table></div>
+  <div class="perg"><strong>Na folha:</strong> escreva o nome de cada foto e o tamanho que o <code>ls -lh</code> mostrou.</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">3</span><h2>Mais páginas, com menu e botões</h2></div>
+  <p>O ChatGPT vai fazer as páginas novas no mesmo visual do site que vocês já têm. Para isso ele precisa ver o código atual.</p>
+  <ol>
+    <li>No WinSCP, lado direito, <b>dois cliques</b> no <code>index.html</code>: abre o editor. <b>Ctrl+A</b>, <b>Ctrl+C</b> e feche o editor.</li>
+    <li>Escreva abaixo os nomes das fotos, copie o pedido e cole no <b>chatgpt.com</b>. Depois do pedido, cole o código (Ctrl+V).</li>
+  </ol>
+  <div class="campo">
+    <label for="fotos">Nomes das fotos que estão na pasta img</label>
+    <input id="fotos" type="text" value="fachada.jpg, servico1.jpg, servico2.jpg">
+  </div>
+  <div class="bloco" data-bloco="pedido">
+    <div class="bloco-top"><span>Pedido para o ChatGPT</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="texto" id="pedido"></pre>
+  </div>
+  <div class="aviso"><strong>Nunca</strong> cole senha, nome completo ou telefone de verdade no ChatGPT. O que vai para a IA sai da sala.</div>
+  <p>A IA respondeu com três códigos. Publique um por um <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>cd /var/www/html</td><td>A pasta do site (sem sudo: agora é da equipe)</td></tr>
+    <tr><td>rm index.html</td><td>Apaga a página inicial antiga (a cópia está em ~)</td></tr>
+    <tr><td>nano index.html</td><td>Cole o código novo da página inicial. Ctrl+O, Enter, Ctrl+X</td></tr>
+    <tr><td>nano servicos.html</td><td>Cole o código da página de serviços</td></tr>
+    <tr><td>nano contato.html</td><td>Cole o código da página de contato</td></tr>
+    <tr><td>ls -l</td><td>Os três arquivos .html e a pasta img</td></tr>
+  </table></div>
+  <p>No navegador do PC, abra <code>http://192.168.<i class="n1"></i>.10</code> e clique em todos os botões do menu. O <b>Cadastre-se</b> ainda dá erro 404: a página é o próximo passo.</p>
+  <div class="perg"><strong>Na folha:</strong> todos os botões levam à página certa? As fotos aparecem? Ache uma coisa que a IA inventou ou errou e peça a correção.</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">4</span><h2>O servidor aprende PHP</h2></div>
+  <p>Até agora o Nginx só entregava páginas prontas. Para guardar um cadastro, o servidor precisa <b>rodar um programa</b> quando o visitante clica em Enviar. Esse programa é o <b>PHP</b>, e o lugar onde ele guarda os dados é o banco <b>SQLite</b>: um arquivo só, sem complicação.</p>
+  <p>Instalar <span class="tag cole">Cole</span></p>
+  <div class="bloco" data-bloco="instalar">
+    <div class="bloco-top"><span>Instalar o PHP e o SQLite</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>sudo apt update
+sudo apt install -y php-fpm php-cli php-sqlite3 sqlite3
+php -v</pre>
+  </div>
+  <p>Ensinar o Nginx a passar as páginas .php para o PHP <span class="tag cole">Cole</span></p>
+  <div class="bloco" data-bloco="nginx">
+    <div class="bloco-top"><span>A nova configuração do site</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="codigo">sudo cp /etc/nginx/sites-available/default ~/nginx-default.original
+sudo tee /etc/nginx/sites-available/default &gt; /dev/null &lt;&lt;'FIM'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    index index.html index.php;
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php-fpm.sock;
+    }
+}
+FIM
+sudo nginx -t
+sudo systemctl reload nginx</pre>
+  </div>
+  <div class="perg"><strong>Confira:</strong> o <code>nginx -t</code> tem que responder <code>syntax is ok</code> e <code>test is successful</code>. Se der erro, NÃO siga: veja “Se travar”.</div>
+  <div class="perg"><strong>Na folha:</strong> o que faz a primeira linha do bloco? Para que serve a linha <code>index index.html index.php</code>?</div>
+  <p>A prova de que o PHP funciona <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>echo '&lt;?php phpinfo();' &gt; /var/www/html/teste.php</td><td>Cria uma página de teste de uma linha</td></tr>
+    <tr><td>http://192.168.<i class="n1"></i>.10/teste.php</td><td>No navegador: a tabela roxa do PHP. Funcionou!</td></tr>
+    <tr><td>rm /var/www/html/teste.php</td><td>Apagar já. Essa página conta tudo sobre o servidor para qualquer um</td></tr>
+  </table></div>
+  <p>O cofre do banco de dados, fora da pasta do site <span class="tag cole">Cole</span></p>
+  <div class="bloco" data-bloco="dados">
+    <div class="bloco-top"><span>A pasta do banco</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>sudo mkdir -p /var/www/dados
+sudo chown www-data:www-data /var/www/dados
+sudo chmod 770 /var/www/dados
+ls -ld /var/www/dados</pre>
+  </div>
+  <div class="perg"><strong>Na folha:</strong> quem é o <code>www-data</code>? (Dica: é o usuário com que o site roda.) Por que o banco fica em <code>/var/www/dados</code> e não em <code>/var/www/html</code>?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">5</span><h2>O cadastro do site</h2></div>
+  <p>São três arquivos. Para cada um: <span class="tag digite">Digite</span> o nano, <span class="tag cole">Cole</span> o código com o botão direito, <b>Ctrl+O</b>, <b>Enter</b>, <b>Ctrl+X</b>.</p>
+
+  <h3>comum.php: o que todas as páginas usam</h3>
+  <div class="cmds"><table>
+    <tr><td>nano /var/www/html/comum.php</td><td>Abra, cole o código abaixo e ANTES de salvar troque as três primeiras linhas</td></tr>
+  </table></div>
+  <div class="bloco" data-bloco="comum">
+    <div class="bloco-top"><span>comum.php</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="codigo">&lt;?php
+// comum.php: o que todas as páginas PHP do site usam.
+// A equipe muda só estas três linhas:
+$NOME_SITE = 'Nome do negócio';
+$COR = '#0b6e8a';
+$SERVICOS = ['Pedir orçamento', 'Agendar horário', 'Tirar uma dúvida'];
+
+// O banco de dados: um arquivo só, guardado FORA da pasta do site
+$banco = new PDO('sqlite:/var/www/dados/site.db');
+$banco-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$banco-&gt;exec("CREATE TABLE IF NOT EXISTS cadastros (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome TEXT NOT NULL,
+  telefone TEXT NOT NULL,
+  servico TEXT NOT NULL,
+  mensagem TEXT,
+  criado_em TEXT DEFAULT (datetime('now', 'localtime'))
+)");
+
+// h(): mostra o texto do visitante como texto, nunca como código
+function h($texto) {
+  return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
+}
+
+// topo(): o começo de toda página PHP, com o menu
+function topo($titulo) {
+  global $NOME_SITE, $COR;
+  echo '&lt;!DOCTYPE html&gt;&lt;html lang="pt-BR"&gt;&lt;head&gt;&lt;meta charset="UTF-8"&gt;';
+  echo '&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;';
+  echo '&lt;title&gt;' . h($titulo) . ' - ' . h($NOME_SITE) . '&lt;/title&gt;';
+  echo '&lt;style&gt;
+    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; color: #222; }
+    header { background: ' . h($COR) . '; color: #fff; padding: 16px; }
+    header strong { font-size: 22px; display: block; margin-bottom: 8px; }
+    header a { color: #fff; margin-right: 16px; text-decoration: none; font-weight: bold; }
+    main { max-width: 800px; margin: 24px auto; background: #fff; padding: 20px; border-radius: 10px; }
+    label { display: block; margin-top: 14px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 10px; font-size: 16px; box-sizing: border-box; margin-top: 4px; }
+    button, .botao { background: ' . h($COR) . '; color: #fff; border: 0; padding: 10px 18px; font-size: 16px;
+      border-radius: 6px; margin-top: 14px; cursor: pointer; text-decoration: none; display: inline-block; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: top; }
+    td form { display: inline; }
+    .ok { background: #e6f6ea; padding: 12px; border-radius: 6px; }
+    .erro { background: #fde8e8; padding: 12px; border-radius: 6px; }
+  &lt;/style&gt;&lt;/head&gt;&lt;body&gt;';
+  echo '&lt;header&gt;&lt;strong&gt;' . h($NOME_SITE) . '&lt;/strong&gt;';
+  echo '&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;a href="servicos.html"&gt;Serviços&lt;/a&gt;';
+  echo '&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;a href="cadastro.php"&gt;Cadastre-se&lt;/a&gt;&lt;/header&gt;&lt;main&gt;';
+}
+
+// rodape(): o fim de toda página PHP
+function rodape() {
+  echo '&lt;/main&gt;&lt;/body&gt;&lt;/html&gt;';
+}</pre>
+  </div>
+  <div class="perg"><strong>Personalize:</strong> o nome do negócio entre as aspas, a cor do site (peça o código da cor ao ChatGPT, tipo <code>#c0392b</code>) e as opções do cadastro do seu nicho. Ex.: barbearia → <code>['Corte', 'Barba', 'Corte + barba']</code>. Mantenha as aspas e as vírgulas.</div>
+
+  <h3>cadastro.php: o formulário</h3>
+  <div class="cmds"><table>
+    <tr><td>nano /var/www/html/cadastro.php</td><td>Cole e salve</td></tr>
+  </table></div>
+  <div class="bloco" data-bloco="cadastro">
+    <div class="bloco-top"><span>cadastro.php</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="codigo">&lt;?php
+require 'comum.php';
+
+$aviso = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $nome = trim($_POST['nome'] ?? '');
+  $telefone = trim($_POST['telefone'] ?? '');
+  $servico = $_POST['servico'] ?? '';
+  $mensagem = trim($_POST['mensagem'] ?? '');
+
+  if ($nome === '' || $telefone === '' || !in_array($servico, $SERVICOS, true)) {
+    $aviso = '&lt;p class="erro"&gt;Preencha o nome, o telefone e escolha uma opção.&lt;/p&gt;';
+  } else {
+    $sql = $banco-&gt;prepare('INSERT INTO cadastros (nome, telefone, servico, mensagem) VALUES (?, ?, ?, ?)');
+    $sql-&gt;execute([$nome, $telefone, $servico, $mensagem]);
+    $aviso = '&lt;p class="ok"&gt;Recebemos o seu cadastro, ' . h($nome) . '! Logo entramos em contato.&lt;/p&gt;';
+  }
+}
+
+topo('Cadastre-se');
+?&gt;
+&lt;h1&gt;Cadastre-se&lt;/h1&gt;
+&lt;?= $aviso ?&gt;
+&lt;form method="post"&gt;
+  &lt;label&gt;Nome &lt;input name="nome" required maxlength="80"&gt;&lt;/label&gt;
+  &lt;label&gt;Telefone &lt;input name="telefone" required maxlength="20"&gt;&lt;/label&gt;
+  &lt;label&gt;O que você procura
+    &lt;select name="servico"&gt;
+      &lt;?php foreach ($SERVICOS as $s): ?&gt;
+        &lt;option&gt;&lt;?= h($s) ?&gt;&lt;/option&gt;
+      &lt;?php endforeach; ?&gt;
+    &lt;/select&gt;
+  &lt;/label&gt;
+  &lt;label&gt;Mensagem &lt;textarea name="mensagem" rows="4" maxlength="500"&gt;&lt;/textarea&gt;&lt;/label&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+&lt;?php rodape(); ?&gt;</pre>
+  </div>
+
+  <h3>painel.php: a lista dos cadastros</h3>
+  <div class="cmds"><table>
+    <tr><td>nano /var/www/html/painel.php</td><td>Cole e salve</td></tr>
+  </table></div>
+  <div class="bloco" data-bloco="painel">
+    <div class="bloco-top"><span>painel.php</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="codigo">&lt;?php
+require 'comum.php';
+
+$lista = $banco-&gt;query('SELECT * FROM cadastros ORDER BY id DESC')-&gt;fetchAll(PDO::FETCH_ASSOC);
+
+topo('Painel');
+?&gt;
+&lt;h1&gt;Painel de cadastros&lt;/h1&gt;
+&lt;p&gt;&lt;?= count($lista) ?&gt; cadastro(s) no banco.&lt;/p&gt;
+&lt;table&gt;
+  &lt;tr&gt;&lt;th&gt;#&lt;/th&gt;&lt;th&gt;Quando&lt;/th&gt;&lt;th&gt;Nome&lt;/th&gt;&lt;th&gt;Telefone&lt;/th&gt;&lt;th&gt;Opção&lt;/th&gt;&lt;th&gt;Mensagem&lt;/th&gt;&lt;/tr&gt;
+  &lt;?php foreach ($lista as $c): ?&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;?= $c['id'] ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= h($c['criado_em']) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= h($c['nome']) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= h($c['telefone']) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= h($c['servico']) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= h($c['mensagem']) ?&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;?php endforeach; ?&gt;
+&lt;/table&gt;
+&lt;?php rodape(); ?&gt;</pre>
+  </div>
+
+  <h3>O teste</h3>
+  <ol>
+    <li>No navegador do PC: <code>http://192.168.<i class="n1"></i>.10</code> → botão <b>Cadastre-se</b>. Faça um cadastro com dados inventados.</li>
+    <li>Abra <code>http://192.168.<i class="n1"></i>.10/painel.php</code>: o cadastro está lá, com dia e hora.</li>
+    <li>Faça outro cadastro e escreva no nome: <code>&lt;b&gt;Oi&lt;/b&gt;</code>. No painel, aparece o texto, não a letra em negrito. Quem protegeu foi a função <code>h()</code>.</li>
+  </ol>
+  <p>O banco por dentro <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>ls -l /var/www/dados</td><td>Permission denied: a pasta é só do www-data</td></tr>
+    <tr><td>sudo ls -l /var/www/dados</td><td>O arquivo site.db: este é o banco inteiro</td></tr>
+  </table></div>
+  <div class="perg"><strong>Na folha:</strong> desenhe o caminho do cadastro: o celular → o roteador → o Nginx → o PHP → o site.db. E a volta.</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">6</span><h2>A visita: todo mundo se cadastra</h2></div>
+  <p>Antes da visita, deixe o log aberto no PuTTY <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>sudo tail -f /var/log/nginx/access.log</td><td>Cada visita aparece na hora. Sai com Ctrl+C</td></tr>
+  </table></div>
+  <p>Cada um conecta o celular no Wi-Fi de <b>outra</b> equipe (dados móveis desligados), abre <code>http://192.168.1M.10</code> e <b>se cadastra com dados inventados</b>.</p>
+  <p>Cada visita é uma linha assim:</p>
+  <div class="bloco">
+    <div class="bloco-top"><span>Uma linha do log</span></div>
+    <pre class="linha-log">192.168.1<i class="n"></i>.104 - - [04/Dec/2026:20:41:07 -0300] "POST /cadastro.php HTTP/1.1" 200 2817 "-" "Mozilla/5.0 (Linux; Android 14; SM-A155M) ..."</pre>
+  </div>
+  <div class="partes">
+    <code>192.168.1<i class="n"></i>.104</code><span>Quem: o celular que entrou no Wi-Fi da equipe</span>
+    <code>[04/Dec/2026:20:41:07]</code><span>Dia e hora</span>
+    <code>GET</code> / <code>POST</code><span>GET é “me mostra a página”. POST é “toma, guarda isto”: alguém clicou em Enviar</span>
+    <code>200</code><span>Deu certo. 404 é “não achei”. 500 é “o PHP deu erro”</span>
+    <code>Android 14; SM-A155M</code><span>O aparelho: sistema e modelo do celular</span>
+  </div>
+  <p>Depois da visita: abra o <b>painel.php</b>. Quantos se cadastraram?</p>
+  <div class="aviso"><strong>Agora a pergunta da noite:</strong> peça para alguém de outra equipe abrir <code>/painel.php</code> do seu site. Ele conseguiu ver os nomes e telefones de todo mundo? Num site de verdade, isso é vazamento de dados, e a LGPD cobra da empresa. No Encontro 3, o painel ganha login.</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">!</span><h2>Se travar</h2></div>
+  <div class="travou"><table>
+    <tr><th>O que aparece</th><th>O que fazer</th></tr>
+    <tr><td>Pediu senha no meio do bloco colado</td><td>Ctrl+C, digite sudo -v, a senha, e cole o bloco de novo</td></tr>
+    <tr><td>Permission denied no nano do site</td><td>Faltou o passo 1 (chown). Rode o bloco “Trocar o dono” de novo</td></tr>
+    <tr><td>WinSCP: Access denied</td><td>Usuário ou senha errados. É o mesmo usuário e senha do PuTTY</td></tr>
+    <tr><td>A foto não aparece no site</td><td>O nome no código é igual ao do arquivo? Maiúscula conta. ls /var/www/html/img e compare letra por letra</td></tr>
+    <tr><td>nginx -t: emerg ou failed</td><td>O bloco entrou cortado. Volte ao original: sudo cp ~/nginx-default.original /etc/nginx/sites-available/default e cole o bloco de novo, inteiro</td></tr>
+    <tr><td>502 Bad Gateway</td><td>O PHP não está rodando ou o nome do “sock” é outro. ls /run/php/ e chame o professor</td></tr>
+    <tr><td>O navegador baixa o arquivo .php em vez de abrir</td><td>O Nginx não recarregou: sudo systemctl reload nginx. Depois Ctrl+F5</td></tr>
+    <tr><td>Página em branco ou erro 500</td><td>O PHP deu erro. sudo tail /var/log/nginx/error.log mostra a linha. Quase sempre é aspas ou vírgula faltando no comum.php</td></tr>
+    <tr><td>unable to open database file</td><td>A pasta /var/www/dados não existe ou não é do www-data. Rode o bloco “A pasta do banco” de novo</td></tr>
+    <tr><td>attempt to write a readonly database</td><td>sudo chown www-data:www-data /var/www/dados/site.db</td></tr>
+    <tr><td>O Cadastre-se dá 404</td><td>O nome do arquivo é cadastro.php, tudo minúsculo e sem acento? ls /var/www/html</td></tr>
+    <tr><td>O comando não para (tail -f, ping)</td><td>Ctrl+C</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">?</span><h2>Consulta: os comandos do curso</h2></div>
+  <details class="dic">
+    <summary>Abrir a lista de comandos</summary>
+    <div class="cmds"><table>
+      <tr><td>pwd</td><td>Em que pasta eu estou</td></tr>
+      <tr><td>ls -l</td><td>O que tem na pasta, com dono, permissão e tamanho (-h: tamanho fácil, -a: escondidos)</td></tr>
+      <tr><td>cd pasta · cd .. · cd ~</td><td>Entrar numa pasta · subir uma · voltar para casa</td></tr>
+      <tr><td>mkdir nome</td><td>Criar uma pasta</td></tr>
+      <tr><td>nano arquivo</td><td>Editar um arquivo. Ctrl+O salva, Ctrl+X sai, Ctrl+W procura</td></tr>
+      <tr><td>cat arquivo</td><td>Mostrar o conteúdo do arquivo</td></tr>
+      <tr><td>cp origem destino</td><td>Copiar</td></tr>
+      <tr><td>mv origem destino</td><td>Mover ou renomear</td></tr>
+      <tr><td>rm arquivo</td><td>Apagar. Não tem lixeira</td></tr>
+      <tr><td>sudo comando</td><td>Rodar como administrador</td></tr>
+      <tr><td>chown dono:grupo arquivo</td><td>Trocar o dono (-R: a pasta e tudo dentro)</td></tr>
+      <tr><td>chmod 770 pasta</td><td>Trocar as permissões. r = 4, w = 2, x = 1. Dono, grupo, outros</td></tr>
+      <tr><td>sudo apt install programa</td><td>Instalar um programa</td></tr>
+      <tr><td>systemctl status nginx</td><td>O serviço está rodando? Sai com q</td></tr>
+      <tr><td>sudo systemctl reload nginx</td><td>Recarregar a configuração do site</td></tr>
+      <tr><td>sudo tail -f arquivo.log</td><td>Acompanhar um log ao vivo. Ctrl+C para</td></tr>
+      <tr><td>ip a · hostname · whoami</td><td>O endereço · o nome do servidor · quem sou eu</td></tr>
+      <tr><td>free -h · df -h</td><td>Memória · disco</td></tr>
+      <tr><td>sudo reboot · sudo poweroff</td><td>Reiniciar · desligar</td></tr>
+    </table></div>
+  </details>
+</section>
+
+<footer>Curso FIC Montador e Reparador de Computadores · CEJA Itapiranga – SC</footer>
+</div>
+
+<script>
+(function () {
+  var sel = document.getElementById("equipe");
+  var fotos = document.getElementById("fotos");
+  var pedido = document.getElementById("pedido");
+  function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function gravar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  function textoPedido(n, listaFotos) {
+    var nomes = listaFotos.split(",").map(function (s) { return s.trim(); }).filter(Boolean)
+      .map(function (s) { return "img/" + s; }).join(", ");
+    return "Vou colar abaixo o código da página inicial do site do meu negócio. Quero transformar em um site com várias páginas, todas com o mesmo visual.\n\n" +
+      "Faça:\n" +
+      "1. index.html: a página inicial, melhorada, com um botão grande \"Cadastre-se\" que leva para cadastro.php.\n" +
+      "2. servicos.html: os serviços, com foto, descrição e preço inventado.\n" +
+      "3. contato.html: endereço, horário e telefone inventados, e um botão \"Cadastre-se\".\n\n" +
+      "Regras:\n" +
+      "- O mesmo menu no topo das três páginas, com botões: Início (index.html), Serviços (servicos.html), Contato (contato.html) e Cadastre-se (cadastro.php). A página cadastro.php eu já tenho, não crie.\n" +
+      (nomes ? "- Use estas imagens, que já estão no servidor: " + nomes + ". Coloque um texto alt em cada uma.\n" : "") +
+      "- Cada página começa com <!DOCTYPE html> e tem <meta charset=\"UTF-8\"> no <head>.\n" +
+      "- Todo o CSS dentro de <style> em cada página. Sem JavaScript. Sem imagens de outros sites.\n" +
+      "- As páginas precisam ficar boas no celular.\n" +
+      "- Textos em português do Brasil. Telefones e endereços inventados, que não sejam de verdade.\n" +
+      "- No rodapé de cada página: \"Site hospedado no servidor-equipe" + n + " · Curso FIC CEJA Itapiranga\".\n\n" +
+      "Responda com o código completo de cada página, cada uma em um bloco separado, com o nome do arquivo antes do bloco.\n\n" +
+      "O código atual da página inicial:\n";
+  }
+
+  function aplicar() {
+    var n = sel.value;
+    document.querySelectorAll("i.n").forEach(function (el) { el.textContent = n; });
+    document.querySelectorAll("i.n1").forEach(function (el) { el.textContent = "1" + n; });
+    pedido.textContent = textoPedido(n, fotos.value);
+  }
+
+  var salvo = ler("equipe");
+  if (salvo && /^[1-8]$/.test(salvo)) sel.value = salvo;
+  var fotosSalvas = ler("fotos");
+  if (fotosSalvas) fotos.value = fotosSalvas;
+  aplicar();
+  sel.addEventListener("change", function () { gravar("equipe", sel.value); aplicar(); });
+  fotos.addEventListener("input", function () { gravar("fotos", fotos.value); aplicar(); });
+
+  document.querySelectorAll("button.copiar").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.closest(".bloco").querySelector("pre");
+      var txt = pre.textContent;
+      function feito() {
+        btn.textContent = "Copiado";
+        btn.classList.add("ok");
+        setTimeout(function () { btn.textContent = "Copiar"; btn.classList.remove("ok"); }, 1800);
+      }
+      function selecionar() {
+        var r = document.createRange(); r.selectNodeContents(pre);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = "Ctrl+C para copiar";
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(feito, selecionar);
+      } else { selecionar(); }
+    });
+  });
+})();
+</script>

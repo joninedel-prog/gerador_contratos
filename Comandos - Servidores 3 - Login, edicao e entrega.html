@@ -1,0 +1,581 @@
+<title>Entrega do Servidor · Encontro 3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: uma coluna de bancada, na ordem da noite; cada passo diz se é DIGITAR ou COLAR */
+:root {
+  --bg: #f3f5f6;
+  --paper: #ffffff;
+  --ink: #15232b;
+  --muted: #56666f;
+  --line: #d5dde1;
+  --accent: #0b6e8a;
+  --accent-soft: #e2f0f4;
+  --type: #9a5a00;
+  --type-soft: #fbefd9;
+  --term-bg: #10181d;
+  --term-fg: #d7e6ea;
+  --warn: #b3261e;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1518; --paper: #162127; --ink: #e3ecef; --muted: #9aabb2; --line: #2b3a41;
+    --accent: #5cc3df; --accent-soft: #173540; --type: #f0b55a; --type-soft: #3a2c14;
+    --term-bg: #070b0d; --term-fg: #d7e6ea; --warn: #ff8a80; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1518; --paper: #162127; --ink: #e3ecef; --muted: #9aabb2; --line: #2b3a41;
+  --accent: #5cc3df; --accent-soft: #173540; --type: #f0b55a; --type-soft: #3a2c14;
+  --term-bg: #070b0d; --term-fg: #d7e6ea; --warn: #ff8a80; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 19px; line-height: 1.55;
+  margin: 0;
+}
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 28px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: 2.5rem; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.08rem; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-mono); font-size: .92em; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+header { display: flex; flex-direction: column; gap: 14px; }
+.bancada {
+  display: grid; grid-template-columns: auto 1fr; gap: 14px 22px; align-items: center;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+}
+.bancada label { font-weight: 600; }
+.bancada select {
+  font: inherit; font-weight: 600; padding: 6px 10px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+}
+.dados { display: flex; flex-wrap: wrap; gap: 8px 22px; min-width: 0; }
+.dados div { display: flex; flex-direction: column; }
+.dados span.k { font-size: .75rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+.dados span.v { font-family: var(--font-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.legenda { display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: .92rem; color: var(--muted); }
+.tag {
+  display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 4px; vertical-align: middle;
+}
+.tag.digite { background: var(--type-soft); color: var(--type); }
+.tag.cole { background: var(--accent-soft); color: var(--accent); }
+
+section.passo { display: flex; flex-direction: column; gap: 12px; padding-top: 22px; border-top: 1px solid var(--line); }
+.passo-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.num { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 1.6rem; }
+
+ol, ul { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 4px; }
+
+.cmds { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow-x: auto; }
+.cmds table { border-collapse: collapse; width: 100%; }
+.cmds td { padding: 7px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.cmds tr:first-child td { border-top: 0; }
+.cmds td:first-child { font-family: var(--font-mono); font-weight: 600; white-space: nowrap; color: var(--type); }
+.cmds td:last-child { color: var(--muted); font-size: .94rem; }
+
+.bloco { border-radius: 8px; background: var(--term-bg); color: var(--term-fg); overflow: hidden; }
+.bloco-top {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 8px 10px 8px 14px; border-bottom: 1px solid #ffffff1a; font-size: .85rem; color: #9fb4bb;
+}
+.bloco pre {
+  margin: 0; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: .9rem; line-height: 1.6;
+  white-space: pre;
+}
+.bloco pre.texto { white-space: pre-wrap; font-family: var(--font-body); font-size: .95rem; }
+button.copiar {
+  font: inherit; font-weight: 600; font-size: .85rem; cursor: pointer;
+  padding: 6px 14px; border-radius: 6px; border: 0; background: var(--accent); color: #fff;
+}
+:root:not([data-theme="light"]) button.copiar { color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.copiar { color: #06222b; } }
+:root[data-theme="dark"] button.copiar { color: #06222b; }
+button.copiar.ok { background: var(--type); }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--type); outline-offset: 2px; }
+
+.perg { background: var(--type-soft); border-radius: 8px; padding: 10px 14px; font-size: .95rem; }
+.perg strong { color: var(--type); }
+.aviso { border-left: 4px solid var(--warn); padding: 6px 0 6px 12px; font-size: .95rem; }
+.aviso strong { color: var(--warn); }
+
+.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo label { font-weight: 600; font-size: .95rem; }
+.campo input {
+  font: inherit; padding: 9px 12px; border-radius: 6px; border: 1px solid var(--line);
+  background: var(--paper); color: var(--ink); width: 100%;
+}
+.teclas { display: flex; flex-wrap: wrap; gap: 8px; }
+.teclas span { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: .92rem; }
+.teclas b { font-family: var(--font-mono); }
+
+.travou { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow-x: auto; }
+.travou table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+.travou th, .travou td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.travou th { border-top: 0; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.travou td:first-child { font-family: var(--font-mono); font-size: .86rem; color: var(--warn); min-width: 12em; }
+
+footer { color: var(--muted); font-size: .85rem; }
+.bloco pre.codigo { max-height: 70vh; overflow: auto; }
+details.dic { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; }
+details.dic summary { cursor: pointer; font-weight: 600; }
+details.dic .cmds { margin-top: 10px; }
+.arquivos { display: flex; flex-wrap: wrap; gap: 8px; }
+.arquivos span { font-family: var(--font-mono); font-size: .9rem; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; }
+.arquivos span.novo { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.linha-log { white-space: pre-wrap !important; word-break: break-all; }
+.partes { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-size: .95rem; }
+.partes code { color: var(--type); font-weight: 600; }
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  h1 { font-size: 1.7rem; }
+  .partes { grid-template-columns: 1fr; }
+  .bancada { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Servidores com Linux · Encontro 3 · 11/12 · CEJA Itapiranga</span>
+  <h1>Login, edição e a entrega do servidor</h1>
+  <p>No Encontro 2, qualquer um abria o painel e via os dados de todo mundo. Hoje o painel ganha login, os cadastros podem ser editados e apagados, e a equipe prepara o servidor para entregar ao cliente: atualizado, com firewall e com backup.</p>
+  <div class="bancada">
+    <label for="equipe">Equipe</label>
+    <div class="dados">
+      <select id="equipe" aria-label="Número da equipe">
+        <option>1</option><option>2</option><option>3</option><option>4</option>
+        <option>5</option><option>6</option><option>7</option><option>8</option>
+      </select>
+      <div><span class="k">Servidor</span><span class="v">192.168.<i class="n1"></i>.10</span></div>
+      <div><span class="k">Usuário</span><span class="v">equipe<i class="n"></i></span></div>
+      <div><span class="k">Painel</span><span class="v">http://192.168.<i class="n1"></i>.10/painel.php</span></div>
+    </div>
+  </div>
+  <div class="legenda">
+    <span><span class="tag digite">Digite</span> você digita, letra por letra. É assim que se aprende.</span>
+    <span><span class="tag cole">Cole</span> copie aqui e cole no PuTTY (botão direito). Leia antes de dar Enter.</span>
+  </div>
+  <div class="aviso"><strong>Antes de colar um bloco com sudo:</strong> digite <code>sudo -v</code> e a senha. Assim o sudo não pede senha no meio do bloco.</div>
+  <p>Ao fim da noite, a pasta do site vai ter:</p>
+  <div class="arquivos">
+    <span>index.html</span><span>servicos.html</span><span>contato.html</span><span>img/</span><span>comum.php</span><span>cadastro.php</span><span class="novo">painel.php (novo)</span><span class="novo">login.php</span><span class="novo">sair.php</span><span class="novo">editar.php</span>
+  </div>
+</header>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">1</span><h2>O banco por dentro</h2><span class="tag digite">Digite</span></div>
+  <p>O painel mostra o banco do jeito bonito. O técnico também sabe abrir o banco direto e fazer perguntas a ele. A língua das perguntas é o <b>SQL</b>.</p>
+  <div class="cmds"><table>
+    <tr><td>sudo sqlite3 /var/www/dados/site.db</td><td>Abre o banco. O sinal muda para <code>sqlite&gt;</code></td></tr>
+    <tr><td>.tables</td><td>As tabelas do banco (por enquanto, só cadastros)</td></tr>
+    <tr><td>.headers on</td><td>Mostrar o nome das colunas</td></tr>
+    <tr><td>.mode column</td><td>Mostrar em colunas alinhadas</td></tr>
+    <tr><td>SELECT * FROM cadastros;</td><td>“Me mostra tudo dos cadastros.” Não esqueça o ponto e vírgula</td></tr>
+    <tr><td>SELECT COUNT(*) FROM cadastros;</td><td>Quantos cadastros tem</td></tr>
+    <tr><td>SELECT nome, telefone FROM cadastros;</td><td>Só duas colunas</td></tr>
+    <tr><td>SELECT servico, COUNT(*) FROM cadastros GROUP BY servico;</td><td>Quantos pediram cada opção: o que o dono do negócio quer saber</td></tr>
+    <tr><td>.quit</td><td>Sai do banco</td></tr>
+  </table></div>
+  <div class="perg"><strong>Na folha:</strong> escreva a pergunta em SQL que mostra só os cadastros de uma opção do seu nicho. Ex.: <code>SELECT nome FROM cadastros WHERE servico = 'Corte';</code></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">2</span><h2>O login do painel</h2></div>
+  <p>O <code>comum.php</code> ganha a parte do login no fim do arquivo. O <code>&gt;&gt;</code> <b>acrescenta</b> no fim, sem apagar o que a equipe personalizou <span class="tag cole">Cole</span></p>
+  <div class="bloco" data-bloco="acrescentar">
+    <div class="bloco-top"><span>Acrescentar o login no comum.php</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="codigo">tail -3 /var/www/html/comum.php
+cat &gt;&gt; /var/www/html/comum.php &lt;&lt;'FIM'
+
+// ===== Encontro 3: login =====
+session_start();
+
+$banco-&gt;exec("CREATE TABLE IF NOT EXISTS usuarios (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  usuario TEXT NOT NULL UNIQUE,
+  senha TEXT NOT NULL
+)");
+
+// exigir_login(): quem não entrou é mandado para o login
+function exigir_login() {
+  if (empty($_SESSION['usuario'])) {
+    header('Location: login.php');
+    exit;
+  }
+}
+FIM
+tail -20 /var/www/html/comum.php</pre>
+  </div>
+  <div class="aviso"><strong>Cole uma vez só.</strong> Se colar duas vezes, o site dá erro 500 (veja “Se travar”).</div>
+  <div class="perg"><strong>Na folha:</strong> qual é a diferença entre <code>&gt;</code> e <code>&gt;&gt;</code>? O que aconteceria com o nome do negócio se fosse um <code>&gt;</code> só?</div>
+
+  <p>As duas páginas novas. Para cada uma: <span class="tag digite">Digite</span> o nano, <span class="tag cole">Cole</span> o código, <b>Ctrl+O</b>, <b>Enter</b>, <b>Ctrl+X</b>.</p>
+  <h3>login.php</h3>
+  <div class="cmds"><table>
+    <tr><td>nano /var/www/html/login.php</td><td>Cole e salve</td></tr>
+  </table></div>
+  <div class="bloco" data-bloco="login">
+    <div class="bloco-top"><span>login.php</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="codigo">&lt;?php
+require 'comum.php';
+
+$primeiro_acesso = ($banco-&gt;query('SELECT COUNT(*) FROM usuarios')-&gt;fetchColumn() == 0);
+$erro = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $usuario = trim($_POST['usuario'] ?? '');
+  $senha = $_POST['senha'] ?? '';
+
+  if ($primeiro_acesso) {
+    if ($usuario === '' || strlen($senha) &lt; 8) {
+      $erro = 'Escolha um usuário e uma senha com 8 caracteres ou mais.';
+    } else {
+      $sql = $banco-&gt;prepare('INSERT INTO usuarios (usuario, senha) VALUES (?, ?)');
+      $sql-&gt;execute([$usuario, password_hash($senha, PASSWORD_DEFAULT)]);
+      session_regenerate_id(true);
+      $_SESSION['usuario'] = $usuario;
+      header('Location: painel.php');
+      exit;
+    }
+  } else {
+    $sql = $banco-&gt;prepare('SELECT senha FROM usuarios WHERE usuario = ?');
+    $sql-&gt;execute([$usuario]);
+    $hash = $sql-&gt;fetchColumn();
+    if ($hash &amp;&amp; password_verify($senha, $hash)) {
+      session_regenerate_id(true);
+      $_SESSION['usuario'] = $usuario;
+      header('Location: painel.php');
+      exit;
+    }
+    $erro = 'Usuário ou senha errados.';
+  }
+}
+
+topo('Entrar');
+?&gt;
+&lt;h1&gt;&lt;?= $primeiro_acesso ? 'Primeiro acesso: crie o administrador' : 'Entrar no painel' ?&gt;&lt;/h1&gt;
+&lt;?php if ($erro): ?&gt;&lt;p class="erro"&gt;&lt;?= h($erro) ?&gt;&lt;/p&gt;&lt;?php endif; ?&gt;
+&lt;form method="post"&gt;
+  &lt;label&gt;Usuário &lt;input name="usuario" required maxlength="30"&gt;&lt;/label&gt;
+  &lt;label&gt;Senha &lt;input name="senha" type="password" required&gt;&lt;/label&gt;
+  &lt;button type="submit"&gt;&lt;?= $primeiro_acesso ? 'Criar e entrar' : 'Entrar' ?&gt;&lt;/button&gt;
+&lt;/form&gt;
+&lt;?php rodape(); ?&gt;</pre>
+  </div>
+  <h3>sair.php</h3>
+  <div class="cmds"><table>
+    <tr><td>nano /var/www/html/sair.php</td><td>Cole e salve</td></tr>
+  </table></div>
+  <div class="bloco" data-bloco="sair">
+    <div class="bloco-top"><span>sair.php</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="codigo">&lt;?php
+require 'comum.php';
+$_SESSION = [];
+session_destroy();
+header('Location: login.php');
+exit;</pre>
+  </div>
+
+  <h3>Criar o administrador: JÁ</h3>
+  <p>Abra <code>http://192.168.<i class="n1"></i>.10/login.php</code>. Na primeira vez, ele pede para criar o administrador. Crie na hora: quem chegar primeiro nessa página vira o dono do painel.</p>
+  <ul>
+    <li>Usuário: o nome do negócio, sem espaço (ex.: <code>barbearia</code>).</li>
+    <li>Senha: 8 caracteres ou mais. Anote na folha, NÃO na ficha técnica.</li>
+  </ul>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">3</span><h2>O painel novo: procurar, editar e apagar</h2></div>
+  <p>O painel antigo vai embora e entra o novo, que exige login <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>cd /var/www/html</td><td>A pasta do site</td></tr>
+    <tr><td>mv painel.php ~/painel-encontro2.php</td><td>Guarda o painel antigo em casa (mover tira da pasta do site)</td></tr>
+    <tr><td>nano painel.php</td><td>Cole o painel novo e salve</td></tr>
+    <tr><td>nano editar.php</td><td>Cole a página de editar e salve</td></tr>
+    <tr><td>ls -l</td><td>Conferir os arquivos com o desenho do topo da página</td></tr>
+  </table></div>
+  <h3>painel.php</h3>
+  <div class="bloco" data-bloco="painel">
+    <div class="bloco-top"><span>painel.php</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="codigo">&lt;?php
+require 'comum.php';
+exigir_login();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' &amp;&amp; isset($_POST['apagar'])) {
+  $sql = $banco-&gt;prepare('DELETE FROM cadastros WHERE id = ?');
+  $sql-&gt;execute([(int) $_POST['apagar']]);
+  header('Location: painel.php');
+  exit;
+}
+
+$busca = trim($_GET['busca'] ?? '');
+$sql = $banco-&gt;prepare('SELECT * FROM cadastros WHERE nome LIKE ? ORDER BY id DESC');
+$sql-&gt;execute(['%' . $busca . '%']);
+$lista = $sql-&gt;fetchAll(PDO::FETCH_ASSOC);
+
+topo('Painel');
+?&gt;
+&lt;h1&gt;Painel de cadastros&lt;/h1&gt;
+&lt;p&gt;Você entrou como &lt;b&gt;&lt;?= h($_SESSION['usuario']) ?&gt;&lt;/b&gt; · &lt;a href="sair.php"&gt;Sair&lt;/a&gt;&lt;/p&gt;
+&lt;form method="get"&gt;
+  &lt;label&gt;Procurar pelo nome &lt;input name="busca" value="&lt;?= h($busca) ?&gt;"&gt;&lt;/label&gt;
+  &lt;button type="submit"&gt;Procurar&lt;/button&gt;
+&lt;/form&gt;
+&lt;p&gt;&lt;?= count($lista) ?&gt; cadastro(s).&lt;/p&gt;
+&lt;table&gt;
+  &lt;tr&gt;&lt;th&gt;#&lt;/th&gt;&lt;th&gt;Quando&lt;/th&gt;&lt;th&gt;Nome&lt;/th&gt;&lt;th&gt;Telefone&lt;/th&gt;&lt;th&gt;Opção&lt;/th&gt;&lt;th&gt;Mensagem&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;
+  &lt;?php foreach ($lista as $c): ?&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;?= $c['id'] ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= h($c['criado_em']) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= h($c['nome']) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= h($c['telefone']) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= h($c['servico']) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= h($c['mensagem']) ?&gt;&lt;/td&gt;
+    &lt;td&gt;
+      &lt;a class="botao" href="editar.php?id=&lt;?= $c['id'] ?&gt;"&gt;Editar&lt;/a&gt;
+      &lt;form method="post" onsubmit="return confirm('Apagar este cadastro?')"&gt;
+        &lt;button name="apagar" value="&lt;?= $c['id'] ?&gt;"&gt;Apagar&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;?php endforeach; ?&gt;
+&lt;/table&gt;
+&lt;?php rodape(); ?&gt;</pre>
+  </div>
+  <h3>editar.php</h3>
+  <div class="bloco" data-bloco="editar">
+    <div class="bloco-top"><span>editar.php</span><button class="copiar" type="button">Copiar</button></div>
+    <pre class="codigo">&lt;?php
+require 'comum.php';
+exigir_login();
+
+$id = (int) ($_GET['id'] ?? 0);
+$sql = $banco-&gt;prepare('SELECT * FROM cadastros WHERE id = ?');
+$sql-&gt;execute([$id]);
+$c = $sql-&gt;fetch(PDO::FETCH_ASSOC);
+if (!$c) {
+  header('Location: painel.php');
+  exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $sql = $banco-&gt;prepare('UPDATE cadastros SET nome = ?, telefone = ?, servico = ?, mensagem = ? WHERE id = ?');
+  $sql-&gt;execute([
+    trim($_POST['nome'] ?? ''),
+    trim($_POST['telefone'] ?? ''),
+    $_POST['servico'] ?? '',
+    trim($_POST['mensagem'] ?? ''),
+    $id,
+  ]);
+  header('Location: painel.php');
+  exit;
+}
+
+topo('Editar');
+?&gt;
+&lt;h1&gt;Editar o cadastro #&lt;?= $c['id'] ?&gt;&lt;/h1&gt;
+&lt;form method="post"&gt;
+  &lt;label&gt;Nome &lt;input name="nome" required maxlength="80" value="&lt;?= h($c['nome']) ?&gt;"&gt;&lt;/label&gt;
+  &lt;label&gt;Telefone &lt;input name="telefone" required maxlength="20" value="&lt;?= h($c['telefone']) ?&gt;"&gt;&lt;/label&gt;
+  &lt;label&gt;Opção
+    &lt;select name="servico"&gt;
+      &lt;?php foreach ($SERVICOS as $s): ?&gt;
+        &lt;option &lt;?= $s === $c['servico'] ? 'selected' : '' ?&gt;&gt;&lt;?= h($s) ?&gt;&lt;/option&gt;
+      &lt;?php endforeach; ?&gt;
+    &lt;/select&gt;
+  &lt;/label&gt;
+  &lt;label&gt;Mensagem &lt;textarea name="mensagem" rows="4" maxlength="500"&gt;&lt;?= h($c['mensagem']) ?&gt;&lt;/textarea&gt;&lt;/label&gt;
+  &lt;button type="submit"&gt;Salvar&lt;/button&gt;
+  &lt;a class="botao" href="painel.php"&gt;Voltar&lt;/a&gt;
+&lt;/form&gt;
+&lt;?php rodape(); ?&gt;</pre>
+  </div>
+  <h3>O teste</h3>
+  <ol>
+    <li>Entre no painel. Procure um nome. Edite um telefone. Apague o cadastro do <code>&lt;b&gt;Oi&lt;/b&gt;</code>.</li>
+    <li>Clique em <b>Sair</b> e tente abrir <code>/painel.php</code> de novo: volta para o login.</li>
+    <li>Peça a alguém de outra equipe para abrir o seu painel pelo celular. Agora ele não vê nada sem a senha.</li>
+  </ol>
+  <p>Onde a senha foi parar? <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>sudo sqlite3 /var/www/dados/site.db</td><td>Abre o banco</td></tr>
+    <tr><td>SELECT usuario, senha FROM usuarios;</td><td>A senha não está lá! Está o “hash”: <code>$2y$10$…</code></td></tr>
+    <tr><td>.quit</td><td>Sai</td></tr>
+  </table></div>
+  <div class="perg"><strong>Na folha:</strong> o servidor não guarda a senha, guarda a impressão digital dela (o hash). Se alguém roubar o site.db, consegue ler as senhas? Por que isso protege o cliente que usa a mesma senha no banco e no e-mail?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">4</span><h2>A revisão antes da entrega</h2><span class="tag digite">Digite</span></div>
+  <p>Como a revisão do carro antes de entregar ao dono.</p>
+  <div class="cmds"><table>
+    <tr><td>uptime</td><td>Há quanto tempo está ligado</td></tr>
+    <tr><td>free -h</td><td>Memória: total, usada e livre</td></tr>
+    <tr><td>df -h /</td><td>Disco: quanto % já encheu</td></tr>
+    <tr><td>systemctl status nginx</td><td><code>active (running)</code>? Sai com q</td></tr>
+    <tr><td>systemctl status php*-fpm</td><td>O PHP também está rodando? Sai com q</td></tr>
+    <tr><td>sudo apt update</td><td>Busca a lista de novidades</td></tr>
+    <tr><td>sudo apt upgrade</td><td>Instala as atualizações. Y e Enter. Pode demorar</td></tr>
+    <tr><td>ls /var/run/reboot-required</td><td>Se o arquivo existir, reinicie: sudo reboot. Espere 1 minuto e entre de novo</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">5</span><h2>O firewall: o porteiro do servidor</h2></div>
+  <p>O firewall deixa entrar só pelas portas liberadas. O servidor precisa de duas: a <b>22</b> (PuTTY e WinSCP) e a <b>80</b> (site). O resto fica fechado.</p>
+  <div class="aviso"><strong>A ordem importa:</strong> libere a porta 22 ANTES de ligar o firewall. Senão o PuTTY fica do lado de fora, e só se entra de novo pelo teclado do servidor.</div>
+  <p>As regras <span class="tag cole">Cole</span></p>
+  <div class="bloco" data-bloco="regras">
+    <div class="bloco-top"><span>As regras do porteiro</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 22/tcp
+sudo ufw allow 80/tcp
+sudo ufw show added</pre>
+  </div>
+  <p>Ligar e testar <span class="tag digite">Digite</span></p>
+  <div class="cmds"><table>
+    <tr><td>sudo ufw enable</td><td>Pergunta se pode cair o SSH: y e Enter. Como a 22 está liberada, não cai</td></tr>
+    <tr><td>sudo ufw status numbered</td><td>As regras ativas</td></tr>
+    <tr><td>sudo ufw delete allow 80/tcp</td><td>Fecha o site. No navegador, Ctrl+F5: não abre mais</td></tr>
+    <tr><td>ping 192.168.<i class="n1"></i>.10</td><td>No cmd do PC: o servidor responde. Está ligado, só a porta está fechada</td></tr>
+    <tr><td>sudo ufw allow 80/tcp</td><td>Abre de novo. Ctrl+F5: o site voltou</td></tr>
+  </table></div>
+  <div class="perg"><strong>Na folha:</strong> explique cada linha do bloco das regras. O que quer dizer <code>deny incoming</code> e <code>allow outgoing</code>?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">6</span><h2>O backup: o site inteiro num arquivo</h2></div>
+  <p>Se o disco do servidor queimar amanhã, o que salva o cliente é o backup. Um arquivo com o site, as fotos, o banco e a configuração <span class="tag cole">Cole</span></p>
+  <div class="bloco" data-bloco="backup">
+    <div class="bloco-top"><span>Fazer o backup</span><button class="copiar" type="button">Copiar</button></div>
+    <pre>sudo tar -czf ~/backup-servidor-equipe.tar.gz /var/www/html /var/www/dados /etc/nginx/sites-available/default
+sudo chown $USER:$USER ~/backup-servidor-equipe.tar.gz
+ls -lh ~/backup-servidor-equipe.tar.gz</pre>
+  </div>
+  <p>O aviso <code>Removing leading '/'</code> é normal. Agora tire o backup do servidor:</p>
+  <ol>
+    <li>No <b>WinSCP</b>, lado direito, vá para a pasta de casa: <code>/home/equipe<i class="n"></i></code>.</li>
+    <li>Arraste o <code>backup-servidor-equipe.tar.gz</code> para o PC (lado esquerdo), ou para o pendrive.</li>
+  </ol>
+  <div class="perg"><strong>Na folha:</strong> o que tem dentro do backup (as três pastas e arquivos da linha do tar)? Qual o tamanho? Por que guardar fora do servidor?</div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">7</span><h2>A entrega</h2></div>
+  <h3>A ficha técnica final</h3>
+  <div class="cmds"><table>
+    <tr><td>Servidor</td><td>Nome, endereço fixo, MAC, Ubuntu e versão (<code>lsb_release -a</code>)</td></tr>
+    <tr><td>Acesso</td><td>Usuário do PuTTY e do WinSCP, porta 22 (a senha fica com o dono, não na ficha)</td></tr>
+    <tr><td>Serviços</td><td>Nginx (site, porta 80), PHP, SQLite, SSH</td></tr>
+    <tr><td>O site</td><td>As páginas, a pasta das fotos, onde fica o banco</td></tr>
+    <tr><td>Painel</td><td>Endereço do painel e o usuário administrador</td></tr>
+    <tr><td>Segurança</td><td>Regras do firewall, a data da última atualização</td></tr>
+    <tr><td>Backup</td><td>Data, tamanho e onde ficou guardado</td></tr>
+  </table></div>
+  <h3>A apresentação: 4 minutos por equipe</h3>
+  <ol>
+    <li><b>1 min · O negócio:</b> o nicho, as páginas e as fotos, navegando pelo menu.</li>
+    <li><b>1 min · O cadastro ao vivo:</b> alguém da plateia se cadastra pelo celular, no Wi-Fi da equipe.</li>
+    <li><b>1 min · O painel:</b> login, o cadastro novo aparecendo, uma edição. Mostrar que sem senha não entra.</li>
+    <li><b>1 min · O técnico:</b> o que a equipe fez para o cliente dormir tranquilo: firewall, atualização, backup, senha guardada em hash.</li>
+  </ol>
+  <p>Ao terminar, desligue pelo PuTTY: <code>sudo poweroff</code>.</p>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">!</span><h2>Se travar</h2></div>
+  <div class="travou"><table>
+    <tr><th>O que aparece</th><th>O que fazer</th></tr>
+    <tr><td>Pediu senha no meio do bloco colado</td><td>Ctrl+C, digite sudo -v, a senha, e cole o bloco de novo</td></tr>
+    <tr><td>sqlite&gt; não responde depois do Enter</td><td>Faltou o ponto e vírgula. Digite ; e Enter</td></tr>
+    <tr><td>no such table: usuarios</td><td>Ninguém abriu o login.php ainda. Abra no navegador e tente de novo</td></tr>
+    <tr><td>Erro 500 em todas as páginas PHP</td><td>sudo tail /var/log/nginx/error.log. Se aparecer “Cannot redeclare exigir_login”, o bloco foi colado duas vezes: nano comum.php e apague a segunda cópia</td></tr>
+    <tr><td>O login volta sempre para o login</td><td>Usuário ou senha errados (o usuário diferencia maiúscula). Ou o navegador bloqueia cookies: teste outro navegador</td></tr>
+    <tr><td>Esqueci a senha do painel</td><td>Chame o professor: sudo sqlite3 /var/www/dados/site.db "DELETE FROM usuarios;" e o login volta ao primeiro acesso</td></tr>
+    <tr><td>Outra equipe criou o administrador antes</td><td>O mesmo comando acima. Depois crie o seu na hora</td></tr>
+    <tr><td>Could not get lock /var/lib/dpkg</td><td>O servidor já está se atualizando sozinho. Espere 2 minutos</td></tr>
+    <tr><td>Tela roxa: Which services should be restarted?</td><td>Só Enter (o OK já vem marcado)</td></tr>
+    <tr><td>O PuTTY travou depois do ufw enable</td><td>A porta 22 não foi liberada. No teclado do servidor: sudo ufw allow 22/tcp</td></tr>
+    <tr><td>WinSCP não deixa baixar o backup</td><td>Faltou a linha do chown no bloco do backup. Rode só ela</td></tr>
+  </table></div>
+</section>
+
+<section class="passo">
+  <div class="passo-head"><span class="num">?</span><h2>Consulta: os comandos do curso</h2></div>
+  <details class="dic">
+    <summary>Abrir a lista de comandos</summary>
+    <div class="cmds"><table>
+      <tr><td>pwd · ls -l · cd</td><td>Onde estou · o que tem aqui · entrar numa pasta (cd .. sobe, cd ~ volta para casa)</td></tr>
+      <tr><td>mkdir · nano · cat</td><td>Criar pasta · editar arquivo (Ctrl+O salva, Ctrl+X sai) · mostrar arquivo</td></tr>
+      <tr><td>cp · mv · rm</td><td>Copiar · mover ou renomear · apagar (sem lixeira)</td></tr>
+      <tr><td>comando &gt; arquivo · &gt;&gt; arquivo</td><td>Escreve a saída no arquivo apagando o que tinha · acrescenta no fim</td></tr>
+      <tr><td>sudo · chown · chmod</td><td>Administrador · trocar o dono · trocar as permissões (r = 4, w = 2, x = 1)</td></tr>
+      <tr><td>sudo apt update · upgrade · install</td><td>Lista de novidades · atualizar · instalar programa</td></tr>
+      <tr><td>systemctl status · reload</td><td>O serviço está rodando? · recarregar a configuração</td></tr>
+      <tr><td>sudo tail -f arquivo.log</td><td>Acompanhar um log ao vivo. Ctrl+C para</td></tr>
+      <tr><td>sudo sqlite3 banco.db</td><td>Abrir o banco. SELECT … FROM … WHERE …; · .quit sai</td></tr>
+      <tr><td>sudo ufw status · allow · delete allow</td><td>Ver as regras · abrir uma porta · fechar uma porta</td></tr>
+      <tr><td>sudo tar -czf backup.tar.gz pastas</td><td>Juntar e compactar num arquivo só</td></tr>
+      <tr><td>ip a · hostname · whoami</td><td>O endereço · o nome do servidor · quem sou eu</td></tr>
+      <tr><td>free -h · df -h · uptime</td><td>Memória · disco · há quanto tempo está ligado</td></tr>
+      <tr><td>sudo reboot · sudo poweroff</td><td>Reiniciar · desligar</td></tr>
+    </table></div>
+  </details>
+</section>
+
+<footer>Curso FIC Montador e Reparador de Computadores · CEJA Itapiranga – SC</footer>
+</div>
+
+<script>
+(function () {
+  var sel = document.getElementById("equipe");
+  function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function gravar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function aplicar() {
+    var n = sel.value;
+    document.querySelectorAll("i.n").forEach(function (el) { el.textContent = n; });
+    document.querySelectorAll("i.n1").forEach(function (el) { el.textContent = "1" + n; });
+  }
+  var salvo = ler("equipe");
+  if (salvo && /^[1-8]$/.test(salvo)) sel.value = salvo;
+  aplicar();
+  sel.addEventListener("change", function () { gravar("equipe", sel.value); aplicar(); });
+
+  document.querySelectorAll("button.copiar").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.closest(".bloco").querySelector("pre");
+      var txt = pre.textContent;
+      function feito() {
+        btn.textContent = "Copiado";
+        btn.classList.add("ok");
+        setTimeout(function () { btn.textContent = "Copiar"; btn.classList.remove("ok"); }, 1800);
+      }
+      function selecionar() {
+        var r = document.createRange(); r.selectNodeContents(pre);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = "Ctrl+C para copiar";
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(feito, selecionar);
+      } else { selecionar(); }
+    });
+  });
+})();
+</script>
